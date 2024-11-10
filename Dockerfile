@@ -18,4 +18,4 @@ RUN npx tsc
 EXPOSE 4567
 
 # Start the application using the compiled JavaScript
-CMD ["node", "dist/app.js"]
+CMD ["npx", "ts-node", "src/app.ts"]
