@@ -2,21 +2,20 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy package.json and package-lock.json, and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy Prisma schema directory
+# Copy the Prisma schema and generate client
 COPY prisma ./prisma
-
-# Generate Prisma client
 RUN npx prisma generate
 
-# Copy the remaining application code
+# Copy all files and compile TypeScript to JavaScript
 COPY . .
+RUN npx tsc
 
 # Expose the appropriate port
-EXPOSE 5050
+EXPOSE 5000
 
-# Start the application
-CMD ["npm", "start"]
+# Start the application using the compiled JavaScript
+CMD ["npx", "ts-node", "src/app.ts"]
