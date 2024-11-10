@@ -1,22 +1,22 @@
-# Dockerfile
 FROM node:18
 
 WORKDIR /app
 
-# Copia package.json e package-lock.json
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Instala dependências
 RUN npm install
 
-# Gera os arquivos do Prisma
+# Copy Prisma schema directory
+COPY prisma ./prisma
+
+# Generate Prisma client
 RUN npx prisma generate
 
-# Copia o restante dos arquivos
+# Copy the remaining application code
 COPY . .
 
-# Exponha a porta correta
+# Expose the appropriate port
 EXPOSE 5050
 
-# Comando de inicialização
+# Start the application
 CMD ["npm", "start"]
