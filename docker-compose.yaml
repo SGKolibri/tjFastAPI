@@ -3,7 +3,7 @@ services:
   web:
     build: .
     ports:
-      - "5050:5050"
+      - "10000:4567"
     volumes:
       - .:/app
     environment:

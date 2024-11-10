@@ -15,7 +15,7 @@ COPY . .
 RUN npx tsc
 
 # Expose the appropriate port
-EXPOSE 5000
+EXPOSE 4567
 
 # Start the application using the compiled JavaScript
-CMD ["npx", "ts-node", "src/app.ts"]
+CMD ["node", "dist/app.js"]

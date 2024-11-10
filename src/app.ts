@@ -70,13 +70,13 @@ async function main() {
   try {
     await server
       .listen({
-        port: process.env.PORT ? Number(process.env.PORT) : 5050,
+        port: process.env.PORT ? Number(process.env.PORT) : 4567,
         host: "0.0.0.0",
       })
       .then(() => {
         console.log(
           `Server listening on ${
-            process.env.PORT ? Number(process.env.PORT) : 5050
+            process.env.PORT ? Number(process.env.PORT) : 4567
           }.`
         );
       });
