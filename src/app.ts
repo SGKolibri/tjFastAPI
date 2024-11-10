@@ -68,8 +68,18 @@ async function main() {
   server.register(productRoutes, { prefix: "api/products" });
 
   try {
-    await server.listen({ port: 5050, host: "0.0.0.0" });
-    console.log("Server started on http://localhost:5050");
+    await server
+      .listen({
+        port: process.env.PORT ? Number(process.env.PORT) : 5050,
+        host: "0.0.0.0",
+      })
+      .then(() => {
+        console.log(
+          `Server listening on ${
+            process.env.PORT ? Number(process.env.PORT) : 5050
+          }.`
+        );
+      });
   } catch (err) {
     console.error(err);
     process.exit(1);

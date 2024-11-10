@@ -3,12 +3,11 @@ services:
   web:
     build: .
     ports:
-      - "5000:5000"
+      - "5050:5050"
     volumes:
       - .:/app
     environment:
-      FLASK_ENV: development
-      FLASK_APP: app.py
+      NODE_ENV: production
     depends_on:
       - db
   db:
