@@ -15,7 +15,7 @@ export async function registerAdminHandler(
     return reply.status(201).send(admin);
   } catch (e) {
     console.error(e);
-    return reply.status(500).send({ message: "Internal Server Error" });
+    return reply.status(500).send({ message: "Erro ao registrar admin" });
   }
 }
 
