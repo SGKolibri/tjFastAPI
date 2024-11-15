@@ -6,7 +6,9 @@ import userRoutes from "./modules/user/user.route";
 import { userSchemas } from "./modules/user/user.schema";
 import { productSchemas } from "./modules/product/product.schema";
 import productRoutes from "./modules/product/product.route";
+import adminRoutes from "./modules/admin/admin.route";
 import { version } from "../package.json";
+import { adminSchemas } from "./modules/admin/admin.schemas";
 
 export const server = Fastify();
 
@@ -55,7 +57,7 @@ server.get("/", async () => {
 });
 
 async function main() {
-  for (const schema of [...userSchemas, ...productSchemas]) {
+  for (const schema of [...userSchemas, ...productSchemas, ...adminSchemas]) {
     server.addSchema(schema);
   }
 
@@ -66,6 +68,7 @@ async function main() {
 
   server.register(userRoutes, { prefix: "api/users" });
   server.register(productRoutes, { prefix: "api/products" });
+  server.register(adminRoutes, { prefix: "api/admin" });
 
   try {
     await server

@@ -5,7 +5,11 @@ import {
   findUserById,
   findUsers,
 } from "./user.services";
-import { CreateUserInput, LoginUserInput, GetUserByInput } from "./user.schema";
+import {
+  CreateUserInput,
+  /*LoginUserInput,*/
+  GetUserByInput,
+} from "./user.schema";
 import { verifyPassword } from "../../utils/hash";
 import { server } from "../../app";
 
@@ -25,54 +29,41 @@ export async function registerUserHandler(
   }
 }
 
-export async function loginUserHandler(
-  request: FastifyRequest<{ Body: LoginUserInput }>,
-  reply: FastifyReply
-) {
-  const body = request.body;
+// export async function loginUserHandler(
+//   request: FastifyRequest<{ Body: LoginUserInput }>,
+//   reply: FastifyReply
+// ) {
+//   const body = request.body;
 
-  // find user by email
-  const user = await findUserByEmail(body.email);
+//   // find user by email
+//   const user = await findUserByEmail(body.email);
 
-  if (!user)
-    return reply.code(401).send({ message: "Invalid email or password" });
+//   if (!user)
+//     return reply.code(401).send({ message: "Invalid email or password" });
 
-  // verify password
-  const correctPassword = verifyPassword({
-    candidatePassword: body.password,
-    salt: user.salt,
-    hash: user.password,
-  });
+//   // verify password
+//   const correctPassword = verifyPassword({
+//     candidatePassword: body.password,
+//     salt: user.salt,
+//     hash: user.password,
+//   });
 
-  // if password is correct, return accessToken
-  if (correctPassword) {
-    const { password, salt, ...rest } = user;
-    const accessToken = server.jwt.sign(rest, { expiresIn: "1h" });
-    return reply.send({ accessToken, user: rest });
-  }
+//   // if password is correct, return accessToken
+//   if (correctPassword) {
+//     const { password, salt, ...rest } = user;
+//     const accessToken = server.jwt.sign(rest, { expiresIn: "1h" });
+//     return reply.send({ accessToken, user: rest });
+//   }
 
-  return reply.code(401).send({ message: "Invalid email or password" });
-}
+//   return reply.code(401).send({ message: "Invalid email or password" });
+// }
 
 export async function getUsersHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { headers } = request;
   const users = await findUsers();
   return reply.send(users);
-}
-
-export async function isUserAuthenticatedHandler(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
-  try {
-    return reply.status(200).send({ message: "Authenticated" });
-  } catch (e) {
-    console.error(e);
-    return reply.status(500).send({ message: "Internal Server Error" });
-  }
 }
 
 export async function getUserByIdHandler(
