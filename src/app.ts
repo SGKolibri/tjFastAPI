@@ -2,10 +2,8 @@ import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import fastifyJwt from "@fastify/jwt";
 import { withRefResolver } from "fastify-zod";
 import fastifyCors from "@fastify/cors";
-import userRoutes from "./modules/user/user.route";
-import { userSchemas } from "./modules/user/user.schema";
-import { productSchemas } from "./modules/product/product.schema";
-import productRoutes from "./modules/product/product.route";
+import funcionarioRoutes from "./modules/funcionario/funcionario.route";
+import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import adminRoutes from "./modules/admin/admin.route";
 import { version } from "../package.json";
 import { adminSchemas } from "./modules/admin/admin.schemas";
@@ -57,7 +55,7 @@ server.get("/", async () => {
 });
 
 async function main() {
-  for (const schema of [...userSchemas, ...productSchemas, ...adminSchemas]) {
+  for (const schema of [...funcionarioSchemas, ...adminSchemas]) {
     server.addSchema(schema);
   }
 
@@ -66,8 +64,7 @@ async function main() {
     routePrefix: "/docs",
   });
 
-  server.register(userRoutes, { prefix: "api/users" });
-  server.register(productRoutes, { prefix: "api/products" });
+  server.register(funcionarioRoutes, { prefix: "api/func" });
   server.register(adminRoutes, { prefix: "api/admin" });
 
   try {
