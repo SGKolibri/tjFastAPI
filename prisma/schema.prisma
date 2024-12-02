@@ -39,7 +39,7 @@ model SalarioMensal {
   id           String      @id @default(cuid())
   mes          Int      // Mês (1-12)
   ano          Int      // Ano
-  funcionario  Funcionario @relation(fields: [funcionarioId], references: [id])
+  funcionario  Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade) // if Funcionario is deleted, delete SalarioMensal
   funcionarioId String
 
   salarioBase  Float    // Salário base
@@ -49,7 +49,6 @@ model SalarioMensal {
   extras       Float    // Valor extra (ex.: viagens)
   beneficios   Beneficio? // Relacionamento 1:1 com Beneficio, ? indica que é opcional
   bonus        Float    // Bônus mensal
-  salarioTotal Float    // Salário total (após cálculos)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,7 +64,7 @@ model Beneficio {
   cafe        Float // Valor do benefício café
   almoco      Float // Valor do benefício almoço
   passagem    Float // Valor do benefício passagem
-  salarioMensal SalarioMensal @relation(fields: [salarioMensalId], references: [id])
+  salarioMensal SalarioMensal @relation(fields: [salarioMensalId], references: [id], onDelete: Cascade) // if SalarioMensal is deleted, delete Beneficio
   salarioMensalId String @unique
 
   createdAt DateTime @default(now())

@@ -6,6 +6,9 @@ import {
   registerFuncionarioHandler,
   // isFuncionarioAuthenticatedHandler,
   getFuncionarioByIdHandler,
+  updateFuncionarioHandler,
+  addSalarioToFuncionarioHandler,
+  deleteSalarioFromFuncionarioHandler,
 } from "./funcionario.controller";
 import { $ref } from "./funcionario.schema";
 
@@ -38,6 +41,29 @@ async function funcionarioRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     getFuncionarioByIdHandler
+  );
+
+  server.patch(
+    "/:id",
+    {
+      preHandler: [server.authenticate],
+    },
+    updateFuncionarioHandler
+  );
+
+  // add salario to funcionario
+  server.post(
+    "/:id/salario",
+    {
+      preHandler: [server.authenticate],
+    },
+    addSalarioToFuncionarioHandler
+  );
+
+  server.delete(
+    "/:funcionarioId/salario/:salarioId",
+    { preHandler: [server.authenticate] },
+    deleteSalarioFromFuncionarioHandler
   );
 }
 

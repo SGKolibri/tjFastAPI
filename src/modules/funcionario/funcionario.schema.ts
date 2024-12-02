@@ -9,15 +9,15 @@ const beneficiosSchema = z.object({
 });
 
 const salarioSchema = z.object({
+  id: z.string(),
   mes: z.number().min(1).max(12), // Validação para mês válido
   ano: z.number().int().min(2000).max(2100), // Validação para ano válido
-  base: z.number(), // Salário base
+  salarioBase: z.number(), // Salário base
   horasExtras: z.number().optional(),
   descontos: z.number().optional(),
   faltas: z.number().optional(),
   extras: z.number().optional(),
   bonus: z.number().optional(),
-  total: z.number(),
   beneficios: beneficiosSchema.optional(),
 });
 
@@ -49,6 +49,10 @@ const funcionarioCore = {
   salarios: z.array(salarioSchema).optional(),
 };
 
+const addSalarioToFuncionarioSchema = z.object({
+  salario: salarioSchema,
+});
+
 const createFuncionarioSchema = z.object({
   ...funcionarioCore,
 });
@@ -58,13 +62,16 @@ const createFuncionarioResponseSchema = z.object({
   ...funcionarioCore,
 });
 
-const FuncionarioResponseSchema = z.object({
+const funcionarioResponseSchema = z.object({
   id: z.string(),
   ...funcionarioCore,
 });
 
 export type CreateFuncionarioInput = z.infer<typeof createFuncionarioSchema>;
-export type GetFuncionarioByInput = z.infer<typeof FuncionarioResponseSchema>;
+export type GetFuncionarioByInput = z.infer<typeof funcionarioResponseSchema>;
+export type AddSalarioToFuncionarioInput = z.infer<
+  typeof addSalarioToFuncionarioSchema
+>;
 
 export const { schemas: funcionarioSchemas, $ref } = buildJsonSchemas(
   {
