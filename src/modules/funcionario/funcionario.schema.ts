@@ -9,7 +9,6 @@ const beneficiosSchema = z.object({
 });
 
 const salarioSchema = z.object({
-  id: z.string(),
   mes: z.number().min(1).max(12), // Validação para mês válido
   ano: z.number().int().min(2000).max(2100), // Validação para ano válido
   salarioBase: z.number(), // Salário base
@@ -21,15 +20,16 @@ const salarioSchema = z.object({
   beneficios: beneficiosSchema.optional(),
 });
 
+const cargoSchema = z.object({
+  nome: z.string(),
+});
+
 const funcionarioCore = {
   name: z.string({
     required_error: "Name is required",
     invalid_type_error: "Name must be a string",
   }),
-  cargo: z.string({
-    required_error: "Cargo is required",
-    invalid_type_error: "Cargo must be a string",
-  }),
+  cargo: cargoSchema.optional(),
   chavePix: z.string({
     required_error: "ChavePix is required",
     invalid_type_error: "ChavePix must be a string",
@@ -53,7 +53,7 @@ const addSalarioToFuncionarioSchema = z.object({
   salario: salarioSchema,
 });
 
-const createFuncionarioSchema = z.object({
+export const createFuncionarioSchema = z.object({
   ...funcionarioCore,
 });
 

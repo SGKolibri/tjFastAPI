@@ -3,16 +3,40 @@ import {
   AddSalarioToFuncionarioInput,
   CreateFuncionarioInput,
 } from "./funcionario.schema";
-import { hashPassword } from "../../utils/hash";
-import { create } from "domain";
 
 export async function createFuncionario(input: CreateFuncionarioInput) {
   const { name, cargo, chavePix, banco, salarios, contato, cpf } = input;
 
+  if (!cargo) {
+    throw new Error("Cargo é obrigatório");
+  }
+
+  // check if cargo exists in the database, if not, create it
+  const cargoProccess = await prisma.cargo.findFirst({
+    where: {
+      nome: cargo.nome,
+    },
+  });
+
+  if (!cargoProccess) {
+    await prisma.cargo.create({
+      data: {
+        nome: cargo.nome,
+      },
+    });
+  }
+
+  console.log("FUNCIONARIO: ", input);
+
   const funcionario = await prisma.funcionario.create({
     data: {
       name,
-      cargo,
+      cargo: {
+        connectOrCreate: {
+          where: { nome: cargo.nome },
+          create: { nome: cargo.nome },
+        },
+      },
       chavePix,
       banco,
       cpf,
@@ -42,6 +66,22 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
         : undefined,
     },
   });
+
+  // add funcionario to its respective tabelaFuncionarios
+  if (salarios) {
+    const salaries = salarios.map((salario) => ({
+      mes: salario.mes,
+      ano: salario.ano,
+    }));
+
+    for (const salary of salaries) {
+      await addFuncionarioToTabelaFuncionario(
+        funcionario.id,
+        salary.mes,
+        salary.ano
+      );
+    }
+  }
 
   return funcionario;
 }
@@ -126,12 +166,26 @@ export async function updateFuncionario(
   input: CreateFuncionarioInput
 ) {
   const { name, cargo, chavePix, banco, salarios, contato, cpf } = input;
+
+  if (!cargo) {
+    throw new Error("Cargo é obrigatório");
+  }
+
   try {
-    return await prisma.funcionario.update({
+    const updatedFuncionario = await prisma.funcionario.update({
       where: { id },
       data: {
         name,
-        cargo,
+        cargo: {
+          upsert: {
+            create: {
+              nome: cargo.nome,
+            },
+            update: {
+              nome: cargo.nome,
+            },
+          },
+        },
         chavePix,
         banco,
         cpf,
@@ -196,6 +250,23 @@ export async function updateFuncionario(
           : undefined,
       },
     });
+
+    if (salarios) {
+      const salaries = salarios.map((salario) => ({
+        mes: salario.mes,
+        ano: salario.ano,
+      }));
+
+      for (const salary of salaries) {
+        await addUpdatedFuncionarioToTabelaFuncionario(
+          updatedFuncionario.id,
+          salary.mes,
+          salary.ano
+        );
+      }
+    }
+
+    return updatedFuncionario;
   } catch (e) {
     console.log(e);
   }
@@ -265,4 +336,142 @@ export async function getSalarioFromFuncionario(
       funcionarioId: funcionarioId,
     },
   });
+}
+
+export async function getTotalFuncionarios() {
+  return await prisma.funcionario.count();
+}
+
+// Tabela Funcionarios is identified by month and year, and so is the funcionario salary
+export async function addFuncionarioToTabelaFuncionario(
+  funcionarioId: string,
+  mes: number,
+  ano: number
+) {
+  console.log("FUNCIONARIO ID: ", funcionarioId);
+  try {
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: funcionarioId },
+    });
+
+    if (!funcionario) {
+      throw new Error("Funcionário não encontrado");
+    }
+
+    const tabelaFuncionario = await prisma.tabelaFuncionarios.findFirst({
+      where: {
+        mes,
+        ano,
+      },
+    });
+
+    if (!tabelaFuncionario) {
+      throw new Error("Tabela de funcionários não encontrada");
+    }
+
+    await prisma.tabelaFuncionarios.update({
+      where: {
+        id: tabelaFuncionario.id,
+      },
+      data: {
+        funcionarios: {
+          connect: {
+            id: funcionario.id,
+          },
+        },
+      },
+    });
+
+    return tabelaFuncionario;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function addUpdatedFuncionarioToTabelaFuncionario(
+  funcionarioId: string,
+  mes: number,
+  ano: number
+) {
+  try {
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: funcionarioId },
+    });
+
+    if (!funcionario) {
+      throw new Error("Funcionário não encontrado");
+    }
+
+    const tabelaFuncionario = await prisma.tabelaFuncionarios.findFirst({
+      where: {
+        mes,
+        ano,
+      },
+    });
+
+    if (!tabelaFuncionario) {
+      throw new Error("Tabela de funcionários não encontrada");
+    }
+
+    await prisma.tabelaFuncionarios.update({
+      where: {
+        id: tabelaFuncionario.id,
+      },
+      data: {
+        funcionarios: {
+          connect: {
+            id: funcionario.id,
+          },
+        },
+      },
+    });
+
+    return tabelaFuncionario;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function removeFuncionarioFromTabelaFuncionario(
+  funcionarioId: string,
+  mes: number,
+  ano: number
+) {
+  try {
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: funcionarioId },
+    });
+
+    if (!funcionario) {
+      throw new Error("Funcionário não encontrado");
+    }
+
+    const tabelaFuncionario = await prisma.tabelaFuncionarios.findFirst({
+      where: {
+        mes,
+        ano,
+      },
+    });
+
+    if (!tabelaFuncionario) {
+      throw new Error("Tabela de funcionários não encontrada");
+    }
+
+    await prisma.tabelaFuncionarios.update({
+      where: {
+        id: tabelaFuncionario.id,
+      },
+      data: {
+        funcionarios: {
+          disconnect: {
+            id: funcionario.id,
+          },
+        },
+      },
+    });
+
+    return tabelaFuncionario;
+  } catch (e) {
+    console.log(e);
+  }
 }

@@ -3,10 +3,13 @@ import fastifyJwt from "@fastify/jwt";
 import { withRefResolver } from "fastify-zod";
 import fastifyCors from "@fastify/cors";
 import funcionarioRoutes from "./modules/funcionario/funcionario.route";
-import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import adminRoutes from "./modules/admin/admin.route";
-import { version } from "../package.json";
+import cargoRoutes from "./modules/cargo/cargo.route";
+import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
+import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
+import { cargoSchemas } from "./modules/cargo/cargo.schema";
+import { tabelaFuncionarioSchemas } from "./modules/tabelaFuncionarios/tabelaFuncionarios.schema";
 
 export const server = Fastify();
 
@@ -55,7 +58,12 @@ server.get("/", async () => {
 });
 
 async function main() {
-  for (const schema of [...funcionarioSchemas, ...adminSchemas]) {
+  for (const schema of [
+    ...funcionarioSchemas,
+    ...adminSchemas,
+    ...cargoSchemas,
+    ...tabelaFuncionarioSchemas,
+  ]) {
     server.addSchema(schema);
   }
 
@@ -66,6 +74,8 @@ async function main() {
 
   server.register(funcionarioRoutes, { prefix: "api/func" });
   server.register(adminRoutes, { prefix: "api/admin" });
+  server.register(cargoRoutes, { prefix: "api/cargo" });
+  server.register(tabelaFuncionarioRoutes, { prefix: "api/tabela" });
 
   try {
     await server

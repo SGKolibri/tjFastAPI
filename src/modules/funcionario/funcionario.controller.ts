@@ -7,6 +7,7 @@ import {
   findFuncionarioById,
   findFuncionarios,
   getSalarioFromFuncionario,
+  getTotalFuncionarios,
   updateFuncionario,
 } from "./funcionario.services";
 import {
@@ -15,8 +16,6 @@ import {
   /*LoginFuncionarioInput,*/
   GetFuncionarioByInput,
 } from "./funcionario.schema";
-import { verifyPassword } from "../../utils/hash";
-import { server } from "../../app";
 
 export async function registerFuncionarioHandler(
   request: FastifyRequest<{ Body: CreateFuncionarioInput }>,
@@ -143,6 +142,37 @@ export async function deleteSalarioFromFuncionarioHandler(
     );
     return reply.status(201).send({ message: "Salário deletado." });
   } catch (e) {
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
+export async function getTotalFuncionariosHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const totalFuncionarios = await getTotalFuncionarios();
+    return reply.status(201).send({ totalFuncionarios });
+  } catch (e) {
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
+export async function registerFuncionariosFromJSON(
+  request: FastifyRequest<{ Body: CreateFuncionarioInput[] }>,
+  reply: FastifyReply
+) {
+  const funcionarios = request.body;
+
+  try {
+    const promises = funcionarios.map((funcionario) =>
+      createFuncionario(funcionario)
+    );
+    const funcionariosCreated = await Promise.all(promises);
+
+    return reply.status(201).send(funcionariosCreated);
+  } catch (e) {
+    console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });
   }
 }

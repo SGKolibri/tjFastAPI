@@ -37,8 +37,8 @@ export async function loginAdminHandler(
   });
 
   if (correctPassword) {
-    const { password, salt, ...rest } = admin; // remove password and salt from the response
-    const accessToken = server.jwt.sign(rest, { expiresIn: "1h" }); // sign the rest of the object
+    const { password, salt, ...rest } = admin;
+    const accessToken = server.jwt.sign(rest, { expiresIn: "1h" });
     return reply.send({ accessToken, admin: rest });
   }
 

@@ -14,41 +14,44 @@ datasource db {
 }
 
 model Admin {
-  id String @id @default(cuid())
-  email String @unique
-  name String?
-  password String
-  salt String
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  salt      String
+  createdAt DateTime @default(now())
 }
 
 model Funcionario {
-  id       String       @id @default(cuid())
-  name     String
-  cargo    String
-  cpf      String
-  chavePix String
-  banco    String
-  contato  String
-  salarios SalarioMensal[]
+  id                   String              @id @default(cuid())
+  name                 String
+  cargo                Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
+  cargoId              String?
+  cpf                  String
+  chavePix             String
+  banco                String
+  contato              String
+  salarios             SalarioMensal[]
+  tabelaFuncionarios   TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
 }
 
 // Cada registro representa os dados salariais de um funcionário para um determinado mês e ano.
 // Usa uma combinação de mes, ano, e funcionarioId para garantir unicidade.
 // Contém informações variáveis, como horas extras, descontos e o salário total.
 model SalarioMensal {
-  id           String      @id @default(cuid())
-  mes          Int      // Mês (1-12)
-  ano          Int      // Ano
-  funcionario  Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade) // if Funcionario is deleted, delete SalarioMensal
+  id            String      @id @default(cuid())
+  mes           Int // Mês (1-12)
+  ano           Int // Ano
+  funcionario   Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade) // if Funcionario is deleted, delete SalarioMensal
   funcionarioId String
 
-  salarioBase  Float    // Salário base
-  horasExtras  Float    // Total de horas extras
-  faltas       Float    // Total de faltas (em horas/dias)
-  descontos    Float    // Descontos diversos
-  extras       Float    // Valor extra (ex.: viagens)
-  beneficios   Beneficio? // Relacionamento 1:1 com Beneficio, ? indica que é opcional
-  bonus        Float    // Bônus mensal
+  salarioBase Float // Salário base
+  horasExtras Float // Total de horas extras
+  faltas      Float // Total de faltas (em horas/dias)
+  descontos   Float // Descontos diversos
+  extras      Float // Valor extra (ex.: viagens)
+  beneficios  Beneficio? // Relacionamento 1:1 com Beneficio, ? indica que é opcional
+  bonus       Float // Bônus mensal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,21 +63,21 @@ model SalarioMensal {
 // Se os benefícios (café, almoço, passagem) forem significativos ou frequentemente alterados,
 // eles podem ser mantidos em uma tabela separada e relacionados ao salário mensal.
 model Beneficio {
-  id          String   @id @default(cuid())
-  cafe        Float // Valor do benefício café
-  almoco      Float // Valor do benefício almoço
-  passagem    Float // Valor do benefício passagem
-  salarioMensal SalarioMensal @relation(fields: [salarioMensalId], references: [id], onDelete: Cascade) // if SalarioMensal is deleted, delete Beneficio
-  salarioMensalId String @unique
+  id              String        @id @default(cuid())
+  cafe            Float // Valor do benefício café
+  almoco          Float // Valor do benefício almoço
+  passagem        Float // Valor do benefício passagem
+  salarioMensal   SalarioMensal @relation(fields: [salarioMensalId], references: [id], onDelete: Cascade) // if SalarioMensal is deleted, delete Beneficio
+  salarioMensalId String        @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Agenda {
-  id String @id @default(cuid())
-  mes Int // Mês (1-12)
-  ano Int
+  id      String   @id @default(cuid())
+  mes     Int // Mês (1-12)
+  ano     Int
   eventos Evento[]
 
   createdAt DateTime @default(now())
@@ -82,13 +85,32 @@ model Agenda {
 }
 
 model Evento {
-  id String @id @default(cuid())
-  nome String
-  desc String?
-  data DateTime
-  agenda Agenda @relation(fields: [agendaId], references: [id])
+  id       String   @id @default(cuid())
+  nome     String
+  desc     String?
+  data     DateTime
+  agenda   Agenda   @relation(fields: [agendaId], references: [id], onDelete: Cascade) // if Agenda is deleted, delete Evento
   agendaId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Cargo {
+  id          String        @id @default(cuid())
+  nome        String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Funcionario Funcionario[]
+}
+
+//
+model TabelaFuncionarios {
+  id           String        @id @default(cuid())
+  funcionarios Funcionario[] @relation("FuncionarioTabelaFuncionarios")
+  mes          Int          
+  ano          Int           
+  anomes       String        @unique // Combinação de mes e ano
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
