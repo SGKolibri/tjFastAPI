@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { verifyPassword } from "../../utils/hash";
 import { server } from "../../app";
+import { verifyPassword } from "../../utils/hash";
 import { createAdmin, findAdminByEmail, findAdmins } from "./admin.services";
 import { CreateAdminInput, LoginAdminInput } from "./admin.schemas";
 

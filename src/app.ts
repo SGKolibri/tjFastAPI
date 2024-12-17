@@ -6,10 +6,12 @@ import funcionarioRoutes from "./modules/funcionario/funcionario.route";
 import adminRoutes from "./modules/admin/admin.route";
 import cargoRoutes from "./modules/cargo/cargo.route";
 import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
+import eventoRoutes from "./modules/evento/evento.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
 import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import { cargoSchemas } from "./modules/cargo/cargo.schema";
 import { tabelaFuncionarioSchemas } from "./modules/tabelaFuncionarios/tabelaFuncionarios.schema";
+import { eventoSchemas } from "./modules/evento/evento.schema";
 
 export const server = Fastify();
 
@@ -63,6 +65,7 @@ async function main() {
     ...adminSchemas,
     ...cargoSchemas,
     ...tabelaFuncionarioSchemas,
+    ...eventoSchemas,
   ]) {
     server.addSchema(schema);
   }
@@ -76,6 +79,7 @@ async function main() {
   server.register(adminRoutes, { prefix: "api/admin" });
   server.register(cargoRoutes, { prefix: "api/cargo" });
   server.register(tabelaFuncionarioRoutes, { prefix: "api/tabela" });
+  server.register(eventoRoutes, { prefix: "api/evento" });
 
   try {
     await server

@@ -8,7 +8,13 @@ import {
 import { $ref } from "./admin.schemas";
 
 export default async function adminRoutes(server: FastifyInstance) {
-  server.post("/", registerAdminHandler);
+  server.post(
+    "/",
+    {
+      preHandler: [server.authenticate],
+    },
+    registerAdminHandler
+  );
   server.get(
     "/",
     {

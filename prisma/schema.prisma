@@ -74,28 +74,6 @@ model Beneficio {
   updatedAt DateTime @updatedAt
 }
 
-model Agenda {
-  id      String   @id @default(cuid())
-  mes     Int // Mês (1-12)
-  ano     Int
-  eventos Evento[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Evento {
-  id       String   @id @default(cuid())
-  nome     String
-  desc     String?
-  data     DateTime
-  agenda   Agenda   @relation(fields: [agendaId], references: [id], onDelete: Cascade) // if Agenda is deleted, delete Evento
-  agendaId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Cargo {
   id          String        @id @default(cuid())
   nome        String        @unique
@@ -113,4 +91,16 @@ model TabelaFuncionarios {
   anomes       String        @unique // Combinação de mes e ano
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+}
+
+model Evento {
+  id          String   @id @default(uuid()) // ID único para o evento
+  titulo      String   // Título do evento
+  descricao   String?  // Descrição opcional do evento
+  dataInicio  DateTime // Data e hora de início
+  dataFim     DateTime // Data e hora de término
+  allDay      Boolean  // Indica se o evento dura o dia todo
+
+  createdAt   DateTime @default(now()) // Timestamp de criação
+  updatedAt   DateTime @updatedAt      // Timestamp de última atualização
 }
