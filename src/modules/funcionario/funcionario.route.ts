@@ -11,6 +11,7 @@ import {
   deleteSalarioFromFuncionarioHandler,
   getTotalFuncionariosHandler,
   registerFuncionariosFromJSON,
+  updateFuncionarioStatusHandler,
 } from "./funcionario.controller";
 import { $ref } from "./funcionario.schema";
 
@@ -59,6 +60,14 @@ async function funcionarioRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     updateFuncionarioHandler
+  );
+
+  server.patch(
+    "/status/:id",
+    {
+      preHandler: [server.authenticate],
+    },
+    updateFuncionarioStatusHandler
   );
 
   // add salario to funcionario

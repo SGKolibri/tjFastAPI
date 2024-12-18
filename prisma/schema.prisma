@@ -23,7 +23,7 @@ model Admin {
 }
 
 model Funcionario {
-  id                   String              @id @default(cuid())
+  id                   String               @id @default(cuid())
   name                 String
   cargo                Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
   cargoId              String?
@@ -31,6 +31,7 @@ model Funcionario {
   chavePix             String
   banco                String
   contato              String
+  status               Boolean              @default(true)
   salarios             SalarioMensal[]
   tabelaFuncionarios   TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
 }

@@ -24,7 +24,7 @@ export async function getEventosHandler(
 ) {
   try {
     const eventos = await getEventos();
-    return reply.status(200).send(eventos);
+    return reply.status(200).send({ eventos: eventos });
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });

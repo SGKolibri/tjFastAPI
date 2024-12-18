@@ -46,6 +46,7 @@ const funcionarioCore = {
     required_error: "CPF is required",
     invalid_type_error: "CPF must be a string",
   }),
+  status: z.boolean(),
   salarios: z.array(salarioSchema).optional(),
 };
 

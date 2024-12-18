@@ -9,6 +9,7 @@ import {
   getSalarioFromFuncionario,
   getTotalFuncionarios,
   updateFuncionario,
+  updateFuncionarioStatus,
 } from "./funcionario.services";
 import {
   AddSalarioToFuncionarioInput,
@@ -46,13 +47,28 @@ export async function getFuncionariosHandler(
   }
 }
 
+export async function updateFuncionarioStatusHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body: { status: boolean };
+  }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
+  try {
+    const updatedFuncionario = await updateFuncionarioStatus(id);
+    return reply.status(201).send(updatedFuncionario);
+  } catch (e) {
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
 export async function getFuncionarioByIdHandler(
   request: FastifyRequest<{ Params: GetFuncionarioByInput }>,
   reply: FastifyReply
 ) {
   const { id } = request.params;
 
-  console.log("ID:", id);
   try {
     const funcionario = await findFuncionarioById(id);
     if (!funcionario) {
@@ -60,7 +76,6 @@ export async function getFuncionarioByIdHandler(
     }
     return reply.status(201).send(funcionario);
   } catch (e) {
-    console.error("Error fetching funcionario: ", e);
     return reply.status(500).send({ message: "Internal Server Error" });
   }
 }
@@ -74,6 +89,9 @@ export async function updateFuncionarioHandler(
 ) {
   const { id } = request.params;
   const body = request.body;
+
+  console.log("ID: ", id);
+  console.log("BODY: ", body);
 
   try {
     const updatedFuncionario = await updateFuncionario(id, body);
@@ -133,7 +151,6 @@ export async function deleteSalarioFromFuncionarioHandler(
   if (!salario) {
     return reply.status(404).send({ message: "Salário não encontrado." });
   }
-  console.log("Salario:", salario);
 
   try {
     const deletedSalario = deleteSalarioFromFuncionario(

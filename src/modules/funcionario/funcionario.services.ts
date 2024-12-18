@@ -5,11 +5,14 @@ import {
 } from "./funcionario.schema";
 
 export async function createFuncionario(input: CreateFuncionarioInput) {
-  const { name, cargo, chavePix, banco, salarios, contato, cpf } = input;
+  const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
+    input;
 
-  if (!cargo) {
+  if (!cargo || !cargo.nome) {
     throw new Error("Cargo é obrigatório");
   }
+
+  console.log("CARGO: ", cargo.nome);
 
   // check if cargo exists in the database, if not, create it
   const cargoProccess = await prisma.cargo.findFirst({
@@ -26,8 +29,6 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     });
   }
 
-  console.log("FUNCIONARIO: ", input);
-
   const funcionario = await prisma.funcionario.create({
     data: {
       name,
@@ -41,13 +42,14 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       banco,
       cpf,
       contato,
+      status,
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
-              mes: salario.mes, // Substitua pelos campos reais
-              ano: salario.ano, // Substitua pelos campos reais
-              salarioBase: salario.salarioBase, // Substitua pelos campos reais
-              horasExtras: salario.horasExtras ?? 0, // Valores opcionais com fallback
+              mes: salario.mes,
+              ano: salario.ano,
+              salarioBase: salario.salarioBase,
+              horasExtras: salario.horasExtras ?? 0,
               descontos: salario.descontos ?? 0,
               bonus: salario.bonus ?? 0,
               faltas: salario.faltas ?? 0,
@@ -102,6 +104,7 @@ export async function findFuncionarios(search = "") {
       cpf: true,
       banco: true,
       contato: true,
+      status: true,
       salarios: {
         select: {
           id: true,
@@ -126,6 +129,25 @@ export async function findFuncionarios(search = "") {
   });
 }
 
+export async function updateFuncionarioStatus(id: string) {
+  const funcionario = await prisma.funcionario.findUnique({
+    where: { id },
+  });
+
+  if (!funcionario) {
+    throw new Error("Funcionário não encontrado");
+  }
+  console.log("FUNCIONARIO STATUS: ", funcionario.status);
+  const status = funcionario.status ? false : true;
+
+  return await prisma.funcionario.update({
+    where: { id },
+    data: {
+      status,
+    },
+  });
+}
+
 export async function findFuncionarioById(id: string) {
   return await prisma.funcionario.findUnique({
     where: { id },
@@ -137,6 +159,7 @@ export async function findFuncionarioById(id: string) {
       cpf: true,
       banco: true,
       contato: true,
+      status: true,
       salarios: {
         select: {
           id: true,
@@ -165,11 +188,14 @@ export async function updateFuncionario(
   id: string,
   input: CreateFuncionarioInput
 ) {
-  const { name, cargo, chavePix, banco, salarios, contato, cpf } = input;
+  const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
+    input;
 
-  if (!cargo) {
+  if (!cargo || !cargo.nome) {
     throw new Error("Cargo é obrigatório");
   }
+
+  console.log("FUNCIONARIO: ", input);
 
   try {
     const updatedFuncionario = await prisma.funcionario.update({
@@ -190,6 +216,7 @@ export async function updateFuncionario(
         banco,
         cpf,
         contato,
+        status,
         salarios: salarios
           ? {
               upsert: salarios.map((salario) => ({
@@ -201,10 +228,10 @@ export async function updateFuncionario(
                   },
                 },
                 update: {
-                  mes: salario.mes, // Substitua pelos campos reais
-                  ano: salario.ano, // Substitua pelos campos reais
-                  salarioBase: salario.salarioBase, // Substitua pelos campos reais
-                  horasExtras: salario.horasExtras ?? 0, // Valores opcionais com fallback
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: salario.horasExtras ?? 0,
                   descontos: salario.descontos ?? 0,
                   bonus: salario.bonus ?? 0,
                   faltas: salario.faltas ?? 0,
@@ -227,10 +254,10 @@ export async function updateFuncionario(
                     : undefined,
                 },
                 create: {
-                  mes: salario.mes, // Substitua pelos campos reais
-                  ano: salario.ano, // Substitua pelos campos reais
-                  salarioBase: salario.salarioBase, // Substitua pelos campos reais
-                  horasExtras: salario.horasExtras ?? 0, // Valores opcionais com fallback
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: salario.horasExtras ?? 0,
                   descontos: salario.descontos ?? 0,
                   bonus: salario.bonus ?? 0,
                   faltas: salario.faltas ?? 0,
