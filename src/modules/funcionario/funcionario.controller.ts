@@ -90,9 +90,6 @@ export async function updateFuncionarioHandler(
   const { id } = request.params;
   const body = request.body;
 
-  console.log("ID: ", id);
-  console.log("BODY: ", body);
-
   try {
     const updatedFuncionario = await updateFuncionario(id, body);
     return reply.status(201).send(updatedFuncionario);
@@ -109,23 +106,16 @@ export async function addSalarioToFuncionarioHandler(
   reply: FastifyReply
 ) {
   const { id } = request.params;
+  const body = request.body;
+
+  console.log("ID: ", id);
+  console.log("BODY: ", body);
 
   const funcionario = await findFuncionarioById(id);
   if (!funcionario) {
     return reply.status(404).send({ message: "Funcionário não encontrado." });
   }
 
-  const salarioExists = funcionario.salarios.find(
-    (salario) =>
-      salario.mes === request.body.salario.mes &&
-      salario.ano === request.body.salario.ano
-  );
-
-  if (salarioExists) {
-    return reply.status(400).send({ message: "Salário já cadastrado." });
-  }
-
-  const body = request.body;
   try {
     const funcionario = await addSalarioToFuncionario(id, body);
     return reply.status(201).send(funcionario);
