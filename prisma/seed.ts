@@ -30,7 +30,7 @@ const createAdmin = async () => {
 
   await prisma.admin.create({
     data: {
-      id: 0,
+      id: 1,
       email: "admin@tjinstalacoes.com",
       name: "Admin",
       password: hash,
