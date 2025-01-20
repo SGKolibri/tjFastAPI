@@ -32,7 +32,7 @@ const createAdmin = async () => {
     data: {
       id: 1,
       email: "admin@tjinstalacoes.com",
-      name: "Admin",
+      name: "TJAdmin",
       password: hash,
       salt: salt,
     },
