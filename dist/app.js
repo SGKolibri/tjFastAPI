@@ -91,49 +91,423 @@ var import_client = require("@prisma/client");
 var prisma = new import_client.PrismaClient();
 var prisma_default = prisma;
 
-// src/modules/user/user.services.ts
-function createUser(input) {
+// src/modules/funcionario/funcionario.services.ts
+function createFuncionario(input) {
   return __async(this, null, function* () {
-    const { email, name } = input;
-    const user = yield prisma_default.user.create({
-      data: {
-        email,
-        name
+    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    if (!cargo || !cargo.nome) {
+      throw new Error("Cargo \xE9 obrigat\xF3rio");
+    }
+    console.log("CARGO: ", cargo.nome);
+    const cargoProccess = yield prisma_default.cargo.findFirst({
+      where: {
+        nome: cargo.nome
       }
     });
-    return user;
+    if (!cargoProccess) {
+      yield prisma_default.cargo.create({
+        data: {
+          nome: cargo.nome
+        }
+      });
+    }
+    const funcionario = yield prisma_default.funcionario.create({
+      data: {
+        name,
+        cargo: {
+          connectOrCreate: {
+            where: { nome: cargo.nome },
+            create: { nome: cargo.nome }
+          }
+        },
+        chavePix,
+        banco,
+        cpf,
+        contato,
+        status,
+        salarios: salarios ? {
+          create: salarios.map((salario) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            return {
+              mes: salario.mes,
+              ano: salario.ano,
+              salarioBase: salario.salarioBase,
+              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
+              descontos: (_b = salario.descontos) != null ? _b : 0,
+              bonus: (_c = salario.bonus) != null ? _c : 0,
+              faltas: (_d = salario.faltas) != null ? _d : 0,
+              extras: (_e = salario.extras) != null ? _e : 0,
+              beneficios: salario.beneficios ? {
+                create: {
+                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
+                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
+                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
+                }
+              } : void 0
+            };
+          })
+        } : void 0
+      }
+    });
+    if (salarios) {
+      const salaries = salarios.map((salario) => ({
+        mes: salario.mes,
+        ano: salario.ano
+      }));
+      for (const salary of salaries) {
+        yield addFuncionarioToTabelaFuncionario(
+          funcionario.id,
+          salary.mes,
+          salary.ano
+        );
+      }
+    }
+    return funcionario;
   });
 }
-function findUsers() {
+function findFuncionarios(search = "") {
   return __async(this, null, function* () {
-    return prisma_default.user.findMany({
+    return yield prisma_default.funcionario.findMany({
+      where: {
+        name: {
+          contains: search,
+          mode: "insensitive"
+        }
+      },
       select: {
         id: true,
-        email: true,
-        name: true
+        name: true,
+        cargo: true,
+        chavePix: true,
+        cpf: true,
+        banco: true,
+        contato: true,
+        status: true,
+        salarios: {
+          select: {
+            id: true,
+            mes: true,
+            ano: true,
+            salarioBase: true,
+            horasExtras: true,
+            descontos: true,
+            bonus: true,
+            faltas: true,
+            extras: true,
+            beneficios: {
+              select: {
+                cafe: true,
+                almoco: true,
+                passagem: true
+              }
+            }
+          }
+        }
       }
     });
   });
 }
-function findUserById(id) {
+function updateFuncionarioStatus(id) {
   return __async(this, null, function* () {
-    return prisma_default.user.findUnique({
+    const funcionario = yield prisma_default.funcionario.findUnique({
+      where: { id }
+    });
+    if (!funcionario) {
+      throw new Error("Funcion\xE1rio n\xE3o encontrado");
+    }
+    console.log("FUNCIONARIO STATUS: ", funcionario.status);
+    const status = funcionario.status ? false : true;
+    return yield prisma_default.funcionario.update({
+      where: { id },
+      data: {
+        status
+      }
+    });
+  });
+}
+function findFuncionarioById(id) {
+  return __async(this, null, function* () {
+    return yield prisma_default.funcionario.findUnique({
       where: { id },
       select: {
         id: true,
-        email: true,
-        name: true
+        name: true,
+        cargo: true,
+        chavePix: true,
+        cpf: true,
+        banco: true,
+        contato: true,
+        status: true,
+        salarios: {
+          select: {
+            id: true,
+            mes: true,
+            ano: true,
+            salarioBase: true,
+            horasExtras: true,
+            descontos: true,
+            bonus: true,
+            faltas: true,
+            extras: true,
+            beneficios: {
+              select: {
+                cafe: true,
+                almoco: true,
+                passagem: true
+              }
+            }
+          }
+        }
       }
     });
   });
 }
+function updateFuncionario(id, input) {
+  return __async(this, null, function* () {
+    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    if (!cargo || !cargo.nome) {
+      throw new Error("Cargo \xE9 obrigat\xF3rio");
+    }
+    console.log("FUNCIONARIO: ", input);
+    try {
+      const updatedFuncionario = yield prisma_default.funcionario.update({
+        where: { id },
+        data: {
+          name,
+          cargo: {
+            upsert: {
+              create: {
+                nome: cargo.nome
+              },
+              update: {
+                nome: cargo.nome
+              }
+            }
+          },
+          chavePix,
+          banco,
+          cpf,
+          contato,
+          status,
+          salarios: salarios ? {
+            upsert: salarios.map((salario) => {
+              var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
+              return {
+                where: {
+                  mes_ano_funcionarioId: {
+                    mes: salario.mes,
+                    ano: salario.ano,
+                    funcionarioId: id
+                  }
+                },
+                update: {
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
+                  descontos: (_b = salario.descontos) != null ? _b : 0,
+                  bonus: (_c = salario.bonus) != null ? _c : 0,
+                  faltas: (_d = salario.faltas) != null ? _d : 0,
+                  extras: (_e = salario.extras) != null ? _e : 0,
+                  beneficios: salario.beneficios ? {
+                    upsert: {
+                      update: {
+                        cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
+                        almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
+                        passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
+                      },
+                      create: {
+                        cafe: (_i = salario.beneficios.cafe) != null ? _i : 0,
+                        almoco: (_j = salario.beneficios.almoco) != null ? _j : 0,
+                        passagem: (_k = salario.beneficios.passagem) != null ? _k : 0
+                      }
+                    }
+                  } : void 0
+                },
+                create: {
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: (_l = salario.horasExtras) != null ? _l : 0,
+                  descontos: (_m = salario.descontos) != null ? _m : 0,
+                  bonus: (_n = salario.bonus) != null ? _n : 0,
+                  faltas: (_o = salario.faltas) != null ? _o : 0,
+                  extras: (_p = salario.extras) != null ? _p : 0,
+                  beneficios: salario.beneficios ? {
+                    create: {
+                      cafe: (_q = salario.beneficios.cafe) != null ? _q : 0,
+                      almoco: (_r = salario.beneficios.almoco) != null ? _r : 0,
+                      passagem: (_s = salario.beneficios.passagem) != null ? _s : 0
+                    }
+                  } : void 0
+                }
+              };
+            })
+          } : void 0
+        }
+      });
+      if (salarios) {
+        const salaries = salarios.map((salario) => ({
+          mes: salario.mes,
+          ano: salario.ano
+        }));
+        for (const salary of salaries) {
+          yield addUpdatedFuncionarioToTabelaFuncionario(
+            updatedFuncionario.id,
+            salary.mes,
+            salary.ano
+          );
+        }
+      }
+      return updatedFuncionario;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+function addSalarioToFuncionario(funcionarioId, input) {
+  return __async(this, null, function* () {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    const { salario } = input;
+    try {
+      const funcionario = yield prisma_default.funcionario.update({
+        where: { id: funcionarioId },
+        data: {
+          salarios: {
+            create: {
+              mes: salario.mes,
+              ano: salario.ano,
+              salarioBase: salario.salarioBase,
+              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
+              descontos: (_b = salario.descontos) != null ? _b : 0,
+              faltas: (_c = salario.faltas) != null ? _c : 0,
+              extras: (_d = salario.extras) != null ? _d : 0,
+              bonus: (_e = salario.bonus) != null ? _e : 0,
+              beneficios: salario.beneficios ? {
+                create: {
+                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
+                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
+                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
+                }
+              } : void 0
+            }
+          }
+        },
+        include: {
+          salarios: true
+        }
+      });
+      return funcionario;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+function deleteSalarioFromFuncionario(funcionarioId, salarioId) {
+  return __async(this, null, function* () {
+    return yield prisma_default.salarioMensal.delete({
+      where: {
+        id: salarioId,
+        funcionarioId
+      }
+    });
+  });
+}
+function getSalarioFromFuncionario(funcionarioId, salarioId) {
+  return __async(this, null, function* () {
+    return yield prisma_default.salarioMensal.findUnique({
+      where: {
+        id: salarioId,
+        funcionarioId
+      }
+    });
+  });
+}
+function getTotalFuncionarios() {
+  return __async(this, null, function* () {
+    return yield prisma_default.funcionario.count();
+  });
+}
+function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
+  return __async(this, null, function* () {
+    console.log("FUNCIONARIO ID: ", funcionarioId);
+    try {
+      const funcionario = yield prisma_default.funcionario.findUnique({
+        where: { id: funcionarioId }
+      });
+      if (!funcionario) {
+        throw new Error("Funcion\xE1rio n\xE3o encontrado");
+      }
+      const tabelaFuncionario = yield prisma_default.tabelaFuncionarios.findFirst({
+        where: {
+          mes,
+          ano
+        }
+      });
+      if (!tabelaFuncionario) {
+        throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
+      }
+      yield prisma_default.tabelaFuncionarios.update({
+        where: {
+          id: tabelaFuncionario.id
+        },
+        data: {
+          funcionarios: {
+            connect: {
+              id: funcionario.id
+            }
+          }
+        }
+      });
+      return tabelaFuncionario;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
+  return __async(this, null, function* () {
+    try {
+      const funcionario = yield prisma_default.funcionario.findUnique({
+        where: { id: funcionarioId }
+      });
+      if (!funcionario) {
+        throw new Error("Funcion\xE1rio n\xE3o encontrado");
+      }
+      const tabelaFuncionario = yield prisma_default.tabelaFuncionarios.findFirst({
+        where: {
+          mes,
+          ano
+        }
+      });
+      if (!tabelaFuncionario) {
+        throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
+      }
+      yield prisma_default.tabelaFuncionarios.update({
+        where: {
+          id: tabelaFuncionario.id
+        },
+        data: {
+          funcionarios: {
+            connect: {
+              id: funcionario.id
+            }
+          }
+        }
+      });
+      return tabelaFuncionario;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
 
-// src/modules/user/user.controller.ts
-function registerUserHandler(request, reply) {
+// src/modules/funcionario/funcionario.controller.ts
+function registerFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
     const body = request.body;
     try {
-      const user = yield createUser(body);
+      const user = yield createFuncionario(body);
       return reply.status(201).send(user);
     } catch (e) {
       console.error(e);
@@ -141,296 +515,261 @@ function registerUserHandler(request, reply) {
     }
   });
 }
-function getUsersHandler(request, reply) {
+function getFuncionariosHandler(request, reply) {
   return __async(this, null, function* () {
-    const users = yield findUsers();
-    return reply.send(users);
-  });
-}
-function getUserByIdHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
     try {
-      const user = yield findUserById(Number(id));
-      if (!user) return reply.status(404).send({ message: "User not found" });
-      return reply.status(200).send(user);
+      const { search } = request.query;
+      const funcionarios = yield findFuncionarios(search);
+      return reply.status(201).send(funcionarios);
     } catch (e) {
-      console.error(e);
-      return;
+      return reply.status(500).send({ message: "Internal Server Error" });
     }
   });
 }
-
-// src/modules/user/user.schema.ts
-var import_zod = require("zod");
-var import_fastify_zod = require("fastify-zod");
-var userCore = {
-  email: import_zod.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  name: import_zod.z.string()
-};
-var createUserSchema = import_zod.z.object(__spreadValues({}, userCore));
-var createUserResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.number()
-}, userCore));
-var userResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.number()
-}, userCore));
-var { schemas: userSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
-  {
-    createUserSchema,
-    createUserResponseSchema
-    // loginUserSchema,
-    // loginUserResponseSchema,
-  },
-  { $id: "UserSchema" }
-);
-
-// src/modules/user/user.route.ts
-function userRoutes(server2) {
+function updateFuncionarioStatusHandler(request, reply) {
   return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: $ref("createUserSchema"),
-          response: {
-            201: $ref("createUserResponseSchema")
-          }
-        }
-      },
-      registerUserHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getUsersHandler
-    );
-    server2.get(
-      "/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getUserByIdHandler
-    );
+    const { id } = request.params;
+    try {
+      const updatedFuncionario = yield updateFuncionarioStatus(id);
+      return reply.status(201).send(updatedFuncionario);
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
   });
 }
-var user_route_default = userRoutes;
-
-// src/modules/product/product.schema.ts
-var import_zod2 = require("zod");
-var import_fastify_zod2 = require("fastify-zod");
-var productInput = {
-  title: import_zod2.z.string(),
-  content: import_zod2.z.string(),
-  price: import_zod2.z.number()
-};
-var productGenerated = {
-  id: import_zod2.z.number(),
-  createdAt: import_zod2.z.string(),
-  updatedAt: import_zod2.z.string()
-};
-var createProductSchema = import_zod2.z.object({
-  title: import_zod2.z.string(),
-  content: import_zod2.z.string(),
-  price: import_zod2.z.number()
-});
-var productResponseSchema = import_zod2.z.object(__spreadProps(__spreadValues(__spreadValues({}, productGenerated), productInput), {
-  owner: import_zod2.z.object({
-    id: import_zod2.z.number(),
-    email: import_zod2.z.string(),
-    name: import_zod2.z.string()
-  })
-}));
-var productsResponseSchema = import_zod2.z.array(productResponseSchema);
-var { schemas: productSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
-  {
-    createProductSchema,
-    productResponseSchema,
-    productsResponseSchema
-  },
-  { $id: "ProductSchema" }
-);
-
-// src/modules/product/product.services.ts
-function createProduct(data) {
+function getFuncionarioByIdHandler(request, reply) {
   return __async(this, null, function* () {
-    return prisma_default.product.create({
-      data,
-      // include the owner information in the response
-      include: {
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true
-          }
-        }
+    const { id } = request.params;
+    try {
+      const funcionario = yield findFuncionarioById(id);
+      if (!funcionario) {
+        return reply.status(404).send({ message: "Funcionario n\xE3o encontrado" });
       }
-    });
+      return reply.status(201).send(funcionario);
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
   });
 }
-function getProducts() {
+function updateFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
-    return prisma_default.product.findMany({
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        price: true,
-        createdAt: true,
-        updatedAt: true,
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true
-          }
-        }
-      }
-    });
-  });
-}
-function getProductById(id) {
-  return __async(this, null, function* () {
-    return prisma_default.product.findUnique({
-      where: {
-        id
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        price: true,
-        createdAt: true,
-        updatedAt: true,
-        owner: {
-          select: {
-            id: true,
-            email: true,
-            name: true
-          }
-        }
-      }
-    });
-  });
-}
-function deleteProductById(id) {
-  return __async(this, null, function* () {
-    return prisma_default.product.delete({
-      where: {
-        id
-      }
-    });
-  });
-}
-
-// src/modules/product/product.controller.ts
-function createProductHandler(request, reply) {
-  return __async(this, null, function* () {
+    const { id } = request.params;
     const body = request.body;
     try {
-      const product = yield createProduct(__spreadProps(__spreadValues({}, body), { ownerId: request.user.id }));
-      return reply.status(201).send(product);
+      const updatedFuncionario = yield updateFuncionario(id, body);
+      return reply.status(201).send(updatedFuncionario);
     } catch (e) {
-      console.log(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
+      return reply.status(500).send({ message: "Could not update funcionario." });
     }
   });
 }
-function getProductsHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const products = yield getProducts();
-      return reply.send(products);
-    } catch (e) {
-      console.log(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getProductByIdHandler(request, reply) {
+function addSalarioToFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
     const { id } = request.params;
+    const body = request.body;
+    console.log("ID: ", id);
+    console.log("BODY: ", body);
+    const funcionario = yield findFuncionarioById(id);
+    if (!funcionario) {
+      return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
+    }
     try {
-      const product = yield getProductById(Number(id));
-      return reply.send(product);
+      const funcionario2 = yield addSalarioToFuncionario(id, body);
+      return reply.status(201).send(funcionario2);
     } catch (e) {
-      console.log(e);
       return reply.status(500).send({ message: "Internal Server Error" });
     }
   });
 }
-function deleteProductByIdHandler(request, reply) {
+function deleteSalarioFromFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
-    const { id } = request.params;
-    const product = yield getProductById(Number(id));
-    if (!product) {
-      return reply.status(404).send({ message: "Product not found" });
+    const { funcionarioId, salarioId } = request.params;
+    const funcionario = yield findFuncionarioById(funcionarioId);
+    if (!funcionario) {
+      return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
+    }
+    const salario = yield getSalarioFromFuncionario(funcionarioId, salarioId);
+    if (!salario) {
+      return reply.status(404).send({ message: "Sal\xE1rio n\xE3o encontrado." });
     }
     try {
-      yield deleteProductById(Number(id));
-      return reply.status(200).send({
-        message: "Product deleted successfully",
-        deletedProduct: product
-      });
+      const deletedSalario = deleteSalarioFromFuncionario(
+        funcionarioId,
+        salarioId
+      );
+      return reply.status(201).send({ message: "Sal\xE1rio deletado." });
     } catch (e) {
-      console.log(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function getTotalFuncionariosHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const totalFuncionarios = yield getTotalFuncionarios();
+      return reply.status(201).send({ totalFuncionarios });
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function registerFuncionariosFromJSON(request, reply) {
+  return __async(this, null, function* () {
+    const funcionarios = request.body;
+    try {
+      const promises = funcionarios.map(
+        (funcionario) => createFuncionario(funcionario)
+      );
+      const funcionariosCreated = yield Promise.all(promises);
+      return reply.status(201).send(funcionariosCreated);
+    } catch (e) {
+      console.error(e);
       return reply.status(500).send({ message: "Internal Server Error" });
     }
   });
 }
 
-// src/modules/product/product.route.ts
-function productRoutes(server2) {
+// src/modules/funcionario/funcionario.schema.ts
+var import_zod = require("zod");
+var import_fastify_zod = require("fastify-zod");
+var beneficiosSchema = import_zod.z.object({
+  cafe: import_zod.z.number().optional(),
+  almoco: import_zod.z.number().optional(),
+  passagem: import_zod.z.number().optional()
+});
+var salarioSchema = import_zod.z.object({
+  mes: import_zod.z.number().min(1).max(12),
+  // Validação para mês válido
+  ano: import_zod.z.number().int().min(2e3).max(2100),
+  // Validação para ano válido
+  salarioBase: import_zod.z.number(),
+  // Salário base
+  horasExtras: import_zod.z.number().optional(),
+  descontos: import_zod.z.number().optional(),
+  faltas: import_zod.z.number().optional(),
+  extras: import_zod.z.number().optional(),
+  bonus: import_zod.z.number().optional(),
+  beneficios: beneficiosSchema.optional()
+});
+var cargoSchema = import_zod.z.object({
+  nome: import_zod.z.string()
+});
+var funcionarioCore = {
+  name: import_zod.z.string({
+    required_error: "Name is required",
+    invalid_type_error: "Name must be a string"
+  }),
+  cargo: cargoSchema.optional(),
+  chavePix: import_zod.z.string({
+    required_error: "ChavePix is required",
+    invalid_type_error: "ChavePix must be a string"
+  }),
+  banco: import_zod.z.string({
+    required_error: "Banco is required",
+    invalid_type_error: "Banco must be a string"
+  }),
+  contato: import_zod.z.string({
+    required_error: "Contato is required",
+    invalid_type_error: "Contato must be a string"
+  }),
+  cpf: import_zod.z.string({
+    required_error: "CPF is required",
+    invalid_type_error: "CPF must be a string"
+  }),
+  status: import_zod.z.boolean(),
+  salarios: import_zod.z.array(salarioSchema).optional()
+};
+var addSalarioToFuncionarioSchema = import_zod.z.object({
+  salario: salarioSchema
+});
+var createFuncionarioSchema = import_zod.z.object(__spreadValues({}, funcionarioCore));
+var createFuncionarioResponseSchema = import_zod.z.object(__spreadValues({
+  id: import_zod.z.string()
+}, funcionarioCore));
+var funcionarioResponseSchema = import_zod.z.object(__spreadValues({
+  id: import_zod.z.string()
+}, funcionarioCore));
+var { schemas: funcionarioSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
+  {
+    createFuncionarioSchema,
+    createFuncionarioResponseSchema
+  },
+  { $id: "funcionarioSchema" }
+);
+
+// src/modules/funcionario/funcionario.route.ts
+function funcionarioRoutes(server2) {
   return __async(this, null, function* () {
     server2.post(
       "/",
       {
         preHandler: [server2.authenticate],
         schema: {
-          body: $ref2("createProductSchema"),
+          body: $ref("createFuncionarioSchema"),
           response: {
-            201: $ref2("productResponseSchema")
+            201: $ref("createFuncionarioResponseSchema")
           }
         }
       },
-      createProductHandler
+      registerFuncionarioHandler
     );
     server2.get(
       "/",
       {
-        preHandler: [server2.authenticate],
-        schema: {
-          response: {
-            200: $ref2("productsResponseSchema")
-          }
-        }
+        preHandler: [server2.authenticate]
       },
-      getProductsHandler
+      getFuncionariosHandler
     );
     server2.get(
       "/:id",
       {
         preHandler: [server2.authenticate]
       },
-      getProductByIdHandler
+      getFuncionarioByIdHandler
     );
-    server2.delete(
+    server2.get(
+      "/total",
+      {
+        preHandler: [server2.authenticate]
+      },
+      getTotalFuncionariosHandler
+    );
+    server2.patch(
       "/:id",
       {
         preHandler: [server2.authenticate]
       },
-      deleteProductByIdHandler
+      updateFuncionarioHandler
+    );
+    server2.patch(
+      "/status/:id",
+      {
+        preHandler: [server2.authenticate]
+      },
+      updateFuncionarioStatusHandler
+    );
+    server2.post(
+      "/:id/salario",
+      {
+        preHandler: [server2.authenticate]
+      },
+      addSalarioToFuncionarioHandler
+    );
+    server2.post(
+      "/json",
+      {
+        preHandler: [server2.authenticate]
+      },
+      registerFuncionariosFromJSON
+    );
+    server2.delete(
+      "/:funcionarioId/salario/:salarioId",
+      { preHandler: [server2.authenticate] },
+      deleteSalarioFromFuncionarioHandler
     );
   });
 }
-var product_route_default = productRoutes;
+var funcionario_route_default = funcionarioRoutes;
 
 // src/utils/hash.ts
 var import_crypto = __toESM(require("crypto"));
@@ -502,10 +841,18 @@ function loginAdminHandler(request, reply) {
       salt: admin.salt,
       hash: admin.password
     });
+    console.log("Admin ID:", typeof admin.id, admin.id);
     if (correctPassword) {
-      const _a = admin, { password, salt } = _a, rest = __objRest(_a, ["password", "salt"]);
-      const accessToken = server.jwt.sign(rest, { expiresIn: "1h" });
-      return reply.send({ accessToken, admin: rest });
+      const payload = {
+        id: admin.id,
+        // Explicitly include only the fields you need
+        email: admin.email
+      };
+      const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
+      return reply.send({
+        accessToken,
+        admin: { id: admin.id, email: admin.email, name: admin.name }
+      });
     }
     return reply.code(401).send({ message: "Invalid email or password" });
   });
@@ -527,60 +874,16 @@ function isAdminAuthenticatedHandler(request, reply) {
   });
 }
 
-// src/modules/admin/admin.schemas.ts
-var import_zod3 = require("zod");
-var import_fastify_zod3 = require("fastify-zod");
-var creteAdminSchema = import_zod3.z.object({
-  email: import_zod3.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod3.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be at least 6 characters"
-  }).min(6),
-  name: import_zod3.z.string({
-    required_error: "Name is required",
-    invalid_type_error: "Name must be a string"
-  })
-});
-var createAdminResponseSchema = import_zod3.z.object({
-  id: import_zod3.z.number(),
-  email: import_zod3.z.string(),
-  name: import_zod3.z.string()
-});
-var loginAdminSchema = import_zod3.z.object({
-  email: import_zod3.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod3.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be a string"
-  })
-});
-var loginAdminResponseSchema = import_zod3.z.object({
-  accessToken: import_zod3.z.string(),
-  admin: import_zod3.z.object({
-    id: import_zod3.z.number(),
-    email: import_zod3.z.string(),
-    name: import_zod3.z.string()
-  })
-});
-var { schemas: adminSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
-  {
-    creteAdminSchema,
-    createAdminResponseSchema,
-    loginAdminSchema,
-    loginAdminResponseSchema
-  },
-  { $id: "AdminSchema" }
-);
-
 // src/modules/admin/admin.route.ts
 function adminRoutes(server2) {
   return __async(this, null, function* () {
-    server2.post("/", registerAdminHandler);
+    server2.post(
+      "/",
+      {
+        preHandler: [server2.authenticate]
+      },
+      registerAdminHandler
+    );
     server2.get(
       "/",
       {
@@ -588,18 +891,7 @@ function adminRoutes(server2) {
       },
       getAdminsHandler
     );
-    server2.post(
-      "/login",
-      {
-        schema: {
-          body: $ref3("loginAdminSchema"),
-          response: {
-            200: $ref3("loginAdminResponseSchema")
-          }
-        }
-      },
-      loginAdminHandler
-    );
+    server2.post("/login", loginAdminHandler);
     server2.get(
       "/is-authenticated",
       {
@@ -609,6 +901,453 @@ function adminRoutes(server2) {
     );
   });
 }
+
+// src/modules/cargo/cargo.services.ts
+function createCargo(input) {
+  return __async(this, null, function* () {
+    const { nome } = input;
+    const cargoExists = yield prisma_default.cargo.findFirst({
+      where: {
+        nome
+      }
+    });
+    if (cargoExists) {
+      throw new Error("Cargo j\xE1 existe no banco de dados");
+    }
+    const cargo = yield prisma_default.cargo.create({
+      data: {
+        nome
+      }
+    });
+    return cargo;
+  });
+}
+function createCargos(input) {
+  return __async(this, null, function* () {
+    const cargosExists = yield prisma_default.cargo.findMany({
+      where: {
+        nome: {
+          in: input.map((cargo) => cargo.nome)
+        }
+      }
+    });
+    const cargosToCreate = input.filter(
+      (cargo) => !cargosExists.some((c) => c.nome === cargo.nome)
+    );
+    const cargos = yield prisma_default.cargo.createMany({
+      data: cargosToCreate
+    });
+    return cargos;
+  });
+}
+function getCargos() {
+  return __async(this, null, function* () {
+    return yield prisma_default.cargo.findMany();
+  });
+}
+
+// src/modules/cargo/cargo.controller.ts
+function createCargoHandler(request, reply) {
+  return __async(this, null, function* () {
+    const body = request.body;
+    try {
+      const cargo = yield createCargo(body);
+      return reply.status(201).send(cargo);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function createCargosFromJSONHandler(request, reply) {
+  return __async(this, null, function* () {
+    const body = request.body;
+    try {
+      const cargos = yield createCargos(body);
+      return reply.status(201).send(cargos);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function getCargosHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const cargos = yield getCargos();
+      return reply.status(201).send(cargos);
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+
+// src/modules/cargo/cargo.route.ts
+function cargoRoutes(server2) {
+  return __async(this, null, function* () {
+    server2.post("/", { preHandler: [server2.authenticate] }, createCargoHandler);
+    server2.post(
+      "/json",
+      { preHandler: [server2.authenticate] },
+      createCargosFromJSONHandler
+    );
+    server2.get("/", { preHandler: [server2.authenticate] }, getCargosHandler);
+  });
+}
+var cargo_route_default = cargoRoutes;
+
+// src/modules/tabelaFuncionarios/tabelaFuncionarios.services.ts
+function createTabelaFuncionario(input) {
+  return __async(this, null, function* () {
+    console.log("ANO/MES", input.anomes);
+    try {
+      let existingTabela = yield prisma_default.tabelaFuncionarios.findFirst({
+        where: {
+          mes: input.mes,
+          ano: input.ano
+        },
+        include: {
+          funcionarios: {
+            include: {
+              cargo: true,
+              salarios: {
+                include: {
+                  beneficios: true
+                }
+              }
+            }
+          }
+        }
+      });
+      const funcionarios = yield prisma_default.funcionario.findMany({
+        where: {
+          NOT: {
+            tabelaFuncionarios: {
+              some: {
+                mes: input.mes,
+                ano: input.ano
+              }
+            }
+          },
+          salarios: {
+            some: {
+              mes: input.mes,
+              ano: input.ano
+            }
+          }
+        }
+      });
+      if (existingTabela) {
+        const funcionariosIds = existingTabela.funcionarios.map(
+          (funcionario) => funcionario.id
+        );
+        const funcionariosToAdd = funcionarios.filter(
+          (funcionario) => !funcionariosIds.includes(funcionario.id)
+        );
+        if (funcionariosToAdd.length > 0) {
+          yield prisma_default.tabelaFuncionarios.update({
+            where: {
+              id: existingTabela.id
+            },
+            data: {
+              funcionarios: {
+                connect: funcionariosToAdd.map((funcionario) => ({
+                  id: funcionario.id
+                }))
+              }
+            }
+          });
+        }
+        return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
+      }
+      yield prisma_default.tabelaFuncionarios.create({
+        data: {
+          ano: input.ano,
+          mes: input.mes,
+          anomes: input.anomes,
+          funcionarios: {
+            connect: funcionarios.map((funcionario) => ({
+              id: funcionario.id
+            }))
+          }
+        }
+      });
+      return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+function getTabelaFuncionarioByMonthAndYear(month, year) {
+  return __async(this, null, function* () {
+    try {
+      const tabela = yield prisma_default.tabelaFuncionarios.findFirst({
+        where: {
+          mes: month,
+          ano: year
+        },
+        include: {
+          funcionarios: {
+            include: {
+              cargo: true,
+              salarios: {
+                include: {
+                  beneficios: true
+                }
+              }
+            }
+          }
+        }
+      });
+      return tabela;
+    } catch (e) {
+      console.log(e);
+    }
+  });
+}
+function getAllTabelasFuncionario() {
+  return __async(this, null, function* () {
+    return prisma_default.tabelaFuncionarios.findMany({
+      include: {
+        funcionarios: true
+      }
+    });
+  });
+}
+
+// src/modules/tabelaFuncionarios/tabelaFuncionarios.controller.ts
+function createTabelaFuncionarioHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { mes, ano } = request.params;
+    const input = {
+      mes: parseInt(mes, 10),
+      ano: parseInt(ano, 10),
+      anomes: `${ano}-${mes}`
+    };
+    try {
+      const tabelaFuncionario = yield createTabelaFuncionario(input);
+      return reply.status(201).send(tabelaFuncionario);
+    } catch (error) {
+      return reply.status(500).send({ message: "Internal Server Error", error });
+    }
+  });
+}
+function getAllTabelasFuncionarioHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const tabelasFuncionario = yield getAllTabelasFuncionario();
+      return reply.send(tabelasFuncionario);
+    } catch (error) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+
+// src/modules/tabelaFuncionarios/tabelaFuncionarios.route.ts
+function tabelaFuncionarioRoutes(server2) {
+  return __async(this, null, function* () {
+    server2.get(
+      "/:mes/:ano",
+      {
+        preHandler: [server2.authenticate]
+      },
+      createTabelaFuncionarioHandler
+    );
+    server2.get(
+      "/all",
+      {
+        preHandler: [server2.authenticate]
+      },
+      getAllTabelasFuncionarioHandler
+    );
+  });
+}
+var tabelaFuncionarios_route_default = tabelaFuncionarioRoutes;
+
+// src/modules/evento/evento.services.ts
+function createEvento(input) {
+  return __async(this, null, function* () {
+    const { titulo, descricao, dataInicio, dataFim, allDay } = input;
+    return prisma_default.evento.create({
+      data: {
+        titulo,
+        descricao,
+        dataInicio,
+        dataFim,
+        allDay
+      }
+    });
+  });
+}
+function getEventos() {
+  return __async(this, null, function* () {
+    return prisma_default.evento.findMany({
+      orderBy: {
+        dataInicio: "asc"
+      }
+    });
+  });
+}
+
+// src/modules/evento/evento.controller.ts
+function createEventoHandler(request, reply) {
+  return __async(this, null, function* () {
+    const body = request.body;
+    try {
+      const evento = yield createEvento(body);
+      return reply.status(201).send(evento);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function getEventosHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const eventos = yield getEventos();
+      return reply.status(200).send({ eventos });
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+
+// src/modules/evento/evento.route.ts
+function eventoRoutes(server2) {
+  return __async(this, null, function* () {
+    server2.post(
+      "/",
+      {
+        preHandler: [server2.authenticate]
+      },
+      createEventoHandler
+    );
+    server2.get(
+      "/",
+      {
+        preHandler: [server2.authenticate]
+      },
+      getEventosHandler
+    );
+  });
+}
+
+// src/modules/admin/admin.schemas.ts
+var import_zod2 = require("zod");
+var import_fastify_zod2 = require("fastify-zod");
+var creteAdminSchema = import_zod2.z.object({
+  email: import_zod2.z.string({
+    required_error: "Email is required",
+    invalid_type_error: "Email must be a string"
+  }).email(),
+  password: import_zod2.z.string({
+    required_error: "Password is required",
+    invalid_type_error: "Password must be at least 6 characters"
+  }).min(6),
+  name: import_zod2.z.string({
+    required_error: "Name is required",
+    invalid_type_error: "Name must be a string"
+  })
+});
+var createAdminResponseSchema = import_zod2.z.object({
+  id: import_zod2.z.string(),
+  email: import_zod2.z.string(),
+  name: import_zod2.z.string()
+});
+var loginAdminSchema = import_zod2.z.object({
+  email: import_zod2.z.string({
+    required_error: "Email is required",
+    invalid_type_error: "Email must be a string"
+  }).email(),
+  password: import_zod2.z.string({
+    required_error: "Password is required",
+    invalid_type_error: "Password must be a string"
+  })
+});
+var loginAdminResponseSchema = import_zod2.z.object({
+  accessToken: import_zod2.z.string(),
+  admin: import_zod2.z.object({
+    email: import_zod2.z.string(),
+    name: import_zod2.z.string()
+  })
+});
+var { schemas: adminSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
+  {
+    creteAdminSchema,
+    createAdminResponseSchema,
+    loginAdminSchema,
+    loginAdminResponseSchema
+  },
+  { $id: "AdminSchema" }
+);
+
+// src/modules/cargo/cargo.schema.ts
+var import_zod3 = require("zod");
+var import_fastify_zod3 = require("fastify-zod");
+var cargoSchema2 = import_zod3.z.object({
+  nome: import_zod3.z.string()
+});
+var cargoResponseSchema = import_zod3.z.object({
+  id: import_zod3.z.string(),
+  nome: import_zod3.z.string()
+});
+var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
+  {
+    cargoSchema: cargoSchema2,
+    cargoResponseSchema
+  },
+  { $id: "cargoSchema" }
+);
+
+// src/modules/tabelaFuncionarios/tabelaFuncionarios.schema.ts
+var import_zod4 = require("zod");
+var import_fastify_zod4 = require("fastify-zod");
+var tabelaFuncionarioSchema = import_zod4.z.object({
+  funcionarios: import_zod4.z.array(createFuncionarioSchema),
+  mes: import_zod4.z.number(),
+  ano: import_zod4.z.number(),
+  anomes: import_zod4.z.string()
+});
+var createTabelaFuncionarioSchema = import_zod4.z.object({
+  mes: import_zod4.z.number(),
+  ano: import_zod4.z.number(),
+  anomes: import_zod4.z.string()
+});
+var { schemas: tabelaFuncionarioSchemas, $ref: $ref4 } = (0, import_fastify_zod4.buildJsonSchemas)(
+  {
+    tabelaFuncionarioSchema,
+    createTabelaFuncionarioSchema
+  },
+  { $id: "tabelaFuncionariosSchema" }
+);
+
+// src/modules/evento/evento.schema.ts
+var import_zod5 = require("zod");
+var import_fastify_zod5 = require("fastify-zod");
+var CreateEventoSchema = import_zod5.z.object({
+  titulo: import_zod5.z.string(),
+  descricao: import_zod5.z.string(),
+  dataInicio: import_zod5.z.string(),
+  dataFim: import_zod5.z.string(),
+  allDay: import_zod5.z.boolean()
+});
+var EventoResponseSchema = import_zod5.z.object({
+  id: import_zod5.z.string(),
+  titulo: import_zod5.z.string(),
+  descricao: import_zod5.z.string(),
+  dataInicio: import_zod5.z.string(),
+  dataFim: import_zod5.z.string(),
+  allDay: import_zod5.z.boolean()
+});
+var { schemas: eventoSchemas, $ref: $ref5 } = (0, import_fastify_zod5.buildJsonSchemas)(
+  {
+    CreateEventoSchema,
+    EventoResponseSchema
+  },
+  { $id: "eventoSchema" }
+);
 
 // src/app.ts
 var server = (0, import_fastify.default)();
@@ -638,16 +1377,24 @@ server.get("/", () => __async(void 0, null, function* () {
 }));
 function main() {
   return __async(this, null, function* () {
-    for (const schema of [...userSchemas, ...productSchemas, ...adminSchemas]) {
+    for (const schema of [
+      ...funcionarioSchemas,
+      ...adminSchemas,
+      ...cargoSchemas,
+      ...tabelaFuncionarioSchemas,
+      ...eventoSchemas
+    ]) {
       server.addSchema(schema);
     }
     yield server.register(require("@fastify/swagger"));
     yield server.register(require("@fastify/swagger-ui"), {
       routePrefix: "/docs"
     });
-    server.register(user_route_default, { prefix: "api/users" });
-    server.register(product_route_default, { prefix: "api/products" });
-    server.register(adminRoutes, { prefix: "api/admin" });
+    server.register(funcionario_route_default, { prefix: "/api/func" });
+    server.register(adminRoutes, { prefix: "/api/admin" });
+    server.register(cargo_route_default, { prefix: "/api/cargo" });
+    server.register(tabelaFuncionarios_route_default, { prefix: "/api/tabela" });
+    server.register(eventoRoutes, { prefix: "/api/evento" });
     try {
       yield server.listen({
         port: process.env.PORT ? Number(process.env.PORT) : 4567,

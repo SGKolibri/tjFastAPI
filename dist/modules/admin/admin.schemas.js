@@ -41,7 +41,7 @@ var creteAdminSchema = import_zod.z.object({
   })
 });
 var createAdminResponseSchema = import_zod.z.object({
-  id: import_zod.z.number(),
+  id: import_zod.z.string(),
   email: import_zod.z.string(),
   name: import_zod.z.string()
 });
@@ -58,7 +58,6 @@ var loginAdminSchema = import_zod.z.object({
 var loginAdminResponseSchema = import_zod.z.object({
   accessToken: import_zod.z.string(),
   admin: import_zod.z.object({
-    id: import_zod.z.number(),
     email: import_zod.z.string(),
     name: import_zod.z.string()
   })

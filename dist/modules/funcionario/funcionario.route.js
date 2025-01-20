@@ -1,12 +1,8 @@
 "use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -21,19 +17,6 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __objRest = (source, exclude) => {
-  var target = {};
-  for (var prop in source)
-    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-      target[prop] = source[prop];
-  if (source != null && __getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(source)) {
-      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-        target[prop] = source[prop];
-    }
-  return target;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -46,14 +29,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -76,17 +51,12 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
-// src/modules/admin/admin.route.ts
-var admin_route_exports = {};
-__export(admin_route_exports, {
-  default: () => adminRoutes
+// src/modules/funcionario/funcionario.route.ts
+var funcionario_route_exports = {};
+__export(funcionario_route_exports, {
+  default: () => funcionario_route_default
 });
-module.exports = __toCommonJS(admin_route_exports);
-
-// src/app.ts
-var import_fastify = __toESM(require("fastify"));
-var import_jwt = __toESM(require("@fastify/jwt"));
-var import_cors = __toESM(require("@fastify/cors"));
+module.exports = __toCommonJS(funcionario_route_exports);
 
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
@@ -700,12 +670,12 @@ var { schemas: funcionarioSchemas, $ref } = (0, import_fastify_zod.buildJsonSche
 );
 
 // src/modules/funcionario/funcionario.route.ts
-function funcionarioRoutes(server2) {
+function funcionarioRoutes(server) {
   return __async(this, null, function* () {
-    server2.post(
+    server.post(
       "/",
       {
-        preHandler: [server2.authenticate],
+        preHandler: [server.authenticate],
         schema: {
           body: $ref("createFuncionarioSchema"),
           response: {
@@ -715,701 +685,60 @@ function funcionarioRoutes(server2) {
       },
       registerFuncionarioHandler
     );
-    server2.get(
+    server.get(
       "/",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       getFuncionariosHandler
     );
-    server2.get(
+    server.get(
       "/:id",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       getFuncionarioByIdHandler
     );
-    server2.get(
+    server.get(
       "/total",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       getTotalFuncionariosHandler
     );
-    server2.patch(
+    server.patch(
       "/:id",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       updateFuncionarioHandler
     );
-    server2.patch(
+    server.patch(
       "/status/:id",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       updateFuncionarioStatusHandler
     );
-    server2.post(
+    server.post(
       "/:id/salario",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       addSalarioToFuncionarioHandler
     );
-    server2.post(
+    server.post(
       "/json",
       {
-        preHandler: [server2.authenticate]
+        preHandler: [server.authenticate]
       },
       registerFuncionariosFromJSON
     );
-    server2.delete(
+    server.delete(
       "/:funcionarioId/salario/:salarioId",
-      { preHandler: [server2.authenticate] },
+      { preHandler: [server.authenticate] },
       deleteSalarioFromFuncionarioHandler
     );
   });
 }
 var funcionario_route_default = funcionarioRoutes;
-
-// src/modules/cargo/cargo.services.ts
-function createCargo(input) {
-  return __async(this, null, function* () {
-    const { nome } = input;
-    const cargoExists = yield prisma_default.cargo.findFirst({
-      where: {
-        nome
-      }
-    });
-    if (cargoExists) {
-      throw new Error("Cargo j\xE1 existe no banco de dados");
-    }
-    const cargo = yield prisma_default.cargo.create({
-      data: {
-        nome
-      }
-    });
-    return cargo;
-  });
-}
-function createCargos(input) {
-  return __async(this, null, function* () {
-    const cargosExists = yield prisma_default.cargo.findMany({
-      where: {
-        nome: {
-          in: input.map((cargo) => cargo.nome)
-        }
-      }
-    });
-    const cargosToCreate = input.filter(
-      (cargo) => !cargosExists.some((c) => c.nome === cargo.nome)
-    );
-    const cargos = yield prisma_default.cargo.createMany({
-      data: cargosToCreate
-    });
-    return cargos;
-  });
-}
-function getCargos() {
-  return __async(this, null, function* () {
-    return yield prisma_default.cargo.findMany();
-  });
-}
-
-// src/modules/cargo/cargo.controller.ts
-function createCargoHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const cargo = yield createCargo(body);
-      return reply.status(201).send(cargo);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function createCargosFromJSONHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const cargos = yield createCargos(body);
-      return reply.status(201).send(cargos);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getCargosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const cargos = yield getCargos();
-      return reply.status(201).send(cargos);
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/cargo/cargo.route.ts
-function cargoRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post("/", { preHandler: [server2.authenticate] }, createCargoHandler);
-    server2.post(
-      "/json",
-      { preHandler: [server2.authenticate] },
-      createCargosFromJSONHandler
-    );
-    server2.get("/", { preHandler: [server2.authenticate] }, getCargosHandler);
-  });
-}
-var cargo_route_default = cargoRoutes;
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.services.ts
-function createTabelaFuncionario(input) {
-  return __async(this, null, function* () {
-    console.log("ANO/MES", input.anomes);
-    try {
-      let existingTabela = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes: input.mes,
-          ano: input.ano
-        },
-        include: {
-          funcionarios: {
-            include: {
-              cargo: true,
-              salarios: {
-                include: {
-                  beneficios: true
-                }
-              }
-            }
-          }
-        }
-      });
-      const funcionarios = yield prisma_default.funcionario.findMany({
-        where: {
-          NOT: {
-            tabelaFuncionarios: {
-              some: {
-                mes: input.mes,
-                ano: input.ano
-              }
-            }
-          },
-          salarios: {
-            some: {
-              mes: input.mes,
-              ano: input.ano
-            }
-          }
-        }
-      });
-      if (existingTabela) {
-        const funcionariosIds = existingTabela.funcionarios.map(
-          (funcionario) => funcionario.id
-        );
-        const funcionariosToAdd = funcionarios.filter(
-          (funcionario) => !funcionariosIds.includes(funcionario.id)
-        );
-        if (funcionariosToAdd.length > 0) {
-          yield prisma_default.tabelaFuncionarios.update({
-            where: {
-              id: existingTabela.id
-            },
-            data: {
-              funcionarios: {
-                connect: funcionariosToAdd.map((funcionario) => ({
-                  id: funcionario.id
-                }))
-              }
-            }
-          });
-        }
-        return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
-      }
-      yield prisma_default.tabelaFuncionarios.create({
-        data: {
-          ano: input.ano,
-          mes: input.mes,
-          anomes: input.anomes,
-          funcionarios: {
-            connect: funcionarios.map((funcionario) => ({
-              id: funcionario.id
-            }))
-          }
-        }
-      });
-      return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function getTabelaFuncionarioByMonthAndYear(month, year) {
-  return __async(this, null, function* () {
-    try {
-      const tabela = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes: month,
-          ano: year
-        },
-        include: {
-          funcionarios: {
-            include: {
-              cargo: true,
-              salarios: {
-                include: {
-                  beneficios: true
-                }
-              }
-            }
-          }
-        }
-      });
-      return tabela;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function getAllTabelasFuncionario() {
-  return __async(this, null, function* () {
-    return prisma_default.tabelaFuncionarios.findMany({
-      include: {
-        funcionarios: true
-      }
-    });
-  });
-}
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.controller.ts
-function createTabelaFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { mes, ano } = request.params;
-    const input = {
-      mes: parseInt(mes, 10),
-      ano: parseInt(ano, 10),
-      anomes: `${ano}-${mes}`
-    };
-    try {
-      const tabelaFuncionario = yield createTabelaFuncionario(input);
-      return reply.status(201).send(tabelaFuncionario);
-    } catch (error) {
-      return reply.status(500).send({ message: "Internal Server Error", error });
-    }
-  });
-}
-function getAllTabelasFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const tabelasFuncionario = yield getAllTabelasFuncionario();
-      return reply.send(tabelasFuncionario);
-    } catch (error) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.route.ts
-function tabelaFuncionarioRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.get(
-      "/:mes/:ano",
-      {
-        preHandler: [server2.authenticate]
-      },
-      createTabelaFuncionarioHandler
-    );
-    server2.get(
-      "/all",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getAllTabelasFuncionarioHandler
-    );
-  });
-}
-var tabelaFuncionarios_route_default = tabelaFuncionarioRoutes;
-
-// src/modules/evento/evento.services.ts
-function createEvento(input) {
-  return __async(this, null, function* () {
-    const { titulo, descricao, dataInicio, dataFim, allDay } = input;
-    return prisma_default.evento.create({
-      data: {
-        titulo,
-        descricao,
-        dataInicio,
-        dataFim,
-        allDay
-      }
-    });
-  });
-}
-function getEventos() {
-  return __async(this, null, function* () {
-    return prisma_default.evento.findMany({
-      orderBy: {
-        dataInicio: "asc"
-      }
-    });
-  });
-}
-
-// src/modules/evento/evento.controller.ts
-function createEventoHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const evento = yield createEvento(body);
-      return reply.status(201).send(evento);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getEventosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const eventos = yield getEventos();
-      return reply.status(200).send({ eventos });
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/evento/evento.route.ts
-function eventoRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      createEventoHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getEventosHandler
-    );
-  });
-}
-
-// src/modules/admin/admin.schemas.ts
-var import_zod2 = require("zod");
-var import_fastify_zod2 = require("fastify-zod");
-var creteAdminSchema = import_zod2.z.object({
-  email: import_zod2.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod2.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be at least 6 characters"
-  }).min(6),
-  name: import_zod2.z.string({
-    required_error: "Name is required",
-    invalid_type_error: "Name must be a string"
-  })
-});
-var createAdminResponseSchema = import_zod2.z.object({
-  id: import_zod2.z.string(),
-  email: import_zod2.z.string(),
-  name: import_zod2.z.string()
-});
-var loginAdminSchema = import_zod2.z.object({
-  email: import_zod2.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod2.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be a string"
-  })
-});
-var loginAdminResponseSchema = import_zod2.z.object({
-  accessToken: import_zod2.z.string(),
-  admin: import_zod2.z.object({
-    email: import_zod2.z.string(),
-    name: import_zod2.z.string()
-  })
-});
-var { schemas: adminSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
-  {
-    creteAdminSchema,
-    createAdminResponseSchema,
-    loginAdminSchema,
-    loginAdminResponseSchema
-  },
-  { $id: "AdminSchema" }
-);
-
-// src/modules/cargo/cargo.schema.ts
-var import_zod3 = require("zod");
-var import_fastify_zod3 = require("fastify-zod");
-var cargoSchema2 = import_zod3.z.object({
-  nome: import_zod3.z.string()
-});
-var cargoResponseSchema = import_zod3.z.object({
-  id: import_zod3.z.string(),
-  nome: import_zod3.z.string()
-});
-var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
-  {
-    cargoSchema: cargoSchema2,
-    cargoResponseSchema
-  },
-  { $id: "cargoSchema" }
-);
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.schema.ts
-var import_zod4 = require("zod");
-var import_fastify_zod4 = require("fastify-zod");
-var tabelaFuncionarioSchema = import_zod4.z.object({
-  funcionarios: import_zod4.z.array(createFuncionarioSchema),
-  mes: import_zod4.z.number(),
-  ano: import_zod4.z.number(),
-  anomes: import_zod4.z.string()
-});
-var createTabelaFuncionarioSchema = import_zod4.z.object({
-  mes: import_zod4.z.number(),
-  ano: import_zod4.z.number(),
-  anomes: import_zod4.z.string()
-});
-var { schemas: tabelaFuncionarioSchemas, $ref: $ref4 } = (0, import_fastify_zod4.buildJsonSchemas)(
-  {
-    tabelaFuncionarioSchema,
-    createTabelaFuncionarioSchema
-  },
-  { $id: "tabelaFuncionariosSchema" }
-);
-
-// src/modules/evento/evento.schema.ts
-var import_zod5 = require("zod");
-var import_fastify_zod5 = require("fastify-zod");
-var CreateEventoSchema = import_zod5.z.object({
-  titulo: import_zod5.z.string(),
-  descricao: import_zod5.z.string(),
-  dataInicio: import_zod5.z.string(),
-  dataFim: import_zod5.z.string(),
-  allDay: import_zod5.z.boolean()
-});
-var EventoResponseSchema = import_zod5.z.object({
-  id: import_zod5.z.string(),
-  titulo: import_zod5.z.string(),
-  descricao: import_zod5.z.string(),
-  dataInicio: import_zod5.z.string(),
-  dataFim: import_zod5.z.string(),
-  allDay: import_zod5.z.boolean()
-});
-var { schemas: eventoSchemas, $ref: $ref5 } = (0, import_fastify_zod5.buildJsonSchemas)(
-  {
-    CreateEventoSchema,
-    EventoResponseSchema
-  },
-  { $id: "eventoSchema" }
-);
-
-// src/app.ts
-var server = (0, import_fastify.default)();
-server.register(import_cors.default, {
-  origin: "*"
-});
-var jwtSecret = process.env.JWT_SECRET;
-if (!jwtSecret) {
-  throw new Error("JWT_SECRET is not defined");
-}
-server.register(import_jwt.default, {
-  secret: jwtSecret
-});
-server.decorate(
-  "authenticate",
-  // name of the decorator
-  (request, reply) => __async(void 0, null, function* () {
-    try {
-      yield request.jwtVerify();
-    } catch (e) {
-      return reply.send(e);
-    }
-  })
-);
-server.get("/", () => __async(void 0, null, function* () {
-  return { healthcheck: "OK" };
-}));
-function main() {
-  return __async(this, null, function* () {
-    for (const schema of [
-      ...funcionarioSchemas,
-      ...adminSchemas,
-      ...cargoSchemas,
-      ...tabelaFuncionarioSchemas,
-      ...eventoSchemas
-    ]) {
-      server.addSchema(schema);
-    }
-    yield server.register(require("@fastify/swagger"));
-    yield server.register(require("@fastify/swagger-ui"), {
-      routePrefix: "/docs"
-    });
-    server.register(funcionario_route_default, { prefix: "/api/func" });
-    server.register(adminRoutes, { prefix: "/api/admin" });
-    server.register(cargo_route_default, { prefix: "/api/cargo" });
-    server.register(tabelaFuncionarios_route_default, { prefix: "/api/tabela" });
-    server.register(eventoRoutes, { prefix: "/api/evento" });
-    try {
-      yield server.listen({
-        port: process.env.PORT ? Number(process.env.PORT) : 4567,
-        host: "0.0.0.0"
-      }).then(() => {
-        console.log(
-          `Server listening on ${process.env.PORT ? Number(process.env.PORT) : 4567}.`
-        );
-      });
-    } catch (err) {
-      console.error(err);
-      process.exit(1);
-    }
-  });
-}
-main();
-
-// src/utils/hash.ts
-var import_crypto = __toESM(require("crypto"));
-function hashPassword(password) {
-  const salt = import_crypto.default.randomBytes(16).toString("hex");
-  const hash = import_crypto.default.pbkdf2Sync(password, salt, 1e3, 64, "sha512").toString("hex");
-  return { salt, hash };
-}
-function verifyPassword({
-  candidatePassword,
-  salt,
-  hash
-}) {
-  const candidateHash = import_crypto.default.pbkdf2Sync(candidatePassword, salt, 1e3, 64, "sha512").toString("hex");
-  return candidateHash === hash;
-}
-
-// src/modules/admin/admin.services.ts
-function createAdmin(input) {
-  return __async(this, null, function* () {
-    const _a = input, { password } = _a, rest = __objRest(_a, ["password"]);
-    const { hash, salt } = hashPassword(password);
-    const admin = yield prisma_default.admin.create({
-      data: __spreadProps(__spreadValues({}, rest), { salt, password: hash })
-    });
-    return admin;
-  });
-}
-function findAdmins() {
-  return __async(this, null, function* () {
-    return prisma_default.admin.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true
-      }
-    });
-  });
-}
-function findAdminByEmail(email) {
-  return __async(this, null, function* () {
-    return prisma_default.admin.findUnique({
-      where: { email }
-    });
-  });
-}
-
-// src/modules/admin/admin.controller.ts
-function registerAdminHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const admin = yield createAdmin(body);
-      return reply.status(201).send(admin);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Erro ao registrar admin" });
-    }
-  });
-}
-function loginAdminHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    const admin = yield findAdminByEmail(body.email);
-    if (!admin)
-      return reply.code(401).send({ message: "Invalid email or password" });
-    const correctPassword = verifyPassword({
-      candidatePassword: body.password,
-      salt: admin.salt,
-      hash: admin.password
-    });
-    console.log("Admin ID:", typeof admin.id, admin.id);
-    if (correctPassword) {
-      const payload = {
-        id: admin.id,
-        // Explicitly include only the fields you need
-        email: admin.email
-      };
-      const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
-      return reply.send({
-        accessToken,
-        admin: { id: admin.id, email: admin.email, name: admin.name }
-      });
-    }
-    return reply.code(401).send({ message: "Invalid email or password" });
-  });
-}
-function getAdminsHandler(request, reply) {
-  return __async(this, null, function* () {
-    const admins = yield findAdmins();
-    return reply.send(admins);
-  });
-}
-function isAdminAuthenticatedHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      return reply.status(200).send({ message: "Authenticated" });
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/admin/admin.route.ts
-function adminRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      registerAdminHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getAdminsHandler
-    );
-    server2.post("/login", loginAdminHandler);
-    server2.get(
-      "/is-authenticated",
-      {
-        preHandler: [server2.authenticate]
-      },
-      isAdminAuthenticatedHandler
-    );
-  });
-}
