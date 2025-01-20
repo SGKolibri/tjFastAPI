@@ -75,11 +75,11 @@ async function main() {
     routePrefix: "/docs",
   });
 
-  server.register(funcionarioRoutes, { prefix: "api/func" });
-  server.register(adminRoutes, { prefix: "api/admin" });
-  server.register(cargoRoutes, { prefix: "api/cargo" });
-  server.register(tabelaFuncionarioRoutes, { prefix: "api/tabela" });
-  server.register(eventoRoutes, { prefix: "api/evento" });
+  server.register(funcionarioRoutes, { prefix: "/api/func" });
+  server.register(adminRoutes, { prefix: "/api/admin" });
+  server.register(cargoRoutes, { prefix: "/api/cargo" });
+  server.register(tabelaFuncionarioRoutes, { prefix: "/api/tabela" });
+  server.register(eventoRoutes, { prefix: "/api/evento" });
 
   try {
     await server
