@@ -40,7 +40,6 @@ export async function loginAdminHandler(
     const payload = {
       id: admin.id, // Explicitly include only the fields you need
       email: admin.email,
-      name: admin.name,
     };
     const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
     return reply.send({ accessToken, admin: payload });
