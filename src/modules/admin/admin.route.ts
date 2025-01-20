@@ -23,18 +23,7 @@ export default async function adminRoutes(server: FastifyInstance) {
     getAdminsHandler
   );
 
-  server.post(
-    "/login",
-    {
-      schema: {
-        body: $ref("loginAdminSchema"),
-        response: {
-          200: $ref("loginAdminResponseSchema"),
-        },
-      },
-    },
-    loginAdminHandler
-  );
+  server.post("/login", loginAdminHandler);
 
   server.get(
     "/is-authenticated",

@@ -36,13 +36,18 @@ export async function loginAdminHandler(
     hash: admin.password,
   });
 
+  console.log("Admin ID:", typeof admin.id, admin.id);
+
   if (correctPassword) {
     const payload = {
       id: admin.id, // Explicitly include only the fields you need
       email: admin.email,
     };
     const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
-    return reply.send({ accessToken, admin: payload });
+    return reply.send({
+      accessToken,
+      admin: { id: admin.id, email: admin.email, name: admin.name },
+    });
   }
 
   return reply.code(401).send({ message: "Invalid email or password" });
