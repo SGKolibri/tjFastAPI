@@ -37,9 +37,13 @@ export async function loginAdminHandler(
   });
 
   if (correctPassword) {
-    const { password, salt, ...rest } = admin;
-    const accessToken = server.jwt.sign(rest, { expiresIn: "1h" });
-    return reply.send({ accessToken, admin: rest });
+    const payload = {
+      id: admin.id, // Explicitly include only the fields you need
+      email: admin.email,
+      name: admin.name,
+    };
+    const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
+    return reply.send({ accessToken, admin: payload });
   }
 
   return reply.code(401).send({ message: "Invalid email or password" });

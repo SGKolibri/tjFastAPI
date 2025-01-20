@@ -10,13 +10,18 @@ services:
       NODE_ENV: production
     depends_on:
       - db
+    command: >
+      sh -c "npx prisma migrate deploy && pm2-runtime dist/app.js"
   db:
     image: postgres:12
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Fahrenheit451;
+      POSTGRES_DB: fast-backend
+    ports:
+      - "5432:5432"
+
 volumes:
   postgres_data:

@@ -42,7 +42,6 @@ const loginAdminSchema = z.object({
 const loginAdminResponseSchema = z.object({
   accessToken: z.string(),
   admin: z.object({
-    id: z.string(),
     email: z.string(),
     name: z.string(),
   }),
