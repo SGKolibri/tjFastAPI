@@ -175,7 +175,7 @@ export async function updateFuncionarioStatus(id: number) {
 
 export async function findFuncionarioById(id: number) {
   return await prisma.funcionario.findUnique({
-    where: { id },
+    where: { id: Number(id) },
     select: {
       id: true,
       name: true,
@@ -224,7 +224,7 @@ export async function updateFuncionario(
 
   try {
     const updatedFuncionario = await prisma.funcionario.update({
-      where: { id },
+      where: { id: Number(id) },
       data: {
         name,
         cargo: {

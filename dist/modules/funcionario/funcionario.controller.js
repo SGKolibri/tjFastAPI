@@ -215,7 +215,7 @@ function updateFuncionarioStatus(id) {
 function findFuncionarioById(id) {
   return __async(this, null, function* () {
     return yield prisma_default.funcionario.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       select: {
         id: true,
         name: true,
@@ -258,7 +258,7 @@ function updateFuncionario(id, input) {
     console.log("FUNCIONARIO: ", input);
     try {
       const updatedFuncionario = yield prisma_default.funcionario.update({
-        where: { id },
+        where: { id: Number(id) },
         data: {
           name,
           cargo: {
