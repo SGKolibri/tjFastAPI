@@ -26,7 +26,7 @@ model Funcionario {
   id                   Int                  @id @default(autoincrement())  
   name                 String
   cargo                Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
-  cargoId              String?
+  cargoId              Int?
   cpf                  String               @unique
   chavePix             String
   banco                String
@@ -40,7 +40,7 @@ model Funcionario {
 // Usa uma combinação de mes, ano, e funcionarioId para garantir unicidade.
 // Contém informações variáveis, como horas extras, descontos e o salário total.
 model SalarioMensal {
-  id            String      @id @default(cuid())
+  id            Int      @id @default(autoincrement())
   mes           Int // Mês (1-12)
   ano           Int // Ano
   funcionario   Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade) // if Funcionario is deleted, delete SalarioMensal
@@ -64,19 +64,19 @@ model SalarioMensal {
 // Se os benefícios (café, almoço, passagem) forem significativos ou frequentemente alterados,
 // eles podem ser mantidos em uma tabela separada e relacionados ao salário mensal.
 model Beneficio {
-  id              String        @id @default(cuid())
+  id              Int        @id @default(autoincrement())
   cafe            Float // Valor do benefício café
   almoco          Float // Valor do benefício almoço
   passagem        Float // Valor do benefício passagem
   salarioMensal   SalarioMensal @relation(fields: [salarioMensalId], references: [id], onDelete: Cascade) // if SalarioMensal is deleted, delete Beneficio
-  salarioMensalId String        @unique
+  salarioMensalId Int        @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Cargo {
-  id          String        @id @default(cuid())
+  id          Int           @id @default(autoincrement())
   nome        String        @unique
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -85,7 +85,7 @@ model Cargo {
 
 //
 model TabelaFuncionarios {
-  id           String        @id @default(cuid())
+  id           Int           @id @default(autoincrement())
   funcionarios Funcionario[] @relation("FuncionarioTabelaFuncionarios")
   mes          Int          
   ano          Int           
@@ -95,7 +95,7 @@ model TabelaFuncionarios {
 }
 
 model Evento {
-  id          String   @id @default(uuid()) // ID único para o evento
+  id          Int      @id @default(autoincrement()) // ID único para o evento
   titulo      String   // Título do evento
   descricao   String?  // Descrição opcional do evento
   dataInicio  DateTime // Data e hora de início

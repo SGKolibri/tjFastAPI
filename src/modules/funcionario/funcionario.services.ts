@@ -368,7 +368,7 @@ export async function addSalarioToFuncionario(
 
 export async function deleteSalarioFromFuncionario(
   funcionarioId: number,
-  salarioId: string
+  salarioId: number
 ) {
   return await prisma.salarioMensal.delete({
     where: {
@@ -380,7 +380,7 @@ export async function deleteSalarioFromFuncionario(
 
 export async function getSalarioFromFuncionario(
   funcionarioId: number,
-  salarioId: string
+  salarioId: number
 ) {
   return await prisma.salarioMensal.findUnique({
     where: {

@@ -10,7 +10,7 @@ const CreateEventoSchema = z.object({
 });
 
 const EventoResponseSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   titulo: z.string(),
   descricao: z.string(),
   dataInicio: z.string(),

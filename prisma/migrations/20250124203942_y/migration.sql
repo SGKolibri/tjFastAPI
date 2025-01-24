@@ -14,7 +14,7 @@ CREATE TABLE "Admin" (
 CREATE TABLE "Funcionario" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "cargoId" TEXT,
+    "cargoId" INTEGER,
     "cpf" TEXT NOT NULL,
     "chavePix" TEXT NOT NULL,
     "banco" TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "Funcionario" (
 
 -- CreateTable
 CREATE TABLE "SalarioMensal" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "mes" INTEGER NOT NULL,
     "ano" INTEGER NOT NULL,
     "funcionarioId" INTEGER NOT NULL,
@@ -44,11 +44,11 @@ CREATE TABLE "SalarioMensal" (
 
 -- CreateTable
 CREATE TABLE "Beneficio" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "cafe" DOUBLE PRECISION NOT NULL,
     "almoco" DOUBLE PRECISION NOT NULL,
     "passagem" DOUBLE PRECISION NOT NULL,
-    "salarioMensalId" TEXT NOT NULL,
+    "salarioMensalId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -57,7 +57,7 @@ CREATE TABLE "Beneficio" (
 
 -- CreateTable
 CREATE TABLE "Cargo" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABLE "Cargo" (
 
 -- CreateTable
 CREATE TABLE "TabelaFuncionarios" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "mes" INTEGER NOT NULL,
     "ano" INTEGER NOT NULL,
     "anomes" TEXT NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE "TabelaFuncionarios" (
 
 -- CreateTable
 CREATE TABLE "Evento" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "titulo" TEXT NOT NULL,
     "descricao" TEXT,
     "dataInicio" TIMESTAMP(3) NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE "Evento" (
 -- CreateTable
 CREATE TABLE "_FuncionarioTabelaFuncionarios" (
     "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL,
+    "B" INTEGER NOT NULL,
 
     CONSTRAINT "_FuncionarioTabelaFuncionarios_AB_pkey" PRIMARY KEY ("A","B")
 );
