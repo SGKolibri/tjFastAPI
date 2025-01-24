@@ -250,7 +250,7 @@ export async function updateFuncionario(
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
-                    funcionarioId: id,
+                    funcionarioId: Number(id),
                   },
                 },
                 update: {
@@ -332,7 +332,7 @@ export async function addSalarioToFuncionario(
   const { salario } = input;
   try {
     const funcionario = await prisma.funcionario.update({
-      where: { id: funcionarioId },
+      where: { id: Number(funcionarioId) },
       data: {
         salarios: {
           create: {
@@ -374,7 +374,7 @@ export async function deleteSalarioFromFuncionario(
   return await prisma.salarioMensal.delete({
     where: {
       id: salarioId,
-      funcionarioId: funcionarioId,
+      funcionarioId: Number(funcionarioId),
     },
   });
 }
@@ -386,7 +386,7 @@ export async function getSalarioFromFuncionario(
   return await prisma.salarioMensal.findUnique({
     where: {
       id: salarioId,
-      funcionarioId: funcionarioId,
+      funcionarioId: Number(funcionarioId),
     },
   });
 }
@@ -401,10 +401,10 @@ export async function addFuncionarioToTabelaFuncionario(
   mes: number,
   ano: number
 ) {
-  console.log("FUNCIONARIO ID: ", funcionarioId);
+  console.log("FUNCIONARIO ID: ", Number(funcionarioId));
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: funcionarioId },
+      where: { id: Number(funcionarioId) },
     });
 
     if (!funcionario) {
@@ -448,7 +448,7 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
 ) {
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: funcionarioId },
+      where: { id: Number(funcionarioId) },
     });
 
     if (!funcionario) {
@@ -492,7 +492,7 @@ export async function removeFuncionarioFromTabelaFuncionario(
 ) {
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: funcionarioId },
+      where: { id: Number(funcionarioId) },
     });
 
     if (!funcionario) {

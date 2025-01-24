@@ -292,7 +292,7 @@ function updateFuncionario(id, input) {
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
-                    funcionarioId: id
+                    funcionarioId: Number(id)
                   }
                 },
                 update: {
@@ -366,7 +366,7 @@ function addSalarioToFuncionario(funcionarioId, input) {
     const { salario } = input;
     try {
       const funcionario = yield prisma_default.funcionario.update({
-        where: { id: funcionarioId },
+        where: { id: Number(funcionarioId) },
         data: {
           salarios: {
             create: {
@@ -403,7 +403,7 @@ function deleteSalarioFromFuncionario(funcionarioId, salarioId) {
     return yield prisma_default.salarioMensal.delete({
       where: {
         id: salarioId,
-        funcionarioId
+        funcionarioId: Number(funcionarioId)
       }
     });
   });
@@ -413,7 +413,7 @@ function getSalarioFromFuncionario(funcionarioId, salarioId) {
     return yield prisma_default.salarioMensal.findUnique({
       where: {
         id: salarioId,
-        funcionarioId
+        funcionarioId: Number(funcionarioId)
       }
     });
   });
@@ -425,10 +425,10 @@ function getTotalFuncionarios() {
 }
 function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
   return __async(this, null, function* () {
-    console.log("FUNCIONARIO ID: ", funcionarioId);
+    console.log("FUNCIONARIO ID: ", Number(funcionarioId));
     try {
       const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: funcionarioId }
+        where: { id: Number(funcionarioId) }
       });
       if (!funcionario) {
         throw new Error("Funcion\xE1rio n\xE3o encontrado");
@@ -464,7 +464,7 @@ function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
   return __async(this, null, function* () {
     try {
       const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: funcionarioId }
+        where: { id: Number(funcionarioId) }
       });
       if (!funcionario) {
         throw new Error("Funcion\xE1rio n\xE3o encontrado");
