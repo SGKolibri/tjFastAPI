@@ -473,12 +473,12 @@ function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
       }
       yield prisma_default.tabelaFuncionarios.update({
         where: {
-          id: tabelaFuncionario.id
+          id: Number(tabelaFuncionario.id)
         },
         data: {
           funcionarios: {
             connect: {
-              id: funcionario.id
+              id: Number(funcionario.id)
             }
           }
         }
