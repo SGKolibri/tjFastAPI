@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -55,6 +65,7 @@ __export(funcionario_services_exports, {
   updateFuncionarioStatus: () => updateFuncionarioStatus
 });
 module.exports = __toCommonJS(funcionario_services_exports);
+var import_p_limit = __toESM(require("p-limit"));
 
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
@@ -135,13 +146,15 @@ function createFuncionario(input) {
         mes: salario.mes,
         ano: salario.ano
       }));
-      for (const salary of salaries) {
-        yield addFuncionarioToTabelaFuncionario(
-          funcionario.id,
-          salary.mes,
-          salary.ano
-        );
-      }
+      yield Promise.all(
+        salaries.map(
+          (salary) => addFuncionarioToTabelaFuncionario(
+            funcionario.id,
+            salary.mes,
+            salary.ano
+          )
+        )
+      );
     }
     return funcionario;
   });
@@ -190,20 +203,29 @@ function findFuncionarios(search = "") {
 }
 function updateFuncionarioStatus(id) {
   return __async(this, null, function* () {
+    if (!id || typeof id !== "number") {
+      throw new Error("Invalid ID provided");
+    }
     const funcionario = yield prisma_default.funcionario.findUnique({
       where: { id }
+      // line 147
     });
     if (!funcionario) {
       throw new Error("Funcion\xE1rio n\xE3o encontrado");
     }
     console.log("FUNCIONARIO STATUS: ", funcionario.status);
     const status = funcionario.status ? false : true;
-    return yield prisma_default.funcionario.update({
-      where: { id },
-      data: {
-        status
-      }
-    });
+    try {
+      return yield prisma_default.funcionario.update({
+        where: { id },
+        data: {
+          status
+        }
+      });
+    } catch (error) {
+      console.error("Error updating funcionario status: ", error);
+      throw new Error("Failed to update funcionario status");
+    }
   });
 }
 function findFuncionarioById(id) {
@@ -520,9 +542,12 @@ function removeFuncionarioFromTabelaFuncionario(funcionarioId, mes, ano) {
 }
 function createFuncionariosFromJSON(funcionarios) {
   return __async(this, null, function* () {
-    return funcionarios.map((funcionario) => {
-      return createFuncionario(funcionario);
-    });
+    const limit = (0, import_p_limit.default)(5);
+    return yield Promise.all(
+      funcionarios.map(
+        (funcionario) => limit(() => createFuncionario(funcionario))
+      )
+    );
   });
 }
 // Annotate the CommonJS export names for ESM import in node:

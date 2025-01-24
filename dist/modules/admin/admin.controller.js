@@ -91,6 +91,9 @@ var import_fastify = __toESM(require("fastify"));
 var import_jwt = __toESM(require("@fastify/jwt"));
 var import_cors = __toESM(require("@fastify/cors"));
 
+// src/modules/funcionario/funcionario.services.ts
+var import_p_limit = __toESM(require("p-limit"));
+
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
 var prisma = new import_client.PrismaClient();
@@ -170,13 +173,15 @@ function createFuncionario(input) {
         mes: salario.mes,
         ano: salario.ano
       }));
-      for (const salary of salaries) {
-        yield addFuncionarioToTabelaFuncionario(
-          funcionario.id,
-          salary.mes,
-          salary.ano
-        );
-      }
+      yield Promise.all(
+        salaries.map(
+          (salary) => addFuncionarioToTabelaFuncionario(
+            funcionario.id,
+            salary.mes,
+            salary.ano
+          )
+        )
+      );
     }
     return funcionario;
   });
@@ -225,20 +230,29 @@ function findFuncionarios(search = "") {
 }
 function updateFuncionarioStatus(id) {
   return __async(this, null, function* () {
+    if (!id || typeof id !== "number") {
+      throw new Error("Invalid ID provided");
+    }
     const funcionario = yield prisma_default.funcionario.findUnique({
       where: { id }
+      // line 147
     });
     if (!funcionario) {
       throw new Error("Funcion\xE1rio n\xE3o encontrado");
     }
     console.log("FUNCIONARIO STATUS: ", funcionario.status);
     const status = funcionario.status ? false : true;
-    return yield prisma_default.funcionario.update({
-      where: { id },
-      data: {
-        status
-      }
-    });
+    try {
+      return yield prisma_default.funcionario.update({
+        where: { id },
+        data: {
+          status
+        }
+      });
+    } catch (error) {
+      console.error("Error updating funcionario status: ", error);
+      throw new Error("Failed to update funcionario status");
+    }
   });
 }
 function findFuncionarioById(id) {
