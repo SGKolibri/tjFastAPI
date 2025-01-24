@@ -150,8 +150,10 @@ export async function updateFuncionarioStatus(id: number) {
     throw new Error("Invalid ID provided");
   }
 
+  const affirmedId = Number(id);
+
   const funcionario = await prisma.funcionario.findUnique({
-    where: { id }, // line 147
+    where: { id: affirmedId },
   });
 
   if (!funcionario) {
@@ -162,7 +164,7 @@ export async function updateFuncionarioStatus(id: number) {
 
   try {
     return await prisma.funcionario.update({
-      where: { id },
+      where: { id: affirmedId },
       data: {
         status,
       },

@@ -195,9 +195,9 @@ function updateFuncionarioStatus(id) {
     if (!id || typeof id !== "number") {
       throw new Error("Invalid ID provided");
     }
+    const affirmedId = Number(id);
     const funcionario = yield prisma_default.funcionario.findUnique({
-      where: { id }
-      // line 147
+      where: { id: affirmedId }
     });
     if (!funcionario) {
       throw new Error("Funcion\xE1rio n\xE3o encontrado");
@@ -206,7 +206,7 @@ function updateFuncionarioStatus(id) {
     const status = funcionario.status ? false : true;
     try {
       return yield prisma_default.funcionario.update({
-        where: { id },
+        where: { id: affirmedId },
         data: {
           status
         }
