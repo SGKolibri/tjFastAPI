@@ -151,7 +151,7 @@ export async function updateFuncionarioStatus(id: number) {
   }
 
   const funcionario = await prisma.funcionario.findUnique({
-    where: { id: Number(id) },
+    where: { id: Number(id) }, // Ensure id is treated as a number
   });
 
   if (!funcionario) {
@@ -162,7 +162,7 @@ export async function updateFuncionarioStatus(id: number) {
 
   try {
     return await prisma.funcionario.update({
-      where: { id: Number(id) },
+      where: { id: Number(id) }, // Ensure id is treated as a number
       data: {
         status,
       },
@@ -175,7 +175,8 @@ export async function updateFuncionarioStatus(id: number) {
 
 export async function findFuncionarioById(id: number) {
   return await prisma.funcionario.findUnique({
-    where: { id: Number(id) },
+    where: { id: Number(id) }, // Ensure id is treated as a number
+
     select: {
       id: true,
       name: true,
@@ -224,7 +225,7 @@ export async function updateFuncionario(
 
   try {
     const updatedFuncionario = await prisma.funcionario.update({
-      where: { id: Number(id) },
+      where: { id: Number(id) }, // Ensure id is treated as a number
       data: {
         name,
         cargo: {
@@ -250,7 +251,7 @@ export async function updateFuncionario(
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
-                    funcionarioId: Number(id),
+                    funcionarioId: Number(id), // Ensure id is treated as a number
                   },
                 },
                 update: {

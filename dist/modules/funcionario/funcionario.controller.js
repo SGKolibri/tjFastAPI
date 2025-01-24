@@ -193,6 +193,7 @@ function updateFuncionarioStatus(id) {
     }
     const funcionario = yield prisma_default.funcionario.findUnique({
       where: { id: Number(id) }
+      // Ensure id is treated as a number
     });
     if (!funcionario) {
       throw new Error("Funcion\xE1rio n\xE3o encontrado");
@@ -202,6 +203,7 @@ function updateFuncionarioStatus(id) {
     try {
       return yield prisma_default.funcionario.update({
         where: { id: Number(id) },
+        // Ensure id is treated as a number
         data: {
           status
         }
@@ -216,6 +218,7 @@ function findFuncionarioById(id) {
   return __async(this, null, function* () {
     return yield prisma_default.funcionario.findUnique({
       where: { id: Number(id) },
+      // Ensure id is treated as a number
       select: {
         id: true,
         name: true,
@@ -259,6 +262,7 @@ function updateFuncionario(id, input) {
     try {
       const updatedFuncionario = yield prisma_default.funcionario.update({
         where: { id: Number(id) },
+        // Ensure id is treated as a number
         data: {
           name,
           cargo: {
@@ -286,6 +290,7 @@ function updateFuncionario(id, input) {
                     mes: salario.mes,
                     ano: salario.ano,
                     funcionarioId: Number(id)
+                    // Ensure id is treated as a number
                   }
                 },
                 update: {
