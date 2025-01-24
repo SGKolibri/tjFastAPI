@@ -21,7 +21,7 @@ const creteAdminSchema = z.object({
 });
 
 const createAdminResponseSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   email: z.string(),
   name: z.string(),
 });
