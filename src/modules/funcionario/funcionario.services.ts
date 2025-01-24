@@ -1,3 +1,4 @@
+import pLimit from "p-limit";
 import prisma from "../../utils/prisma";
 import {
   AddSalarioToFuncionarioInput,
@@ -89,13 +90,15 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       ano: salario.ano,
     }));
 
-    for (const salary of salaries) {
-      await addFuncionarioToTabelaFuncionario(
-        funcionario.id,
-        salary.mes,
-        salary.ano
-      );
-    }
+    await Promise.all(
+      salaries.map((salary) =>
+        addFuncionarioToTabelaFuncionario(
+          funcionario.id,
+          salary.mes,
+          salary.ano
+        )
+      )
+    );
   }
 
   return funcionario;
@@ -143,8 +146,12 @@ export async function findFuncionarios(search = "") {
 }
 
 export async function updateFuncionarioStatus(id: number) {
+  if (!id || typeof id !== "number") {
+    throw new Error("Invalid ID provided");
+  }
+
   const funcionario = await prisma.funcionario.findUnique({
-    where: { id },
+    where: { id }, // line 147
   });
 
   if (!funcionario) {
@@ -153,12 +160,17 @@ export async function updateFuncionarioStatus(id: number) {
   console.log("FUNCIONARIO STATUS: ", funcionario.status);
   const status = funcionario.status ? false : true;
 
-  return await prisma.funcionario.update({
-    where: { id },
-    data: {
-      status,
-    },
-  });
+  try {
+    return await prisma.funcionario.update({
+      where: { id },
+      data: {
+        status,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating funcionario status: ", error);
+    throw new Error("Failed to update funcionario status");
+  }
 }
 
 export async function findFuncionarioById(id: number) {
@@ -519,7 +531,11 @@ export async function removeFuncionarioFromTabelaFuncionario(
 export async function createFuncionariosFromJSON(
   funcionarios: CreateFuncionarioInput[]
 ) {
-  return funcionarios.map((funcionario) => {
-    return createFuncionario(funcionario);
-  });
+  const limit = pLimit(5); // limit the number of concurrent promises to 5 to avoid overloading the database
+
+  return await Promise.all(
+    funcionarios.map((funcionario) =>
+      limit(() => createFuncionario(funcionario))
+    )
+  );
 }
