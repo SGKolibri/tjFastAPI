@@ -6,7 +6,7 @@ const cargoSchema = z.object({
 });
 
 const cargoResponseSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   nome: z.string(),
 });
 

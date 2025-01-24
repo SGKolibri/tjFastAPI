@@ -471,10 +471,9 @@ function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
       if (!tabelaFuncionario) {
         throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
       }
-      const affirmedFuncionarioId = Number(funcionario.id);
       yield prisma_default.tabelaFuncionarios.update({
         where: {
-          id: affirmedFuncionarioId
+          id: tabelaFuncionario.id
         },
         data: {
           funcionarios: {
@@ -1314,7 +1313,7 @@ var cargoSchema2 = import_zod3.z.object({
   nome: import_zod3.z.string()
 });
 var cargoResponseSchema = import_zod3.z.object({
-  id: import_zod3.z.number(),
+  id: import_zod3.z.string(),
   nome: import_zod3.z.string()
 });
 var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
@@ -1358,7 +1357,7 @@ var CreateEventoSchema = import_zod5.z.object({
   allDay: import_zod5.z.boolean()
 });
 var EventoResponseSchema = import_zod5.z.object({
-  id: import_zod5.z.number(),
+  id: import_zod5.z.string(),
   titulo: import_zod5.z.string(),
   descricao: import_zod5.z.string(),
   dataInicio: import_zod5.z.string(),

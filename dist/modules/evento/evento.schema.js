@@ -34,7 +34,7 @@ var CreateEventoSchema = import_zod.z.object({
   allDay: import_zod.z.boolean()
 });
 var EventoResponseSchema = import_zod.z.object({
-  id: import_zod.z.number(),
+  id: import_zod.z.string(),
   titulo: import_zod.z.string(),
   descricao: import_zod.z.string(),
   dataInicio: import_zod.z.string(),

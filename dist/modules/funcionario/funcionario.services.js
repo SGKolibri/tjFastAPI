@@ -441,10 +441,9 @@ function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
       if (!tabelaFuncionario) {
         throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
       }
-      const affirmedFuncionarioId = Number(funcionario.id);
       yield prisma_default.tabelaFuncionarios.update({
         where: {
-          id: affirmedFuncionarioId
+          id: tabelaFuncionario.id
         },
         data: {
           funcionarios: {
@@ -514,10 +513,9 @@ function removeFuncionarioFromTabelaFuncionario(funcionarioId, mes, ano) {
       if (!tabelaFuncionario) {
         throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
       }
-      const affirmedFuncionarioId = Number(funcionario.id);
       yield prisma_default.tabelaFuncionarios.update({
         where: {
-          id: affirmedFuncionarioId
+          id: tabelaFuncionario.id
         },
         data: {
           funcionarios: {

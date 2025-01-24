@@ -369,7 +369,7 @@ export async function addSalarioToFuncionario(
 
 export async function deleteSalarioFromFuncionario(
   funcionarioId: number,
-  salarioId: number
+  salarioId: string
 ) {
   return await prisma.salarioMensal.delete({
     where: {
@@ -381,7 +381,7 @@ export async function deleteSalarioFromFuncionario(
 
 export async function getSalarioFromFuncionario(
   funcionarioId: number,
-  salarioId: number
+  salarioId: string
 ) {
   return await prisma.salarioMensal.findUnique({
     where: {
@@ -422,10 +422,9 @@ export async function addFuncionarioToTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
-    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: affirmedFuncionarioId,
+        id: tabelaFuncionario.id,
       },
       data: {
         funcionarios: {
@@ -511,10 +510,9 @@ export async function removeFuncionarioFromTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
-    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: affirmedFuncionarioId,
+        id: tabelaFuncionario.id,
       },
       data: {
         funcionarios: {

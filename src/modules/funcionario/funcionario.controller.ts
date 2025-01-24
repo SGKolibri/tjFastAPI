@@ -145,7 +145,7 @@ export async function addSalarioToFuncionarioHandler(
 
 export async function deleteSalarioFromFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { funcionarioId: number; salarioId: number };
+    Params: { funcionarioId: number; salarioId: string };
   }>,
   reply: FastifyReply
 ) {
