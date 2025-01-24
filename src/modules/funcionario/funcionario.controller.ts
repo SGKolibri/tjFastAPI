@@ -137,7 +137,7 @@ export async function addSalarioToFuncionarioHandler(
 
   try {
     const funcionario = await addSalarioToFuncionario(id, body);
-    return reply.status(201).send(funcionario);
+    return reply.status(201).send({ status: 201, funcionario: funcionario });
   } catch (e) {
     return reply.status(500).send({ message: "Internal Server Error" });
   }

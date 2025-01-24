@@ -1,6 +1,18 @@
 // src/data/funcionariosData.json
 var funcionariosData_default = [
   {
+    name: "Aldeir de Novaes Bezerra ",
+    cargo: {
+      nome: "Encanador"
+    },
+    chavePix: "60678385327/santander",
+    cpf: "000.999.999-90",
+    banco: "AAAAAA",
+    contato: "(62) 99999-9999",
+    status: true,
+    salarios: []
+  },
+  {
     name: "Aldenos Gon\xE7alves Soares dos Santos",
     cargo: {
       nome: "Auxiliar de el\xE9trica"

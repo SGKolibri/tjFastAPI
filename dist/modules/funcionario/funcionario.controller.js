@@ -580,7 +580,7 @@ function addSalarioToFuncionarioHandler(request, reply) {
     }
     try {
       const funcionario2 = yield addSalarioToFuncionario(id, body);
-      return reply.status(201).send(funcionario2);
+      return reply.status(201).send({ status: 201, funcionario: funcionario2 });
     } catch (e) {
       return reply.status(500).send({ message: "Internal Server Error" });
     }
