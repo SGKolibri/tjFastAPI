@@ -168,7 +168,7 @@ function createFuncionario(input) {
       yield Promise.all(
         salaries.map(
           (salary) => addFuncionarioToTabelaFuncionario(
-            funcionario.id,
+            Number(funcionario.id),
             salary.mes,
             salary.ano
           )

@@ -93,7 +93,7 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     await Promise.all(
       salaries.map((salary) =>
         addFuncionarioToTabelaFuncionario(
-          funcionario.id,
+          Number(funcionario.id),
           salary.mes,
           salary.ano
         )
