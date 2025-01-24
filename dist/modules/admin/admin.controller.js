@@ -300,8 +300,7 @@ function updateFuncionario(id, input) {
     console.log("FUNCIONARIO: ", input);
     try {
       const updatedFuncionario = yield prisma_default.funcionario.update({
-        where: { id: Number(id) },
-        // Ensure id is treated as a number
+        where: { id },
         data: {
           name,
           cargo: {
@@ -324,12 +323,10 @@ function updateFuncionario(id, input) {
               var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
               return {
                 where: {
-                  // Construct a unique identifier object
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
-                    funcionarioId: Number(id)
-                    // Ensure id is treated as a number
+                    funcionarioId: id
                   }
                 },
                 update: {
@@ -502,7 +499,7 @@ function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
   return __async(this, null, function* () {
     try {
       const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: Number(funcionarioId) }
+        where: { id: funcionarioId }
       });
       if (!funcionario) {
         throw new Error("Funcion\xE1rio n\xE3o encontrado");
@@ -516,15 +513,14 @@ function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
       if (!tabelaFuncionario) {
         throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
       }
-      const affirmedFuncionarioId = Number(funcionario.id);
       yield prisma_default.tabelaFuncionarios.update({
         where: {
-          id: affirmedFuncionarioId
+          id: tabelaFuncionario.id
         },
         data: {
           funcionarios: {
             connect: {
-              id: Number(funcionario.id)
+              id: funcionario.id
             }
           }
         }

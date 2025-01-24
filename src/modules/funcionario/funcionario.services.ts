@@ -225,7 +225,7 @@ export async function updateFuncionario(
 
   try {
     const updatedFuncionario = await prisma.funcionario.update({
-      where: { id: Number(id) }, // Ensure id is treated as a number
+      where: { id },
       data: {
         name,
         cargo: {
@@ -247,11 +247,10 @@ export async function updateFuncionario(
           ? {
               upsert: salarios.map((salario) => ({
                 where: {
-                  // Construct a unique identifier object
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
-                    funcionarioId: Number(id), // Ensure id is treated as a number
+                    funcionarioId: id,
                   },
                 },
                 update: {
@@ -450,7 +449,7 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
 ) {
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: Number(funcionarioId) },
+      where: { id: funcionarioId },
     });
 
     if (!funcionario) {
@@ -468,15 +467,14 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
-    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: affirmedFuncionarioId,
+        id: tabelaFuncionario.id,
       },
       data: {
         funcionarios: {
           connect: {
-            id: Number(funcionario.id),
+            id: funcionario.id,
           },
         },
       },
