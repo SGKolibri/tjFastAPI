@@ -423,9 +423,10 @@ export async function addFuncionarioToTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
+    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: tabelaFuncionario.id,
+        id: affirmedFuncionarioId,
       },
       data: {
         funcionarios: {
@@ -467,9 +468,10 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
+    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: Number(tabelaFuncionario.id),
+        id: affirmedFuncionarioId,
       },
       data: {
         funcionarios: {
@@ -511,9 +513,10 @@ export async function removeFuncionarioFromTabelaFuncionario(
       throw new Error("Tabela de funcionários não encontrada");
     }
 
+    const affirmedFuncionarioId = Number(funcionario.id);
     await prisma.tabelaFuncionarios.update({
       where: {
-        id: tabelaFuncionario.id,
+        id: affirmedFuncionarioId,
       },
       data: {
         funcionarios: {
