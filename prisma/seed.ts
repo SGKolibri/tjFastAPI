@@ -42,7 +42,7 @@ const createAdmin = async () => {
 
 const register = async () => {
   await registerCargos();
-  await createFuncionarios();
+  // await createFuncionarios();
 };
 
 const registerCargos = async () => {
