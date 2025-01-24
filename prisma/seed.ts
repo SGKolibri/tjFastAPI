@@ -13,6 +13,7 @@ async function seed() {
 
 const createAdmin = async () => {
   const password = process.env.ADMIN_PASSWORD;
+  const id = process.env.ADMIN_CUID;
 
   if (!password) {
     throw new Error("ADMIN_PASSWORD environment variable is not set.");
@@ -31,7 +32,7 @@ const createAdmin = async () => {
 
   await prisma.admin.create({
     data: {
-      id: 1,
+      id: id,
       email: "admin@tjinstalacoes.com",
       name: "TJAdmin",
       password: hash,

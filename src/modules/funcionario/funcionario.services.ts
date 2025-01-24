@@ -93,7 +93,7 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     await Promise.all(
       salaries.map((salary) =>
         addFuncionarioToTabelaFuncionario(
-          Number(funcionario.id),
+          funcionario.id,
           salary.mes,
           salary.ano
         )
@@ -145,13 +145,13 @@ export async function findFuncionarios(search = "") {
   });
 }
 
-export async function updateFuncionarioStatus(id: number) {
+export async function updateFuncionarioStatus(id: string) {
   if (!id || typeof id !== "number") {
     throw new Error("Invalid ID provided");
   }
 
   const funcionario = await prisma.funcionario.findUnique({
-    where: { id: Number(id) }, // Ensure id is treated as a number
+    where: { id }, // Ensure id is treated as a number
   });
 
   if (!funcionario) {
@@ -162,7 +162,7 @@ export async function updateFuncionarioStatus(id: number) {
 
   try {
     return await prisma.funcionario.update({
-      where: { id: Number(id) }, // Ensure id is treated as a number
+      where: { id }, // Ensure id is treated as a number
       data: {
         status,
       },
@@ -173,9 +173,9 @@ export async function updateFuncionarioStatus(id: number) {
   }
 }
 
-export async function findFuncionarioById(id: number) {
+export async function findFuncionarioById(id: string) {
   return await prisma.funcionario.findUnique({
-    where: { id: Number(id) }, // Ensure id is treated as a number
+    where: { id }, // Ensure id is treated as a number
 
     select: {
       id: true,
@@ -211,7 +211,7 @@ export async function findFuncionarioById(id: number) {
 }
 
 export async function updateFuncionario(
-  id: number,
+  id: string,
   input: CreateFuncionarioInput
 ) {
   const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
@@ -326,13 +326,13 @@ export async function updateFuncionario(
 }
 
 export async function addSalarioToFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   input: AddSalarioToFuncionarioInput
 ) {
   const { salario } = input;
   try {
     const funcionario = await prisma.funcionario.update({
-      where: { id: Number(funcionarioId) },
+      where: { id: funcionarioId },
       data: {
         salarios: {
           create: {
@@ -368,25 +368,25 @@ export async function addSalarioToFuncionario(
 }
 
 export async function deleteSalarioFromFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   salarioId: string
 ) {
   return await prisma.salarioMensal.delete({
     where: {
       id: salarioId,
-      funcionarioId: Number(funcionarioId),
+      funcionarioId,
     },
   });
 }
 
 export async function getSalarioFromFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   salarioId: string
 ) {
   return await prisma.salarioMensal.findUnique({
     where: {
       id: salarioId,
-      funcionarioId: Number(funcionarioId),
+      funcionarioId,
     },
   });
 }
@@ -397,14 +397,14 @@ export async function getTotalFuncionarios() {
 
 // Tabela Funcionarios is identified by month and year, and so is the funcionario salary
 export async function addFuncionarioToTabelaFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   mes: number,
   ano: number
 ) {
   console.log("FUNCIONARIO ID: ", Number(funcionarioId));
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: Number(funcionarioId) },
+      where: { id: funcionarioId },
     });
 
     if (!funcionario) {
@@ -442,7 +442,7 @@ export async function addFuncionarioToTabelaFuncionario(
 }
 
 export async function addUpdatedFuncionarioToTabelaFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   mes: number,
   ano: number
 ) {
@@ -486,13 +486,13 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
 }
 
 export async function removeFuncionarioFromTabelaFuncionario(
-  funcionarioId: number,
+  funcionarioId: string,
   mes: number,
   ano: number
 ) {
   try {
     const funcionario = await prisma.funcionario.findUnique({
-      where: { id: Number(funcionarioId) },
+      where: { id: funcionarioId },
     });
 
     if (!funcionario) {

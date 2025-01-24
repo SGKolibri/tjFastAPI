@@ -49,7 +49,7 @@ export async function getFuncionariosHandler(
 
 export async function updateFuncionarioStatusHandler(
   request: FastifyRequest<{
-    Params: { id: number };
+    Params: { id: string };
     Body: { status: boolean };
   }>,
   reply: FastifyReply
@@ -101,7 +101,7 @@ export async function registerManyFuncionariosAtOnceHandler(
 
 export async function updateFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { id: number };
+    Params: { id: string };
     Body: CreateFuncionarioInput;
   }>,
   reply: FastifyReply
@@ -119,7 +119,7 @@ export async function updateFuncionarioHandler(
 
 export async function addSalarioToFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { id: number };
+    Params: { id: string };
     Body: AddSalarioToFuncionarioInput;
   }>,
   reply: FastifyReply
@@ -145,7 +145,7 @@ export async function addSalarioToFuncionarioHandler(
 
 export async function deleteSalarioFromFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { funcionarioId: number; salarioId: string };
+    Params: { funcionarioId: string; salarioId: string };
   }>,
   reply: FastifyReply
 ) {

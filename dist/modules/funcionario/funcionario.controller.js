@@ -134,7 +134,7 @@ function createFuncionario(input) {
       yield Promise.all(
         salaries.map(
           (salary) => addFuncionarioToTabelaFuncionario(
-            Number(funcionario.id),
+            funcionario.id,
             salary.mes,
             salary.ano
           )
@@ -192,7 +192,7 @@ function updateFuncionarioStatus(id) {
       throw new Error("Invalid ID provided");
     }
     const funcionario = yield prisma_default.funcionario.findUnique({
-      where: { id: Number(id) }
+      where: { id }
       // Ensure id is treated as a number
     });
     if (!funcionario) {
@@ -202,7 +202,7 @@ function updateFuncionarioStatus(id) {
     const status = funcionario.status ? false : true;
     try {
       return yield prisma_default.funcionario.update({
-        where: { id: Number(id) },
+        where: { id },
         // Ensure id is treated as a number
         data: {
           status
@@ -217,7 +217,7 @@ function updateFuncionarioStatus(id) {
 function findFuncionarioById(id) {
   return __async(this, null, function* () {
     return yield prisma_default.funcionario.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       // Ensure id is treated as a number
       select: {
         id: true,
@@ -361,7 +361,7 @@ function addSalarioToFuncionario(funcionarioId, input) {
     const { salario } = input;
     try {
       const funcionario = yield prisma_default.funcionario.update({
-        where: { id: Number(funcionarioId) },
+        where: { id: funcionarioId },
         data: {
           salarios: {
             create: {
@@ -398,7 +398,7 @@ function deleteSalarioFromFuncionario(funcionarioId, salarioId) {
     return yield prisma_default.salarioMensal.delete({
       where: {
         id: salarioId,
-        funcionarioId: Number(funcionarioId)
+        funcionarioId
       }
     });
   });
@@ -408,7 +408,7 @@ function getSalarioFromFuncionario(funcionarioId, salarioId) {
     return yield prisma_default.salarioMensal.findUnique({
       where: {
         id: salarioId,
-        funcionarioId: Number(funcionarioId)
+        funcionarioId
       }
     });
   });
@@ -423,7 +423,7 @@ function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
     console.log("FUNCIONARIO ID: ", Number(funcionarioId));
     try {
       const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: Number(funcionarioId) }
+        where: { id: funcionarioId }
       });
       if (!funcionario) {
         throw new Error("Funcion\xE1rio n\xE3o encontrado");

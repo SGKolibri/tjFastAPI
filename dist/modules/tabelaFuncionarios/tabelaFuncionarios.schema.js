@@ -96,10 +96,10 @@ var addSalarioToFuncionarioSchema = import_zod.z.object({
 });
 var createFuncionarioSchema = import_zod.z.object(__spreadValues({}, funcionarioCore));
 var createFuncionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.number()
+  id: import_zod.z.string()
 }, funcionarioCore));
 var funcionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.number()
+  id: import_zod.z.string()
 }, funcionarioCore));
 var { schemas: funcionarioSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
   {
