@@ -531,11 +531,7 @@ export async function removeFuncionarioFromTabelaFuncionario(
 export async function createFuncionariosFromJSON(
   funcionarios: CreateFuncionarioInput[]
 ) {
-  const limit = pLimit(5); // limit the number of concurrent promises to 5 to avoid overloading the database
-
-  return await Promise.all(
-    funcionarios.map((funcionario) =>
-      limit(() => createFuncionario(funcionario))
-    )
-  );
+  for (const funcionario of funcionarios) {
+    await createFuncionario(funcionario); // Wait for each creation to finish before proceeding
+  }
 }

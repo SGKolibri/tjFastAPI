@@ -91,9 +91,6 @@ var import_fastify = __toESM(require("fastify"));
 var import_jwt = __toESM(require("@fastify/jwt"));
 var import_cors = __toESM(require("@fastify/cors"));
 
-// src/modules/funcionario/funcionario.services.ts
-var import_p_limit = __toESM(require("p-limit"));
-
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
 var prisma = new import_client.PrismaClient();

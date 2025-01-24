@@ -1,9 +1,7 @@
 "use strict";
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -17,14 +15,6 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -65,7 +55,6 @@ __export(funcionario_services_exports, {
   updateFuncionarioStatus: () => updateFuncionarioStatus
 });
 module.exports = __toCommonJS(funcionario_services_exports);
-var import_p_limit = __toESM(require("p-limit"));
 
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
@@ -542,12 +531,9 @@ function removeFuncionarioFromTabelaFuncionario(funcionarioId, mes, ano) {
 }
 function createFuncionariosFromJSON(funcionarios) {
   return __async(this, null, function* () {
-    const limit = (0, import_p_limit.default)(5);
-    return yield Promise.all(
-      funcionarios.map(
-        (funcionario) => limit(() => createFuncionario(funcionario))
-      )
-    );
+    for (const funcionario of funcionarios) {
+      yield createFuncionario(funcionario);
+    }
   });
 }
 // Annotate the CommonJS export names for ESM import in node:
