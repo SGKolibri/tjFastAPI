@@ -30,7 +30,7 @@ var cargoSchema = import_zod.z.object({
   nome: import_zod.z.string()
 });
 var cargoResponseSchema = import_zod.z.object({
-  id: import_zod.z.string(),
+  id: import_zod.z.number(),
   nome: import_zod.z.string()
 });
 var { schemas: cargoSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(

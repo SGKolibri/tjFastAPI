@@ -246,6 +246,7 @@ export async function updateFuncionario(
           ? {
               upsert: salarios.map((salario) => ({
                 where: {
+                  // Construct a unique identifier object
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,

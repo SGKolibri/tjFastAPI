@@ -286,6 +286,7 @@ function updateFuncionario(id, input) {
               var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
               return {
                 where: {
+                  // Construct a unique identifier object
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,

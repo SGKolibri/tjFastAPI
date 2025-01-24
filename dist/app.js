@@ -316,6 +316,7 @@ function updateFuncionario(id, input) {
               var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
               return {
                 where: {
+                  // Construct a unique identifier object
                   mes_ano_funcionarioId: {
                     mes: salario.mes,
                     ano: salario.ano,
@@ -1273,7 +1274,7 @@ var creteAdminSchema = import_zod2.z.object({
   })
 });
 var createAdminResponseSchema = import_zod2.z.object({
-  id: import_zod2.z.string(),
+  id: import_zod2.z.number(),
   email: import_zod2.z.string(),
   name: import_zod2.z.string()
 });
@@ -1311,7 +1312,7 @@ var cargoSchema2 = import_zod3.z.object({
   nome: import_zod3.z.string()
 });
 var cargoResponseSchema = import_zod3.z.object({
-  id: import_zod3.z.string(),
+  id: import_zod3.z.number(),
   nome: import_zod3.z.string()
 });
 var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
