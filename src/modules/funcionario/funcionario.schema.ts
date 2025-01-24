@@ -59,12 +59,12 @@ export const createFuncionarioSchema = z.object({
 });
 
 const createFuncionarioResponseSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   ...funcionarioCore,
 });
 
 const funcionarioResponseSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   ...funcionarioCore,
 });
 

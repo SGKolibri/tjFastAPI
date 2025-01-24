@@ -70,18 +70,29 @@ function createFuncionario(input) {
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
-    console.log("CARGO: ", cargo.nome);
-    const cargoProccess = yield prisma_default.cargo.findFirst({
+    const cpfRegistered = yield prisma_default.funcionario.findFirst({
       where: {
-        nome: cargo.nome
+        cpf
       }
     });
-    if (!cargoProccess) {
+    if (cpfRegistered !== null) {
+      console.log("CPF REGISTERED ERROR: ", cpfRegistered);
+      throw new Error("CPF j\xE1 cadastrado");
+    }
+    const allCargos = yield prisma_default.cargo.findMany();
+    console.log("ALL CARGOS: ", allCargos);
+    const cargoExists = yield prisma_default.cargo.findUnique({
+      where: { nome: cargo.nome }
+    });
+    if (!cargoExists) {
+      console.log("CARGO DOES NOT EXIST: ", cargo.nome);
       yield prisma_default.cargo.create({
         data: {
           nome: cargo.nome
         }
       });
+    } else {
+      console.log("CARGO EXISTS: ", cargo.nome);
     }
     const funcionario = yield prisma_default.funcionario.create({
       data: {
@@ -523,6 +534,21 @@ function getFuncionarioByIdHandler(request, reply) {
     }
   });
 }
+function registerManyFuncionariosAtOnceHandler(request, reply) {
+  return __async(this, null, function* () {
+    const funcionarios = request.body;
+    try {
+      const promises = funcionarios.map(
+        (funcionario) => createFuncionario(funcionario)
+      );
+      const funcionariosCreated = yield Promise.all(promises);
+      return reply.status(201).send(funcionariosCreated);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 function updateFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
     const { id } = request.params;
@@ -585,21 +611,6 @@ function getTotalFuncionariosHandler(request, reply) {
     }
   });
 }
-function registerFuncionariosFromJSON(request, reply) {
-  return __async(this, null, function* () {
-    const funcionarios = request.body;
-    try {
-      const promises = funcionarios.map(
-        (funcionario) => createFuncionario(funcionario)
-      );
-      const funcionariosCreated = yield Promise.all(promises);
-      return reply.status(201).send(funcionariosCreated);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
 
 // src/modules/funcionario/funcionario.schema.ts
 var import_zod = require("zod");
@@ -656,10 +667,10 @@ var addSalarioToFuncionarioSchema = import_zod.z.object({
 });
 var createFuncionarioSchema = import_zod.z.object(__spreadValues({}, funcionarioCore));
 var createFuncionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.string()
+  id: import_zod.z.number()
 }, funcionarioCore));
 var funcionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.string()
+  id: import_zod.z.number()
 }, funcionarioCore));
 var { schemas: funcionarioSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
   {
@@ -684,6 +695,13 @@ function funcionarioRoutes(server) {
         }
       },
       registerFuncionarioHandler
+    );
+    server.post(
+      "/many",
+      {
+        preHandler: [server.authenticate]
+      },
+      registerManyFuncionariosAtOnceHandler
     );
     server.get(
       "/",
@@ -726,13 +744,6 @@ function funcionarioRoutes(server) {
         preHandler: [server.authenticate]
       },
       addSalarioToFuncionarioHandler
-    );
-    server.post(
-      "/json",
-      {
-        preHandler: [server.authenticate]
-      },
-      registerFuncionariosFromJSON
     );
     server.delete(
       "/:funcionarioId/salario/:salarioId",

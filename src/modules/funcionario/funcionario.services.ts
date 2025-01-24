@@ -12,21 +12,34 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     throw new Error("Cargo é obrigatório");
   }
 
-  console.log("CARGO: ", cargo.nome);
-
-  // check if cargo exists in the database, if not, create it
-  const cargoProccess = await prisma.cargo.findFirst({
+  const cpfRegistered = await prisma.funcionario.findFirst({
     where: {
-      nome: cargo.nome,
+      cpf: cpf,
     },
   });
 
-  if (!cargoProccess) {
+  if (cpfRegistered !== null) {
+    console.log("CPF REGISTERED ERROR: ", cpfRegistered);
+    throw new Error("CPF já cadastrado");
+  }
+
+  const allCargos = await prisma.cargo.findMany();
+  console.log("ALL CARGOS: ", allCargos);
+
+  // check if cargo exists in the database, if not, create it
+  const cargoExists = await prisma.cargo.findUnique({
+    where: { nome: cargo.nome },
+  });
+
+  if (!cargoExists) {
+    console.log("CARGO DOES NOT EXIST: ", cargo.nome);
     await prisma.cargo.create({
       data: {
         nome: cargo.nome,
       },
     });
+  } else {
+    console.log("CARGO EXISTS: ", cargo.nome);
   }
 
   const funcionario = await prisma.funcionario.create({
@@ -129,7 +142,7 @@ export async function findFuncionarios(search = "") {
   });
 }
 
-export async function updateFuncionarioStatus(id: string) {
+export async function updateFuncionarioStatus(id: number) {
   const funcionario = await prisma.funcionario.findUnique({
     where: { id },
   });
@@ -148,7 +161,7 @@ export async function updateFuncionarioStatus(id: string) {
   });
 }
 
-export async function findFuncionarioById(id: string) {
+export async function findFuncionarioById(id: number) {
   return await prisma.funcionario.findUnique({
     where: { id },
     select: {
@@ -185,7 +198,7 @@ export async function findFuncionarioById(id: string) {
 }
 
 export async function updateFuncionario(
-  id: string,
+  id: number,
   input: CreateFuncionarioInput
 ) {
   const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
@@ -300,7 +313,7 @@ export async function updateFuncionario(
 }
 
 export async function addSalarioToFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   input: AddSalarioToFuncionarioInput
 ) {
   const { salario } = input;
@@ -342,7 +355,7 @@ export async function addSalarioToFuncionario(
 }
 
 export async function deleteSalarioFromFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   salarioId: string
 ) {
   return await prisma.salarioMensal.delete({
@@ -354,7 +367,7 @@ export async function deleteSalarioFromFuncionario(
 }
 
 export async function getSalarioFromFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   salarioId: string
 ) {
   return await prisma.salarioMensal.findUnique({
@@ -371,7 +384,7 @@ export async function getTotalFuncionarios() {
 
 // Tabela Funcionarios is identified by month and year, and so is the funcionario salary
 export async function addFuncionarioToTabelaFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   mes: number,
   ano: number
 ) {
@@ -416,7 +429,7 @@ export async function addFuncionarioToTabelaFuncionario(
 }
 
 export async function addUpdatedFuncionarioToTabelaFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   mes: number,
   ano: number
 ) {
@@ -460,7 +473,7 @@ export async function addUpdatedFuncionarioToTabelaFuncionario(
 }
 
 export async function removeFuncionarioFromTabelaFuncionario(
-  funcionarioId: string,
+  funcionarioId: number,
   mes: number,
   ano: number
 ) {
@@ -501,4 +514,12 @@ export async function removeFuncionarioFromTabelaFuncionario(
   } catch (e) {
     console.log(e);
   }
+}
+
+export async function createFuncionariosFromJSON(
+  funcionarios: CreateFuncionarioInput[]
+) {
+  return funcionarios.map((funcionario) => {
+    return createFuncionario(funcionario);
+  });
 }

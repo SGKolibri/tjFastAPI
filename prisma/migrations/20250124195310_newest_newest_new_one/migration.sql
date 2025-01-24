@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Admin" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
     "password" TEXT NOT NULL,
@@ -12,13 +12,14 @@ CREATE TABLE "Admin" (
 
 -- CreateTable
 CREATE TABLE "Funcionario" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "cargoId" TEXT NOT NULL,
+    "cargoId" TEXT,
     "cpf" TEXT NOT NULL,
     "chavePix" TEXT NOT NULL,
     "banco" TEXT NOT NULL,
     "contato" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "Funcionario_pkey" PRIMARY KEY ("id")
 );
@@ -28,7 +29,7 @@ CREATE TABLE "SalarioMensal" (
     "id" TEXT NOT NULL,
     "mes" INTEGER NOT NULL,
     "ano" INTEGER NOT NULL,
-    "funcionarioId" TEXT NOT NULL,
+    "funcionarioId" INTEGER NOT NULL,
     "salarioBase" DOUBLE PRECISION NOT NULL,
     "horasExtras" DOUBLE PRECISION NOT NULL,
     "faltas" DOUBLE PRECISION NOT NULL,
@@ -55,23 +56,35 @@ CREATE TABLE "Beneficio" (
 );
 
 -- CreateTable
-CREATE TABLE "Agenda" (
+CREATE TABLE "Cargo" (
     "id" TEXT NOT NULL,
-    "mes" INTEGER NOT NULL,
-    "ano" INTEGER NOT NULL,
+    "nome" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Agenda_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Cargo_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TabelaFuncionarios" (
+    "id" TEXT NOT NULL,
+    "mes" INTEGER NOT NULL,
+    "ano" INTEGER NOT NULL,
+    "anomes" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "TabelaFuncionarios_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Evento" (
     "id" TEXT NOT NULL,
-    "nome" TEXT NOT NULL,
-    "desc" TEXT,
-    "data" TIMESTAMP(3) NOT NULL,
-    "agendaId" TEXT NOT NULL,
+    "titulo" TEXT NOT NULL,
+    "descricao" TEXT,
+    "dataInicio" TIMESTAMP(3) NOT NULL,
+    "dataFim" TIMESTAMP(3) NOT NULL,
+    "allDay" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -79,17 +92,18 @@ CREATE TABLE "Evento" (
 );
 
 -- CreateTable
-CREATE TABLE "CARGO" (
-    "id" TEXT NOT NULL,
-    "nome" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+CREATE TABLE "_FuncionarioTabelaFuncionarios" (
+    "A" INTEGER NOT NULL,
+    "B" TEXT NOT NULL,
 
-    CONSTRAINT "CARGO_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "_FuncionarioTabelaFuncionarios_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Funcionario_cpf_key" ON "Funcionario"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "SalarioMensal_mes_ano_funcionarioId_key" ON "SalarioMensal"("mes", "ano", "funcionarioId");
@@ -97,8 +111,17 @@ CREATE UNIQUE INDEX "SalarioMensal_mes_ano_funcionarioId_key" ON "SalarioMensal"
 -- CreateIndex
 CREATE UNIQUE INDEX "Beneficio_salarioMensalId_key" ON "Beneficio"("salarioMensalId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Cargo_nome_key" ON "Cargo"("nome");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TabelaFuncionarios_anomes_key" ON "TabelaFuncionarios"("anomes");
+
+-- CreateIndex
+CREATE INDEX "_FuncionarioTabelaFuncionarios_B_index" ON "_FuncionarioTabelaFuncionarios"("B");
+
 -- AddForeignKey
-ALTER TABLE "Funcionario" ADD CONSTRAINT "Funcionario_cargoId_fkey" FOREIGN KEY ("cargoId") REFERENCES "CARGO"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Funcionario" ADD CONSTRAINT "Funcionario_cargoId_fkey" FOREIGN KEY ("cargoId") REFERENCES "Cargo"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SalarioMensal" ADD CONSTRAINT "SalarioMensal_funcionarioId_fkey" FOREIGN KEY ("funcionarioId") REFERENCES "Funcionario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -107,4 +130,7 @@ ALTER TABLE "SalarioMensal" ADD CONSTRAINT "SalarioMensal_funcionarioId_fkey" FO
 ALTER TABLE "Beneficio" ADD CONSTRAINT "Beneficio_salarioMensalId_fkey" FOREIGN KEY ("salarioMensalId") REFERENCES "SalarioMensal"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Evento" ADD CONSTRAINT "Evento_agendaId_fkey" FOREIGN KEY ("agendaId") REFERENCES "Agenda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_FuncionarioTabelaFuncionarios" ADD CONSTRAINT "_FuncionarioTabelaFuncionarios_A_fkey" FOREIGN KEY ("A") REFERENCES "Funcionario"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_FuncionarioTabelaFuncionarios" ADD CONSTRAINT "_FuncionarioTabelaFuncionarios_B_fkey" FOREIGN KEY ("B") REFERENCES "TabelaFuncionarios"("id") ON DELETE CASCADE ON UPDATE CASCADE;

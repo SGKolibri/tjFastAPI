@@ -1,383 +1,254 @@
 [
   {
-    "year": 2024,
-    "months": {
-      "agosto": {
-        "funcionarios": [
-          {
-            "name": "Aldeir de Novaes Bezerra",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Aldenos Gonçalves Soares dos Santos",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Alexandre Gonçalves",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Alvaro Reis Santos",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "André Benedito",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Bruno Fernando Damasceno Oliveira",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Clevison Andrade Mota",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Dailton Rodrigues da Rocha",
-            "cargo": "Encarregado de hidraulica"
-          },
-          {
-            "name": "Daniel Lopes",
-            "cargo": "Auxiliar de administração"
-          },
-          {
-            "name": "Denil wesley",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Fabiano Ferreira",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Geovane Alves da Silva",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Gleydson Luciano Peixoto",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Gustavo Silva de Sousa",
-            "cargo": "Encarregado de hidráulica"
-          },
-          {
-            "name": "Helio dos Santos",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Jailton Gomes",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "James Fernandes",
-            "cargo": "Almoxarifado"
-          },
-          {
-            "name": "Jessica Tavares",
-            "cargo": "Assistente de engenharia"
-          },
-          {
-            "name": "João Marcos Santos da Silva",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "João Paulo Dutra Serafim",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "José Arimateia",
-            "cargo": "Encarregado de hidráulica"
-          },
-          {
-            "name": "José Roberto Pereira da Silva",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Josue Pereira Lima",
-            "cargo": "Auxiliar de hidraulic"
-          },
-          {
-            "name": "Lucas Pereira Maia",
-            "cargo": "Encarregado de hidraulica"
-          },
-          {
-            "name": "Lucas Quadrado",
-            "cargo": "Comprador"
-          },
-          {
-            "name": "Maciel da Silva Barbosa",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Maìra Jenifer Cardoso de Oliveira",
-            "cargo": "Assistente de engenharia"
-          },
-          {
-            "name": "Manoel  da Silva Cavalcante",
-            "cargo": "Encarregado de eletrica"
-          },
-          {
-            "name": "Mauro Evangelista",
-            "cargo": "Auxiliar de hidraulica"
-          },
-          {
-            "name": "Maycon Barbosa ds Silva",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Michel da Silva",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Nadilson Gomes Ferreira",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Pedro Henrique",
-            "cargo": "Auxiliar de almoxarifado"
-          },
-          {
-            "name": "Reginaldo Fernandes da Silva Junior",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Renato Mariano de Castro",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Roberto Matheus",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Robson  Ferreira",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Robson Eduardo Gomes da Silva",
-            "cargo": "Supervisor de almoxarifado"
-          },
-          {
-            "name": "Sabrina Bento de Oliveira",
-            "cargo": "Auxiliar de administração"
-          },
-          {
-            "name": "Samuel Lima de Araujo",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "TIONE OLIVEIRA CARDOSO",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Ubiratan Alves Pereira",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Uilson Gomes",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Vitor Hugo Gomes Costa",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Wanderson Maia de Sousa",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Webert Luiz Luz Pereira",
-            "cargo": "Auxiliar de hidraulica"
-          },
-          {
-            "name": "WICTOR WAGNER SALES DE ALMEIDA",
-            "cargo": "Almoxarifado"
-          },
-          {
-            "name": "Zenon Carlos de Sousa",
-            "cargo": "Auxiliar eletricista"
-          }
-        ]
-      },
-      "setembro": {
-        "funcionarios": [
-          {
-            "name": "Aldenos Gonçalves Soares dos Santos",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Alexandre Gonçalves",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Alvaro Reis Santos",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "André Benedito",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Bruno Fernando Damasceno Oliveira",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Daniel Lopes",
-            "cargo": "Auxiliar de administração"
-          },
-          {
-            "name": "Denil wesley",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Fabiano Ferreira",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Geovane Alves da Silva",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Gleydson Luciano Peixoto",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Gustavo Silva de Sousa",
-            "cargo": "Encarregado de hidráulica"
-          },
-          {
-            "name": "Helio dos Santos",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Jailton Gomes",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "James Fernandes",
-            "cargo": "Almoxarifado"
-          },
-          {
-            "name": "Jessica Tavares",
-            "cargo": "Assistente de engenharia"
-          },
-          {
-            "name": "João Marcos Santos da Silva",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "João Paulo Dutra Serafim",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "José Arimateia",
-            "cargo": "Encarregado de hidráulica"
-          },
-          {
-            "name": "José Roberto Pereira da Silva",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Lucas Pereira Maia",
-            "cargo": "Encarregado de hidráulica"
-          },
-          {
-            "name": "Lucas Quadrado",
-            "cargo": "Comprador"
-          },
-          {
-            "name": "Maciel da Silva Barbosa",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Maíra Jenifer Cardoso de Oliveira",
-            "cargo": "Assistente de engenharia"
-          },
-          {
-            "name": "Manoel  da Silva Cavalcante",
-            "cargo": "Encarregado de eletrica"
-          },
-          {
-            "name": "Mauro Evangelista",
-            "cargo": "Auxiliar de hidráulica"
-          },
-          {
-            "name": "Maycon Barbosa ds Silva",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Michel da Silva",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Nadilson Gomes Ferreira",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Patrick Nogueira Ramos",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Pedro Henrique",
-            "cargo": "Auxiliar de almoxarifado"
-          },
-          {
-            "name": "Reginaldo Fernandes da Silva Junior",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Renato Mariano de Castro",
-            "cargo": "Auxiliar de eletrica"
-          },
-          {
-            "name": "Roberto Matheus",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Robson  Ferreira",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Robson Eduardo Gomes da Silva",
-            "cargo": "Supervisor de almoxarifado"
-          },
-          {
-            "name": "Sabrina Bento de Oliveira",
-            "cargo": "Auxiliar de administração"
-          },
-          {
-            "name": "Samuel Lima de Araujo",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Tione Oliveira Cardoso",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Ubiratan Alves Pereira",
-            "cargo": "Auxiliar eletricista"
-          },
-          {
-            "name": "Uilson Gomes",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Vitor Hugo Gomes Costa",
-            "cargo": "Eletricista"
-          },
-          {
-            "name": "Wanderson Maia de Sousa",
-            "cargo": "Encanador"
-          },
-          {
-            "name": "Webert Luiz Luz Pereira",
-            "cargo": "Auxiliar de hidráulica"
-          },
-          {
-            "name": "Wictor Wagner Sales de Almeida",
-            "cargo": "Almoxarifado"
-          }
-        ]
-      }
-    }
+    "name": "Aldenos Gonçalves Soares dos Santos",
+    "cargo": {
+      "nome": "Auxiliar de elétrica"
+    },
+    "chavePix": "aldenosgoncalves427@gmail.com",
+    "cpf": "000.999.999-91",
+    "banco": "AAAAAA",
+    "contato": "(62) 99999-9999",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Alexandre Gonçalves",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "62992136714/caixa",
+    "cpf": "111.999.999-92",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Alvaro Reis Santos",
+    "cargo": {
+      "nome": "Eletricista"
+    },
+    "chavePix": "2006980521/pan",
+    "cpf": "222.999.999-93",
+    "banco": "PAN",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "André Benedito",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "o6231394808/itau",
+    "cpf": "333.999.999-94",
+    "banco": "ITAU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Bruno Fernando Damasceno Oliveira",
+    "cargo": {
+      "nome": "Auxiliar de elétrica"
+    },
+    "chavePix": "62982854747/caixa",
+    "cpf": "444.999.999-95",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Daniel Lopes",
+    "cargo": {
+      "nome": "Auxiliar de administração"
+    },
+    "chavePix": "70200099132/NU",
+    "cpf": "555.999.999-96",
+    "banco": "NU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Denil Wesley",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "62981466873/CAIXA",
+    "cpf": "666.999.999-97",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Fabiano Ferreira",
+    "cargo": {
+      "nome": "Auxiliar eletricista"
+    },
+    "chavePix": "o6963810109/caixa",
+    "cpf": "777.999.999-98",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Geovane Alves da Silva",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "62981527964/brasil",
+    "cpf": "888.999.999-09",
+    "banco": "BRASIL",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Gleydson Luciano Peixoto",
+    "cargo": {
+      "nome": "Eletricista"
+    },
+    "chavePix": "gleydsonluciano14@gmail.com/CAIXA",
+    "cpf": "999.999.999-00",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Leandro Araújo Ferreira",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "leandroaraujo49@hotmail.com",
+    "cpf": "999.000.999-29",
+    "banco": "ITAU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Leandro da Silva Araújo",
+    "cargo": {
+      "nome": "Auxiliar de elétrica"
+    },
+    "chavePix": "leandroaraujo419@gmail.com",
+    "cpf": "999.111.999-39",
+    "banco": "BRADESCO",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Leonardo Lopes",
+    "cargo": {
+      "nome": "Eletricista"
+    },
+    "chavePix": "leonardolopesx@gmail.com",
+    "cpf": "999.222.999-49",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Marcos Vinícius",
+    "cargo": {
+      "nome": "Auxiliar eletricista"
+    },
+    "chavePix": "marcosvin@gmail.com",
+    "cpf": "999.333.999-59",
+    "banco": "BRADESCO",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Paulo Silva",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "paulosilva123@gmail.com",
+    "cpf": "999.444.999-69",
+    "banco": "NU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Roberto Souza",
+    "cargo": {
+      "nome": "Eletricista"
+    },
+    "chavePix": "robertosouza95@gmail.com",
+    "cpf": "999.555.999-79",
+    "banco": "ITAU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Sérgio Santos",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "sergiosantos83@gmail.com",
+    "cpf": "999.666.999-89",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Thiago Pereira",
+    "cargo": {
+      "nome": "Auxiliar de elétrica"
+    },
+    "chavePix": "thiagopereira12@gmail.com",
+    "cpf": "999.777.990-99",
+    "banco": "BRADESCO",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Victor Almeida",
+    "cargo": {
+      "nome": "Eletricista"
+    },
+    "chavePix": "victoralmeida85@gmail.com",
+    "cpf": "999.888.991-99",
+    "banco": "NU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Vitor Silva",
+    "cargo": {
+      "nome": "Auxiliar eletricista"
+    },
+    "chavePix": "vitorsilva77@gmail.com",
+    "cpf": "999.999.000-99",
+    "banco": "ITAU",
+    "contato": "",
+    "status": true,
+    "salarios": []
+  },
+  {
+    "name": "Wesley Fernandes",
+    "cargo": {
+      "nome": "Encanador"
+    },
+    "chavePix": "wesleyfernandes22@gmail.com",
+    "cpf": "999.999.111-99",
+    "banco": "CAIXA",
+    "contato": "",
+    "status": true,
+    "salarios": []
   }
 ]

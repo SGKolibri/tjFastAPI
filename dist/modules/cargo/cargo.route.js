@@ -71,16 +71,15 @@ function createCargo(input) {
 }
 function createCargos(input) {
   return __async(this, null, function* () {
-    const cargosExists = yield prisma_default.cargo.findMany({
-      where: {
-        nome: {
-          in: input.map((cargo) => cargo.nome)
-        }
-      }
-    });
+    console.log("1 - Input: ", input);
+    const existingCargoNames = yield prisma_default.cargo.findMany({
+      select: { nome: true }
+    }).then((cargos2) => cargos2.map((cargo) => cargo.nome));
+    console.log("2 - existingCargoNames: ", existingCargoNames);
     const cargosToCreate = input.filter(
-      (cargo) => !cargosExists.some((c) => c.nome === cargo.nome)
+      (cargo) => !existingCargoNames.includes(cargo.nome)
     );
+    console.log("3 - cargosToCreate: ", cargosToCreate);
     const cargos = yield prisma_default.cargo.createMany({
       data: cargosToCreate
     });

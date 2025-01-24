@@ -44,6 +44,7 @@ __export(funcionario_services_exports, {
   addSalarioToFuncionario: () => addSalarioToFuncionario,
   addUpdatedFuncionarioToTabelaFuncionario: () => addUpdatedFuncionarioToTabelaFuncionario,
   createFuncionario: () => createFuncionario,
+  createFuncionariosFromJSON: () => createFuncionariosFromJSON,
   deleteSalarioFromFuncionario: () => deleteSalarioFromFuncionario,
   findFuncionarioById: () => findFuncionarioById,
   findFuncionarios: () => findFuncionarios,
@@ -67,18 +68,29 @@ function createFuncionario(input) {
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
-    console.log("CARGO: ", cargo.nome);
-    const cargoProccess = yield prisma_default.cargo.findFirst({
+    const cpfRegistered = yield prisma_default.funcionario.findFirst({
       where: {
-        nome: cargo.nome
+        cpf
       }
     });
-    if (!cargoProccess) {
+    if (cpfRegistered !== null) {
+      console.log("CPF REGISTERED ERROR: ", cpfRegistered);
+      throw new Error("CPF j\xE1 cadastrado");
+    }
+    const allCargos = yield prisma_default.cargo.findMany();
+    console.log("ALL CARGOS: ", allCargos);
+    const cargoExists = yield prisma_default.cargo.findUnique({
+      where: { nome: cargo.nome }
+    });
+    if (!cargoExists) {
+      console.log("CARGO DOES NOT EXIST: ", cargo.nome);
       yield prisma_default.cargo.create({
         data: {
           nome: cargo.nome
         }
       });
+    } else {
+      console.log("CARGO EXISTS: ", cargo.nome);
     }
     const funcionario = yield prisma_default.funcionario.create({
       data: {
@@ -506,12 +518,20 @@ function removeFuncionarioFromTabelaFuncionario(funcionarioId, mes, ano) {
     }
   });
 }
+function createFuncionariosFromJSON(funcionarios) {
+  return __async(this, null, function* () {
+    return funcionarios.map((funcionario) => {
+      return createFuncionario(funcionario);
+    });
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   addFuncionarioToTabelaFuncionario,
   addSalarioToFuncionario,
   addUpdatedFuncionarioToTabelaFuncionario,
   createFuncionario,
+  createFuncionariosFromJSON,
   deleteSalarioFromFuncionario,
   findFuncionarioById,
   findFuncionarios,

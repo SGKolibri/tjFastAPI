@@ -49,7 +49,7 @@ export async function getFuncionariosHandler(
 
 export async function updateFuncionarioStatusHandler(
   request: FastifyRequest<{
-    Params: { id: string };
+    Params: { id: number };
     Body: { status: boolean };
   }>,
   reply: FastifyReply
@@ -80,9 +80,28 @@ export async function getFuncionarioByIdHandler(
   }
 }
 
+export async function registerManyFuncionariosAtOnceHandler(
+  request: FastifyRequest<{ Body: CreateFuncionarioInput[] }>,
+  reply: FastifyReply
+) {
+  const funcionarios = request.body;
+
+  try {
+    const promises = funcionarios.map((funcionario) =>
+      createFuncionario(funcionario)
+    );
+    const funcionariosCreated = await Promise.all(promises);
+
+    return reply.status(201).send(funcionariosCreated);
+  } catch (e) {
+    console.error(e);
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
 export async function updateFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { id: string };
+    Params: { id: number };
     Body: CreateFuncionarioInput;
   }>,
   reply: FastifyReply
@@ -100,7 +119,7 @@ export async function updateFuncionarioHandler(
 
 export async function addSalarioToFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { id: string };
+    Params: { id: number };
     Body: AddSalarioToFuncionarioInput;
   }>,
   reply: FastifyReply
@@ -126,7 +145,7 @@ export async function addSalarioToFuncionarioHandler(
 
 export async function deleteSalarioFromFuncionarioHandler(
   request: FastifyRequest<{
-    Params: { funcionarioId: string; salarioId: string };
+    Params: { funcionarioId: number; salarioId: string };
   }>,
   reply: FastifyReply
 ) {
@@ -161,25 +180,6 @@ export async function getTotalFuncionariosHandler(
     const totalFuncionarios = await getTotalFuncionarios();
     return reply.status(201).send({ totalFuncionarios });
   } catch (e) {
-    return reply.status(500).send({ message: "Internal Server Error" });
-  }
-}
-
-export async function registerFuncionariosFromJSON(
-  request: FastifyRequest<{ Body: CreateFuncionarioInput[] }>,
-  reply: FastifyReply
-) {
-  const funcionarios = request.body;
-
-  try {
-    const promises = funcionarios.map((funcionario) =>
-      createFuncionario(funcionario)
-    );
-    const funcionariosCreated = await Promise.all(promises);
-
-    return reply.status(201).send(funcionariosCreated);
-  } catch (e) {
-    console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });
   }
 }

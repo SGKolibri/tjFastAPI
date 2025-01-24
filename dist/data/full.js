@@ -11,7 +11,7 @@ var full_default = [
           },
           {
             name: "Aldenos Gon\xE7alves Soares dos Santos",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Alexandre Gon\xE7alves",
@@ -27,7 +27,7 @@ var full_default = [
           },
           {
             name: "Bruno Fernando Damasceno Oliveira",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Clevison Andrade Mota",
@@ -143,7 +143,7 @@ var full_default = [
           },
           {
             name: "Renato Mariano de Castro",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Roberto Matheus",
@@ -203,7 +203,7 @@ var full_default = [
         funcionarios: [
           {
             name: "Aldenos Gon\xE7alves Soares dos Santos",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Alexandre Gon\xE7alves",
@@ -219,7 +219,7 @@ var full_default = [
           },
           {
             name: "Bruno Fernando Damasceno Oliveira",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Daniel Lopes",
@@ -327,7 +327,7 @@ var full_default = [
           },
           {
             name: "Renato Mariano de Castro",
-            cargo: "Auxiliar de eletrica"
+            cargo: "Auxiliar de el\xE9trica"
           },
           {
             name: "Roberto Matheus",

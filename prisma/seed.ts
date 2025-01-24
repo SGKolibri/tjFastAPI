@@ -1,13 +1,14 @@
-import { registerFuncionariosFromJSON } from "../src/modules/funcionario/funcionario.controller";
 import { hashPassword } from "../src/utils/hash";
 import funcionariosFile from "../src/data/funcionariosData.json";
 import prisma from "../src/utils/prisma";
 import { createCargos } from "../src/modules/cargo/cargo.services";
+import { createFuncionariosFromJSON } from "../src/modules/funcionario/funcionario.services";
 import cargosJSON from "../src/data/cargos.json";
+import funcionariosData from "../src/data/funcionariosData.json";
 
 async function seed() {
   await createAdmin();
-  await registerCargos();
+  await register();
 }
 
 const createAdmin = async () => {
@@ -39,9 +40,19 @@ const createAdmin = async () => {
   });
 };
 
+const register = async () => {
+  await registerCargos();
+  await createFuncionarios();
+};
+
 const registerCargos = async () => {
   createCargos(cargosJSON);
 };
+
+const createFuncionarios = async () => {
+  await createFuncionariosFromJSON(funcionariosData);
+};
+
 seed().then(() => {
   console.log("Database seeded.");
   prisma.$disconnect();

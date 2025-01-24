@@ -1,5 +1,5 @@
 [
-  { "nome": "Auxiliar de eletrica" },
+  { "nome": "Auxiliar de elétrica" },
   { "nome": "Encanador" },
   { "nome": "Eletricista" },
   { "nome": "Auxiliar de administração" },
@@ -8,7 +8,7 @@
   { "nome": "Almoxarifado" },
   { "nome": "Assistente de engenharia" },
   { "nome": "Comprador" },
-  { "nome": "Encarregado de eletrica" },
+  { "nome": "Encarregado de elétrica" },
   { "nome": "Auxiliar de almoxarifado" },
   { "nome": "Supervisor de almoxarifado" },
   { "nome": "Auxiliar de hidráulica" }

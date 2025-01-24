@@ -23,11 +23,11 @@ model Admin {
 }
 
 model Funcionario {
-  id                   String               @id @default(cuid())
+  id                   Int                  @id @default(autoincrement())  
   name                 String
   cargo                Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
   cargoId              String?
-  cpf                  String
+  cpf                  String               @unique
   chavePix             String
   banco                String
   contato              String
@@ -44,7 +44,7 @@ model SalarioMensal {
   mes           Int // Mês (1-12)
   ano           Int // Ano
   funcionario   Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade) // if Funcionario is deleted, delete SalarioMensal
-  funcionarioId String
+  funcionarioId Int
 
   salarioBase Float // Salário base
   horasExtras Float // Total de horas extras

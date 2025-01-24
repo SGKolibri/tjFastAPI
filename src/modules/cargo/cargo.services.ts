@@ -25,19 +25,21 @@ export async function createCargo(input: CreateCargoInput) {
 }
 
 export async function createCargos(input: CreateCargoInput[]) {
+  console.log("1 - Input: ", input);
+
   // verify if cargos already exists
-  const cargosExists = await prisma.cargo.findMany({
-    where: {
-      nome: {
-        in: input.map((cargo) => cargo.nome),
-      },
-    },
-  });
+  const existingCargoNames = await prisma.cargo
+    .findMany({
+      select: { nome: true },
+    })
+    .then((cargos) => cargos.map((cargo) => cargo.nome));
+  console.log("2 - existingCargoNames: ", existingCargoNames);
 
   // filter cargos that already exists
   const cargosToCreate = input.filter(
-    (cargo) => !cargosExists.some((c) => c.nome === cargo.nome)
+    (cargo) => !existingCargoNames.includes(cargo.nome)
   );
+  console.log("3 - cargosToCreate: ", cargosToCreate);
 
   // create cargos
   const cargos = await prisma.cargo.createMany({
