@@ -1,5 +1,9 @@
 import { FastifyInstance } from "fastify";
-import { createEventoHandler, getEventosHandler } from "./evento.controller";
+import {
+  createEventoHandler,
+  deleteEventoHandler,
+  getEventosHandler,
+} from "./evento.controller";
 
 export default async function eventoRoutes(server: FastifyInstance) {
   server.post(
@@ -16,5 +20,13 @@ export default async function eventoRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     getEventosHandler
+  );
+
+  server.delete(
+    "/:id",
+    {
+      preHandler: [server.authenticate],
+    },
+    deleteEventoHandler
   );
 }

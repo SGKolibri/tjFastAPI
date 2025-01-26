@@ -22,3 +22,11 @@ export async function getEventos() {
     },
   });
 }
+
+export async function deleteEvento(id: string) {
+  return prisma.evento.delete({
+    where: {
+      id,
+    },
+  });
+}
