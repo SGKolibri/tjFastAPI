@@ -95,7 +95,7 @@ model TabelaFuncionarios {
 }
 
 model Evento {
-  id          String   @id @default(uuid()) // ID único para o evento
+  id          String   @id @default(cuid()) // ID único para o evento
   titulo      String   // Título do evento
   descricao   String?  // Descrição opcional do evento
   dataInicio  DateTime // Data e hora de início
