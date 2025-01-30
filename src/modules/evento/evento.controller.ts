@@ -37,6 +37,8 @@ export async function deleteEventoHandler(
 ) {
   const { id } = request.params as { id: string };
 
+  console.log("ID do evento: ", id);
+
   try {
     await deleteEvento(id);
     return reply.status(204).send({ message: "Evento deletado com sucesso" });
