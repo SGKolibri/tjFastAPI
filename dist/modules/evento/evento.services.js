@@ -41,6 +41,7 @@ var __async = (__this, __arguments, generator) => {
 var evento_services_exports = {};
 __export(evento_services_exports, {
   createEvento: () => createEvento,
+  deleteEvento: () => deleteEvento,
   getEventos: () => getEventos
 });
 module.exports = __toCommonJS(evento_services_exports);
@@ -74,8 +75,18 @@ function getEventos() {
     });
   });
 }
+function deleteEvento(id) {
+  return __async(this, null, function* () {
+    return prisma_default.evento.delete({
+      where: {
+        id
+      }
+    });
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   createEvento,
+  deleteEvento,
   getEventos
 });

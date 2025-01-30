@@ -32,15 +32,16 @@ export async function getEventosHandler(
 }
 
 export async function deleteEventoHandler(
-  request: FastifyRequest,
+  request: FastifyRequest<{ Params: { eventoId: string } }>,
   reply: FastifyReply
 ) {
-  const { id } = request.params as { id: string };
+  console.log("Delete evento handler");
+  const { eventoId } = request.params;
 
-  console.log("ID do evento: ", id);
+  console.log("ID do evento: ", eventoId);
 
   try {
-    await deleteEvento(id);
+    await deleteEvento(eventoId);
     return reply.status(204).send({ message: "Evento deletado com sucesso" });
   } catch (e) {
     console.error(e);

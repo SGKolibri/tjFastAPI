@@ -23,7 +23,7 @@ export default async function eventoRoutes(server: FastifyInstance) {
   );
 
   server.delete(
-    "/:id",
+    "/:eventoId",
     {
       preHandler: [server.authenticate],
     },

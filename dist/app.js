@@ -1211,6 +1211,15 @@ function getEventos() {
     });
   });
 }
+function deleteEvento(id) {
+  return __async(this, null, function* () {
+    return prisma_default.evento.delete({
+      where: {
+        id
+      }
+    });
+  });
+}
 
 // src/modules/evento/evento.controller.ts
 function createEventoHandler(request, reply) {
@@ -1236,6 +1245,20 @@ function getEventosHandler(request, reply) {
     }
   });
 }
+function deleteEventoHandler(request, reply) {
+  return __async(this, null, function* () {
+    console.log("Delete evento handler");
+    const { eventoId } = request.params;
+    console.log("ID do evento: ", eventoId);
+    try {
+      yield deleteEvento(eventoId);
+      return reply.status(204).send({ message: "Evento deletado com sucesso" });
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 
 // src/modules/evento/evento.route.ts
 function eventoRoutes(server2) {
@@ -1253,6 +1276,13 @@ function eventoRoutes(server2) {
         preHandler: [server2.authenticate]
       },
       getEventosHandler
+    );
+    server2.delete(
+      "/:eventoId",
+      {
+        preHandler: [server2.authenticate]
+      },
+      deleteEventoHandler
     );
   });
 }
