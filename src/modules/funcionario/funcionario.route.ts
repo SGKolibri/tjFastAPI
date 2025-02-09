@@ -12,6 +12,7 @@ import {
   getTotalFuncionariosHandler,
   updateFuncionarioStatusHandler,
   registerManyFuncionariosAtOnceHandler,
+  AddSalariosToFuncionarioHandler,
 } from "./funcionario.controller";
 import { $ref } from "./funcionario.schema";
 
@@ -37,6 +38,14 @@ async function funcionarioRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     registerManyFuncionariosAtOnceHandler
+  );
+
+  server.post(
+    "/:id/salarios",
+    {
+      preHandler: [server.authenticate],
+    },
+    AddSalariosToFuncionarioHandler
   );
 
   server.get(

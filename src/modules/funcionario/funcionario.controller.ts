@@ -143,6 +143,31 @@ export async function addSalarioToFuncionarioHandler(
   }
 }
 
+export async function AddSalariosToFuncionarioHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body: AddSalarioToFuncionarioInput[];
+  }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params;
+  const salarios = request.body;
+  try {
+    const funcionario = await findFuncionarioById(id);
+    if (!funcionario) {
+      return reply.status(404).send({ message: "Funcionário não encontrado." });
+    }
+
+    const promises = salarios.map((salario) =>
+      addSalarioToFuncionario(id, salario)
+    );
+    const salariosAdded = await Promise.all(promises);
+    return reply.status(201).send(salariosAdded);
+  } catch (e) {
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
 export async function deleteSalarioFromFuncionarioHandler(
   request: FastifyRequest<{
     Params: { funcionarioId: string; salarioId: string };

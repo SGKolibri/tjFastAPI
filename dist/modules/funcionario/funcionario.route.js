@@ -592,6 +592,25 @@ function addSalarioToFuncionarioHandler(request, reply) {
     }
   });
 }
+function AddSalariosToFuncionarioHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { id } = request.params;
+    const salarios = request.body;
+    try {
+      const funcionario = yield findFuncionarioById(id);
+      if (!funcionario) {
+        return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
+      }
+      const promises = salarios.map(
+        (salario) => addSalarioToFuncionario(id, salario)
+      );
+      const salariosAdded = yield Promise.all(promises);
+      return reply.status(201).send(salariosAdded);
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 function deleteSalarioFromFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
     const { funcionarioId, salarioId } = request.params;
@@ -715,6 +734,13 @@ function funcionarioRoutes(server) {
         preHandler: [server.authenticate]
       },
       registerManyFuncionariosAtOnceHandler
+    );
+    server.post(
+      "/:id/salarios",
+      {
+        preHandler: [server.authenticate]
+      },
+      AddSalariosToFuncionarioHandler
     );
     server.get(
       "/",

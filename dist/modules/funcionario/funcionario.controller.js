@@ -40,6 +40,7 @@ var __async = (__this, __arguments, generator) => {
 // src/modules/funcionario/funcionario.controller.ts
 var funcionario_controller_exports = {};
 __export(funcionario_controller_exports, {
+  AddSalariosToFuncionarioHandler: () => AddSalariosToFuncionarioHandler,
   addSalarioToFuncionarioHandler: () => addSalarioToFuncionarioHandler,
   deleteSalarioFromFuncionarioHandler: () => deleteSalarioFromFuncionarioHandler,
   getFuncionarioByIdHandler: () => getFuncionarioByIdHandler,
@@ -586,6 +587,25 @@ function addSalarioToFuncionarioHandler(request, reply) {
     }
   });
 }
+function AddSalariosToFuncionarioHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { id } = request.params;
+    const salarios = request.body;
+    try {
+      const funcionario = yield findFuncionarioById(id);
+      if (!funcionario) {
+        return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
+      }
+      const promises = salarios.map(
+        (salario) => addSalarioToFuncionario(id, salario)
+      );
+      const salariosAdded = yield Promise.all(promises);
+      return reply.status(201).send(salariosAdded);
+    } catch (e) {
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 function deleteSalarioFromFuncionarioHandler(request, reply) {
   return __async(this, null, function* () {
     const { funcionarioId, salarioId } = request.params;
@@ -620,6 +640,7 @@ function getTotalFuncionariosHandler(request, reply) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  AddSalariosToFuncionarioHandler,
   addSalarioToFuncionarioHandler,
   deleteSalarioFromFuncionarioHandler,
   getFuncionarioByIdHandler,
