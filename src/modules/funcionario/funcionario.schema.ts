@@ -73,6 +73,7 @@ export type GetFuncionarioByInput = z.infer<typeof funcionarioResponseSchema>;
 export type AddSalarioToFuncionarioInput = z.infer<
   typeof addSalarioToFuncionarioSchema
 >;
+export type AddSalariosToFuncionarioInput = z.infer<typeof salarioSchema>[];
 
 export const { schemas: funcionarioSchemas, $ref } = buildJsonSchemas(
   {

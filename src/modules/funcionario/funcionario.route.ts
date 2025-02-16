@@ -40,6 +40,16 @@ async function funcionarioRoutes(server: FastifyInstance) {
     registerManyFuncionariosAtOnceHandler
   );
 
+  // add salario to funcionario
+  server.post(
+    "/:id/salario",
+    {
+      preHandler: [server.authenticate],
+    },
+    addSalarioToFuncionarioHandler
+  );
+
+  // add salarios to funcionario
   server.post(
     "/:id/salarios",
     {
@@ -86,15 +96,6 @@ async function funcionarioRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     updateFuncionarioStatusHandler
-  );
-
-  // add salario to funcionario
-  server.post(
-    "/:id/salario",
-    {
-      preHandler: [server.authenticate],
-    },
-    addSalarioToFuncionarioHandler
   );
 
   server.delete(

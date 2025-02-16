@@ -497,6 +497,49 @@ function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
     }
   });
 }
+function addSalariosToFuncionario(funcionarioId, salarios) {
+  return __async(this, null, function* () {
+    console.log("SALARIOS: ", salarios);
+    try {
+      yield prisma_default.$transaction((prisma2) => __async(this, null, function* () {
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        for (const salario of salarios) {
+          yield prisma2.salarioMensal.create({
+            data: {
+              mes: salario.mes,
+              // Access `mes` from `salario`
+              ano: salario.ano,
+              // Access `ano` from `salario`
+              salarioBase: salario.salarioBase,
+              // Access `salarioBase` from `salario`
+              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
+              descontos: (_b = salario.descontos) != null ? _b : 0,
+              bonus: (_c = salario.bonus) != null ? _c : 0,
+              faltas: (_d = salario.faltas) != null ? _d : 0,
+              extras: (_e = salario.extras) != null ? _e : 0,
+              beneficios: salario.beneficios ? {
+                create: {
+                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
+                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
+                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
+                }
+              } : void 0,
+              funcionario: {
+                connect: {
+                  id: funcionarioId
+                }
+              }
+            }
+          });
+        }
+      }));
+      console.log("Sal\xE1rios adicionados com sucesso!");
+    } catch (error) {
+      console.error("Erro ao adicionar sal\xE1rios:", error);
+      throw new Error("Falha ao adicionar sal\xE1rios");
+    }
+  });
+}
 
 // src/modules/funcionario/funcionario.controller.ts
 function registerFuncionarioHandler(request, reply) {
@@ -601,11 +644,8 @@ function AddSalariosToFuncionarioHandler(request, reply) {
       if (!funcionario) {
         return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
       }
-      const promises = salarios.map(
-        (salario) => addSalarioToFuncionario(id, salario)
-      );
-      const salariosAdded = yield Promise.all(promises);
-      return reply.status(201).send(salariosAdded);
+      const addedSalarios = yield addSalariosToFuncionario(id, salarios);
+      return reply.status(201).send({ status: 201, salarios: addedSalarios });
     } catch (e) {
       return reply.status(500).send({ message: "Internal Server Error" });
     }
@@ -736,6 +776,13 @@ function funcionarioRoutes(server) {
       registerManyFuncionariosAtOnceHandler
     );
     server.post(
+      "/:id/salario",
+      {
+        preHandler: [server.authenticate]
+      },
+      addSalarioToFuncionarioHandler
+    );
+    server.post(
       "/:id/salarios",
       {
         preHandler: [server.authenticate]
@@ -776,13 +823,6 @@ function funcionarioRoutes(server) {
         preHandler: [server.authenticate]
       },
       updateFuncionarioStatusHandler
-    );
-    server.post(
-      "/:id/salario",
-      {
-        preHandler: [server.authenticate]
-      },
-      addSalarioToFuncionarioHandler
     );
     server.delete(
       "/:funcionarioId/salario/:salarioId",

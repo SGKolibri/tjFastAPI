@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
+  addSalariosToFuncionario,
   addSalarioToFuncionario,
   createFuncionario,
   deleteSalarioFromFuncionario,
@@ -12,6 +13,7 @@ import {
   updateFuncionarioStatus,
 } from "./funcionario.services";
 import {
+  AddSalariosToFuncionarioInput,
   AddSalarioToFuncionarioInput,
   CreateFuncionarioInput,
   /*LoginFuncionarioInput,*/
@@ -146,7 +148,7 @@ export async function addSalarioToFuncionarioHandler(
 export async function AddSalariosToFuncionarioHandler(
   request: FastifyRequest<{
     Params: { id: string };
-    Body: AddSalarioToFuncionarioInput[];
+    Body: AddSalariosToFuncionarioInput;
   }>,
   reply: FastifyReply
 ) {
@@ -158,11 +160,8 @@ export async function AddSalariosToFuncionarioHandler(
       return reply.status(404).send({ message: "Funcionário não encontrado." });
     }
 
-    const promises = salarios.map((salario) =>
-      addSalarioToFuncionario(id, salario)
-    );
-    const salariosAdded = await Promise.all(promises);
-    return reply.status(201).send(salariosAdded);
+    const addedSalarios = await addSalariosToFuncionario(id, salarios);
+    return reply.status(201).send({ status: 201, salarios: addedSalarios });
   } catch (e) {
     return reply.status(500).send({ message: "Internal Server Error" });
   }

@@ -1,6 +1,7 @@
-import pLimit from "p-limit";
+import { Console } from "console";
 import prisma from "../../utils/prisma";
 import {
+  AddSalariosToFuncionarioInput,
   AddSalarioToFuncionarioInput,
   CreateFuncionarioInput,
 } from "./funcionario.schema";
@@ -534,5 +535,50 @@ export async function createFuncionariosFromJSON(
 ) {
   for (const funcionario of funcionarios) {
     await createFuncionario(funcionario); // Wait for each creation to finish before proceeding
+  }
+}
+
+export async function addSalariosToFuncionario(
+  funcionarioId: string,
+  salarios: AddSalariosToFuncionarioInput // Array of salário objects
+) {
+  console.log("SALARIOS: ", salarios);
+  try {
+    // Use Prisma's transaction to ensure atomicity
+    await prisma.$transaction(async (prisma) => {
+      for (const salario of salarios) {
+        await prisma.salarioMensal.create({
+          data: {
+            mes: salario.mes, // Access `mes` from `salario`
+            ano: salario.ano, // Access `ano` from `salario`
+            salarioBase: salario.salarioBase, // Access `salarioBase` from `salario`
+            horasExtras: salario.horasExtras ?? 0,
+            descontos: salario.descontos ?? 0,
+            bonus: salario.bonus ?? 0,
+            faltas: salario.faltas ?? 0,
+            extras: salario.extras ?? 0,
+            beneficios: salario.beneficios
+              ? {
+                  create: {
+                    cafe: salario.beneficios.cafe ?? 0,
+                    almoco: salario.beneficios.almoco ?? 0,
+                    passagem: salario.beneficios.passagem ?? 0,
+                  },
+                }
+              : undefined,
+            funcionario: {
+              connect: {
+                id: funcionarioId,
+              },
+            },
+          },
+        });
+      }
+    });
+
+    console.log("Salários adicionados com sucesso!");
+  } catch (error) {
+    console.error("Erro ao adicionar salários:", error);
+    throw new Error("Falha ao adicionar salários");
   }
 }
