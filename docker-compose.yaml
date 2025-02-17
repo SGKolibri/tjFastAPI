@@ -1,5 +1,13 @@
 version: "3.7"
 services:
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--internal"
+      - "30"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   web:
     build: .
     ports:
@@ -12,6 +20,8 @@ services:
       - db
     command: >
       sh -c "npx prisma migrate deploy && pm2-runtime dist/app.js"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
   db:
     image: postgres:12
     volumes:
@@ -22,6 +32,8 @@ services:
       POSTGRES_DB: fast-backend
     ports:
       - "5432:5432"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
   postgres_data:
