@@ -1,4 +1,3 @@
-import { Console } from "console";
 import prisma from "../../utils/prisma";
 import {
   AddSalariosToFuncionarioInput,
@@ -7,8 +6,17 @@ import {
 } from "./funcionario.schema";
 
 export async function createFuncionario(input: CreateFuncionarioInput) {
-  const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
-    input;
+  const {
+    name,
+    cargo,
+    chavePix,
+    banco,
+    salarios,
+    contato,
+    cpf,
+    status,
+    obrasIDs,
+  } = input;
 
   if (!cargo || !cargo.nome) {
     throw new Error("Cargo é obrigatório");
@@ -58,6 +66,9 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       cpf,
       contato,
       status,
+      obras: {
+        connect: obrasIDs?.map((id) => ({ id })),
+      },
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
@@ -215,8 +226,17 @@ export async function updateFuncionario(
   id: string,
   input: CreateFuncionarioInput
 ) {
-  const { name, cargo, chavePix, banco, salarios, contato, cpf, status } =
-    input;
+  const {
+    name,
+    cargo,
+    chavePix,
+    banco,
+    salarios,
+    contato,
+    cpf,
+    status,
+    obrasIDs,
+  } = input;
 
   if (!cargo || !cargo.nome) {
     throw new Error("Cargo é obrigatório");
@@ -225,6 +245,12 @@ export async function updateFuncionario(
   console.log("FUNCIONARIO: ", input);
 
   try {
+    // First, get the current funcionario to check existing obras relationships
+    const currentFuncionario = await prisma.funcionario.findUnique({
+      where: { id },
+      include: { obras: true },
+    });
+
     const updatedFuncionario = await prisma.funcionario.update({
       where: { id },
       data: {
@@ -244,6 +270,17 @@ export async function updateFuncionario(
         cpf,
         contato,
         status,
+        // Handle the obras relationships if obrasIDs is provided
+        ...(obrasIDs && {
+          obras: {
+            // Disconnect all existing relationships
+            disconnect: currentFuncionario?.obras.map((obra) => ({
+              id: obra.id,
+            })),
+            // Then connect with the new IDs
+            connect: obrasIDs.map((id) => ({ id })),
+          },
+        }),
         salarios: salarios
           ? {
               upsert: salarios.map((salario) => ({

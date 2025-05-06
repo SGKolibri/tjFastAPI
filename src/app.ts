@@ -7,13 +7,17 @@ import adminRoutes from "./modules/admin/admin.route";
 import cargoRoutes from "./modules/cargo/cargo.route";
 import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
 import eventoRoutes from "./modules/evento/evento.route";
+import obraRoutes from "./modules/obra/obra.routes";
+import itemRoutes from "./modules/item/item.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
 import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import { cargoSchemas } from "./modules/cargo/cargo.schema";
 import { tabelaFuncionarioSchemas } from "./modules/tabelaFuncionarios/tabelaFuncionarios.schema";
 import { eventoSchemas } from "./modules/evento/evento.schema";
+import { obraSchemas } from "./modules/obra/obra.schema";
+import { itemSchemas } from "./modules/item/item.schema";
 
-export const server = Fastify();
+export const server = Fastify();  
 
 declare module "fastify" {
   export interface FastifyInstance {
@@ -66,6 +70,8 @@ async function main() {
     ...cargoSchemas,
     ...tabelaFuncionarioSchemas,
     ...eventoSchemas,
+    ...obraSchemas,
+    ...itemSchemas,
   ]) {
     server.addSchema(schema);
   }
@@ -80,6 +86,8 @@ async function main() {
   server.register(cargoRoutes, { prefix: "/api/cargo" });
   server.register(tabelaFuncionarioRoutes, { prefix: "/api/tabela" });
   server.register(eventoRoutes, { prefix: "/api/evento" });
+  server.register(obraRoutes, { prefix: "/api/obra" });
+  server.register(itemRoutes, { prefix: "/api/item" });
 
   try {
     await server

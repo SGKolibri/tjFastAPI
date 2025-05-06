@@ -23,17 +23,18 @@ model Admin {
 }
 
 model Funcionario {
-  id                   String                  @id @default(cuid())
-  name                 String
-  cargo                Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
-  cargoId              String?
-  cpf                  String
-  chavePix             String
-  banco                String
-  contato              String
-  status               Boolean              @default(true)
-  salarios             SalarioMensal[]
-  tabelaFuncionarios   TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
+  id                 String               @id @default(cuid())
+  name               String
+  cargo              Cargo?               @relation(fields: [cargoId], references: [id], onDelete: SetNull) // if Cargo is deleted, set Funcionario.cargoId to null
+  cargoId            String?
+  cpf                String
+  chavePix           String
+  banco              String
+  contato            String
+  status             Boolean              @default(true)
+  salarios           SalarioMensal[]
+  tabelaFuncionarios TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
+  obras              Obra[]               @relation("FuncionarioObra") // Relacionamento N:N com Obra
 }
 
 // Cada registro representa os dados salariais de um funcionário para um determinado mês e ano.
@@ -83,25 +84,81 @@ model Cargo {
   Funcionario Funcionario[]
 }
 
-//
 model TabelaFuncionarios {
   id           String        @id @default(cuid())
   funcionarios Funcionario[] @relation("FuncionarioTabelaFuncionarios")
-  mes          Int          
-  ano          Int           
-  anomes       String        @unique // Combinação de mes e ano
+  mes          Int
+  ano          Int
+  anomes       String        @unique
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
 
 model Evento {
-  id          String   @id @default(cuid()) // ID único para o evento
-  titulo      String   // Título do evento
-  descricao   String?  // Descrição opcional do evento
-  dataInicio  DateTime // Data e hora de início
-  dataFim     DateTime // Data e hora de término
-  allDay      Boolean  // Indica se o evento dura o dia todo
+  id         String   @id @default(cuid())
+  titulo     String
+  descricao  String?
+  dataInicio DateTime
+  dataFim    DateTime
+  allDay     Boolean
 
-  createdAt   DateTime @default(now()) // Timestamp de criação
-  updatedAt   DateTime @updatedAt      // Timestamp de última atualização
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Obra {
+  id           String        @id @default(cuid())
+  nome         String
+  cliente      String
+  valor        Float
+  dataInicio   DateTime
+  dataFim      DateTime
+  status       String        @default("PLANEJAMENTO")
+  funcionarios Funcionario[] @relation("FuncionarioObra")
+  itens        ItemObra[] // Relation to items through the join table
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ObraStatus {
+  PLANEJAMENTO
+  EM_ANDAMENTO
+  PAUSADA
+  CONCLUIDA
+  CANCELADA
+}
+
+// Model for construction items/materials
+model Item {
+  id            String     @id @default(cuid())
+  nome          String
+  descricao     String?
+  categoria     String
+  unidade       String // e.g., kg, m², unidade, etc.
+  precoUnitario Float
+  fornecedor    String?
+  codigo        String? // Optional item code/SKU
+  obras         ItemObra[] // Relation to obras through the join table
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Join table to track items used in each construction project
+// with additional information like quantity
+model ItemObra {
+  id          String  @id @default(cuid())
+  item        Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId      String
+  obra        Obra    @relation(fields: [obraId], references: [id], onDelete: Cascade)
+  obraId      String
+  quantidade  Float // Quantity of the item used in this specific project
+  valorTotal  Float? // Optional: can be calculated (quantidade * precoUnitario)
+  observacoes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([itemId, obraId]) // Each item appears only once per obra
 }

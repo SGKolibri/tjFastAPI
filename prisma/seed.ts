@@ -4,6 +4,7 @@ import prisma from "../src/utils/prisma";
 import { createCargos } from "../src/modules/cargo/cargo.services";
 import { createFuncionariosFromJSON } from "../src/modules/funcionario/funcionario.services";
 import cargosJSON from "../src/data/cargos.json";
+import itemsJSON from "../src/data/items.json";
 import funcionariosData from "../src/data/funcionariosData.json";
 
 async function seed() {
@@ -49,6 +50,9 @@ const register = async () => {
 const registerCargos = async () => {
   createCargos(cargosJSON);
 };
+
+// const registerItems = async () => {}
+
 
 const createFuncionarios = async () => {
   await createFuncionariosFromJSON(funcionariosData);
