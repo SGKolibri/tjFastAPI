@@ -45,44 +45,44 @@ const createAdmin = async () => {
 const register = async () => {
   await registerCargos();
   await createFuncionarios();
-  await registerItems();
+  // await registerItems();
 };
 
 const registerCargos = async () => {
   createCargos(cargosJSON);
 };
 
-const registerItems = async () => {
-  console.log("Seeding items...");
+// const registerItems = async () => {
+//   console.log("Seeding items...");
 
-  // Check if items already exist to avoid duplicates
-  const existingItems = await prisma.item.count();
-  if (existingItems > 0) {
-    console.log(
-      `Skipping items seeding - ${existingItems} items already exist`
-    );
-    return;
-  }
+//   // Check if items already exist to avoid duplicates
+//   const existingItems = await prisma.item.count();
+//   if (existingItems > 0) {
+//     console.log(
+//       `Skipping items seeding - ${existingItems} items already exist`
+//     );
+//     return;
+//   }
 
-  // Create all items from the JSON file
-  const itemsCreated = await Promise.all(
-    itemsJSON.map(async (item) => {
-      return prisma.item.create({
-        data: {
-          nome: item.nome,
-          descricao: item.descricao,
-          categoria: item.categoria,
-          unidade: item.unidade,
-          precoUnitario: item.precoUnitario,
-          fornecedor: item.fornecedor,
-          codigo: item.codigo,
-        },
-      });
-    })
-  );
+//   // Create all items from the JSON file
+//   const itemsCreated = await Promise.all(
+//     itemsJSON.map(async (item) => {
+//       return prisma.item.create({
+//         data: {
+//           nome: item.nome,
+//           descricao: item.descricao,
+//           categoria: item.categoria,
+//           unidade: item.unidade,
+//           precoUnitario: item.precoUnitario,
+//           fornecedor: item.fornecedor,
+//           codigo: item.codigo,
+//         },
+//       });
+//     })
+//   );
 
-  console.log(`Created ${itemsCreated.length} items`);
-};
+//   console.log(`Created ${itemsCreated.length} items`);
+// };
 
 const createFuncionarios = async () => {
   await createFuncionariosFromJSON(funcionariosData);
