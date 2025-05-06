@@ -52,56 +52,47 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     console.log("CARGO EXISTS: ", cargo.nome);
   }
 
-  // Prepare the data object for creating a funcionario
-  const createData: any = {
-    name,
-    cargo: {
-      connectOrCreate: {
-        where: { nome: cargo.nome },
-        create: { nome: cargo.nome },
-      },
-    },
-    chavePix,
-    banco,
-    cpf,
-    contato,
-    status,
-  };
-
-  // Add obras connection if obrasIDs is provided
-  if (obrasIDs && obrasIDs.length > 0) {
-    createData.obras = {
-      connect: obrasIDs.map((id) => ({ id })),
-    };
-  }
-
-  // Add salarios if provided
-  if (salarios) {
-    createData.salarios = {
-      create: salarios.map((salario) => ({
-        mes: salario.mes,
-        ano: salario.ano,
-        salarioBase: salario.salarioBase,
-        horasExtras: salario.horasExtras ?? 0,
-        descontos: salario.descontos ?? 0,
-        bonus: salario.bonus ?? 0,
-        faltas: salario.faltas ?? 0,
-        extras: salario.extras ?? 0,
-        beneficios: salario.beneficios
-          ? {
-              create: {
-                cafe: salario.beneficios.cafe ?? 0,
-                almoco: salario.beneficios.almoco ?? 0,
-                passagem: salario.beneficios.passagem ?? 0,
-              },
-            }
-          : undefined,
-      })),
-    };
-  }
-
   const funcionario = await prisma.funcionario.create({
-    data: createData,
+    data: {
+      name,
+      cargo: {
+        connectOrCreate: {
+          where: { nome: cargo.nome },
+          create: { nome: cargo.nome },
+        },
+      },
+      chavePix,
+      banco,
+      cpf,
+      contato,
+      status,
+      obras: {
+        connect: obrasIDs?.map((id) => ({ id })),
+      },
+      salarios: salarios
+        ? {
+            create: salarios.map((salario) => ({
+              mes: salario.mes,
+              ano: salario.ano,
+              salarioBase: salario.salarioBase,
+              horasExtras: salario.horasExtras ?? 0,
+              descontos: salario.descontos ?? 0,
+              bonus: salario.bonus ?? 0,
+              faltas: salario.faltas ?? 0,
+              extras: salario.extras ?? 0,
+              beneficios: salario.beneficios
+                ? {
+                    create: {
+                      cafe: salario.beneficios.cafe ?? 0,
+                      almoco: salario.beneficios.almoco ?? 0,
+                      passagem: salario.beneficios.passagem ?? 0,
+                    },
+                  }
+                : undefined,
+            })),
+          }
+        : undefined,
+    },
   });
 
   // add funcionario to its respective tabelaFuncionarios
@@ -207,7 +198,6 @@ export async function findFuncionarioById(id: string) {
       banco: true,
       contato: true,
       status: true,
-      obras: true, // Include obras relationship
       salarios: {
         select: {
           id: true,
@@ -261,107 +251,94 @@ export async function updateFuncionario(
       include: { obras: true },
     });
 
-    if (!currentFuncionario) {
-      throw new Error("Funcionário não encontrado");
-    }
-
-    // Prepare update data
-    const updateData: any = {
-      name,
-      cargo: {
-        upsert: {
-          create: {
-            nome: cargo.nome,
-          },
-          update: {
-            nome: cargo.nome,
-          },
-        },
-      },
-      chavePix,
-      banco,
-      cpf,
-      contato,
-      status,
-    };
-
-    // Handle the obras relationships if obrasIDs is provided
-    if (obrasIDs) {
-      updateData.obras = {
-        // Disconnect all existing relationships
-        disconnect: currentFuncionario.obras.map((obra) => ({
-          id: obra.id,
-        })),
-        // Then connect with the new IDs
-        connect: obrasIDs.map((id) => ({ id })),
-      };
-    }
-
-    // Handle salarios if provided
-    if (salarios) {
-      updateData.salarios = {
-        upsert: salarios.map((salario) => ({
-          where: {
-            mes_ano_funcionarioId: {
-              mes: salario.mes,
-              ano: salario.ano,
-              funcionarioId: id,
-            },
-          },
-          update: {
-            mes: salario.mes,
-            ano: salario.ano,
-            salarioBase: salario.salarioBase,
-            horasExtras: salario.horasExtras ?? 0,
-            descontos: salario.descontos ?? 0,
-            bonus: salario.bonus ?? 0,
-            faltas: salario.faltas ?? 0,
-            extras: salario.extras ?? 0,
-            beneficios: salario.beneficios
-              ? {
-                  upsert: {
-                    update: {
-                      cafe: salario.beneficios.cafe ?? 0,
-                      almoco: salario.beneficios.almoco ?? 0,
-                      passagem: salario.beneficios.passagem ?? 0,
-                    },
-                    create: {
-                      cafe: salario.beneficios.cafe ?? 0,
-                      almoco: salario.beneficios.almoco ?? 0,
-                      passagem: salario.beneficios.passagem ?? 0,
-                    },
-                  },
-                }
-              : undefined,
-          },
-          create: {
-            mes: salario.mes,
-            ano: salario.ano,
-            salarioBase: salario.salarioBase,
-            horasExtras: salario.horasExtras ?? 0,
-            descontos: salario.descontos ?? 0,
-            bonus: salario.bonus ?? 0,
-            faltas: salario.faltas ?? 0,
-            extras: salario.extras ?? 0,
-            beneficios: salario.beneficios
-              ? {
-                  create: {
-                    cafe: salario.beneficios.cafe ?? 0,
-                    almoco: salario.beneficios.almoco ?? 0,
-                    passagem: salario.beneficios.passagem ?? 0,
-                  },
-                }
-              : undefined,
-          },
-        })),
-      };
-    }
-
     const updatedFuncionario = await prisma.funcionario.update({
       where: { id },
-      data: updateData,
-      include: {
-        obras: true, // Ensure we include obras in the returned data
+      data: {
+        name,
+        cargo: {
+          upsert: {
+            create: {
+              nome: cargo.nome,
+            },
+            update: {
+              nome: cargo.nome,
+            },
+          },
+        },
+        chavePix,
+        banco,
+        cpf,
+        contato,
+        status,
+        // Handle the obras relationships if obrasIDs is provided
+        ...(obrasIDs && {
+          obras: {
+            // Disconnect all existing relationships
+            disconnect: currentFuncionario?.obras.map((obra) => ({
+              id: obra.id,
+            })),
+            // Then connect with the new IDs
+            connect: obrasIDs.map((id) => ({ id })),
+          },
+        }),
+        salarios: salarios
+          ? {
+              upsert: salarios.map((salario) => ({
+                where: {
+                  mes_ano_funcionarioId: {
+                    mes: salario.mes,
+                    ano: salario.ano,
+                    funcionarioId: id,
+                  },
+                },
+                update: {
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: salario.horasExtras ?? 0,
+                  descontos: salario.descontos ?? 0,
+                  bonus: salario.bonus ?? 0,
+                  faltas: salario.faltas ?? 0,
+                  extras: salario.extras ?? 0,
+                  beneficios: salario.beneficios
+                    ? {
+                        upsert: {
+                          update: {
+                            cafe: salario.beneficios.cafe ?? 0,
+                            almoco: salario.beneficios.almoco ?? 0,
+                            passagem: salario.beneficios.passagem ?? 0,
+                          },
+                          create: {
+                            cafe: salario.beneficios.cafe ?? 0,
+                            almoco: salario.beneficios.almoco ?? 0,
+                            passagem: salario.beneficios.passagem ?? 0,
+                          },
+                        },
+                      }
+                    : undefined,
+                },
+                create: {
+                  mes: salario.mes,
+                  ano: salario.ano,
+                  salarioBase: salario.salarioBase,
+                  horasExtras: salario.horasExtras ?? 0,
+                  descontos: salario.descontos ?? 0,
+                  bonus: salario.bonus ?? 0,
+                  faltas: salario.faltas ?? 0,
+                  extras: salario.extras ?? 0,
+                  beneficios: salario.beneficios
+                    ? {
+                        create: {
+                          cafe: salario.beneficios.cafe ?? 0,
+                          almoco: salario.beneficios.almoco ?? 0,
+                          passagem: salario.beneficios.passagem ?? 0,
+                        },
+                      }
+                    : undefined,
+                },
+              })),
+            }
+          : undefined,
       },
     });
 
@@ -383,7 +360,6 @@ export async function updateFuncionario(
     return updatedFuncionario;
   } catch (e) {
     console.log(e);
-    throw e; // Re-throw the error to be handled by the caller
   }
 }
 
