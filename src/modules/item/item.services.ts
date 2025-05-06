@@ -12,6 +12,7 @@ export async function createItem(input: RegisterItemInput) {
 }
 
 export async function getItems() {
+  console.log("Fetching items...");
   return prisma.item.findMany({
     orderBy: {
       nome: "asc",
