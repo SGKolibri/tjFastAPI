@@ -17,10 +17,7 @@ export async function registerObraHandler(
 
   try {
     const obra = await createObra(body);
-    return reply.status(201).send({
-      ...obra,
-      funcionarios: obra.funcionarios,
-    });
+    return reply.status(201).send(obra);
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });
@@ -33,12 +30,7 @@ export async function getObrasHandler(
 ) {
   try {
     const obras = await getObras();
-    return reply.status(200).send(
-      obras.map((obra) => ({
-        ...obra,
-        funcionarios: obra.funcionarios,
-      }))
-    );
+    return reply.status(200).send(obras);
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });
@@ -55,10 +47,7 @@ export async function getObraByIdHandler(
     if (!obra) {
       return reply.status(404).send({ message: "Obra not found" });
     }
-    return reply.status(200).send({
-      ...obra,
-      funcionarios: obra.funcionarios,
-    });
+    return reply.status(200).send(obra);
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });
@@ -77,10 +66,7 @@ export async function updateObraHandler(
 
   try {
     const obra = await updateObra(id, body);
-    return reply.status(200).send({
-      ...obra,
-      funcionarios: obra.funcionarios,
-    });
+    return reply.status(200).send(obra);
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });

@@ -66,9 +66,7 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       cpf,
       contato,
       status,
-      obras: {
-        connect: obrasIDs?.map((id) => ({ id })),
-      },
+      obrasIDs,
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
@@ -248,7 +246,6 @@ export async function updateFuncionario(
     // First, get the current funcionario to check existing obras relationships
     const currentFuncionario = await prisma.funcionario.findUnique({
       where: { id },
-      include: { obras: true },
     });
 
     const updatedFuncionario = await prisma.funcionario.update({
@@ -270,17 +267,7 @@ export async function updateFuncionario(
         cpf,
         contato,
         status,
-        // Handle the obras relationships if obrasIDs is provided
-        ...(obrasIDs && {
-          obras: {
-            // Disconnect all existing relationships
-            disconnect: currentFuncionario?.obras.map((obra) => ({
-              id: obra.id,
-            })),
-            // Then connect with the new IDs
-            connect: obrasIDs.map((id) => ({ id })),
-          },
-        }),
+        obrasIDs,
         salarios: salarios
           ? {
               upsert: salarios.map((salario) => ({

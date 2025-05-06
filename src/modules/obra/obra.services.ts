@@ -13,22 +13,31 @@ export async function createObra(data: RegisterObraInput) {
     obraData.dataFim = formatDateToISO(obraData.dataFim);
   }
 
-  const funcionarioConnections =
-    Array.isArray(funcionarioIds) && funcionarioIds.length > 0
-      ? { connect: funcionarioIds.map((id) => ({ id })) }
-      : undefined;
-
+  // Create the obra without funcionario connections
   const obra = await prisma.obra.create({
     data: {
       ...obraData,
-      funcionarios: funcionarioConnections,
-    },
-    include: {
-      funcionarios: true,
     },
   });
 
-  return obra;
+  // If there are funcionarios to connect, update them to include this obra's ID
+  if (Array.isArray(funcionarioIds) && funcionarioIds.length > 0) {
+    // Update each funcionario to add this obra ID to their obrasIDs array
+    for (const funcionarioId of funcionarioIds) {
+      await prisma.funcionario.update({
+        where: { id: funcionarioId },
+        data: {
+          obrasIDs: {
+            push: obra.id,
+          },
+        },
+      });
+    }
+  }
+
+  // Get the obra with updated data
+  const updatedObra = await getObraById(obra.id);
+  return updatedObra;
 }
 
 function formatDateToISO(dateString: string): string {
@@ -42,20 +51,39 @@ function formatDateToISO(dateString: string): string {
 export async function getObraById(id: string) {
   const obra = await prisma.obra.findUnique({
     where: { id },
-    include: {
-      funcionarios: true,
+  });
+
+  // Get funcionarios that have this obra ID in their obrasIDs array
+  const funcionarios = await prisma.funcionario.findMany({
+    where: {
+      obrasIDs: {
+        has: id,
+      },
     },
   });
-  return obra;
+
+  return obra ? { ...obra, funcionarios } : null;
 }
 
 export async function getObras() {
-  const obras = await prisma.obra.findMany({
-    include: {
-      funcionarios: true,
-    },
-  });
-  return obras;
+  const obras = await prisma.obra.findMany();
+
+  // For each obra, get the associated funcionarios
+  const obrasWithFuncionarios = await Promise.all(
+    obras.map(async (obra) => {
+      const funcionarios = await prisma.funcionario.findMany({
+        where: {
+          obrasIDs: {
+            has: obra.id,
+          },
+        },
+      });
+
+      return { ...obra, funcionarios };
+    })
+  );
+
+  return obrasWithFuncionarios;
 }
 
 export async function updateObra(id: string, data: ObraInput) {
@@ -70,44 +98,90 @@ export async function updateObra(id: string, data: ObraInput) {
     updatedData.dataFim = formatDateToISO(updatedData.dataFim);
   }
 
-  // First, get the current obra to check existing funcionarios
-  const currentObra = await prisma.obra.findUnique({
-    where: { id },
-    include: { funcionarios: true },
-  });
-
-  // Make sure funcionarioIds is properly handled
-  const funcionarioConnections =
-    Array.isArray(funcionarioIds) && funcionarioIds.length > 0
-      ? {
-          // Disconnect all existing relationships first
-          disconnect: currentObra?.funcionarios.map((f) => ({ id: f.id })),
-          // Then connect with the new IDs
-          connect: funcionarioIds.map((id) => ({ id })),
-        }
-      : undefined;
-
   // Update the obra with new data
   const obra = await prisma.obra.update({
     where: { id },
     data: {
       ...updatedData,
-      funcionarios: funcionarioConnections,
-    },
-    include: {
-      funcionarios: true,
     },
   });
 
-  return obra;
+  // If funcionarioIds is provided, update the funcionarios
+  if (Array.isArray(funcionarioIds)) {
+    // First, get all funcionarios that currently have this obra in their obrasIDs
+    const currentFuncionarios = await prisma.funcionario.findMany({
+      where: {
+        obrasIDs: {
+          has: id,
+        },
+      },
+    });
+
+    // Remove this obra ID from all current funcionarios
+    for (const func of currentFuncionarios) {
+      await prisma.funcionario.update({
+        where: { id: func.id },
+        data: {
+          obrasIDs: {
+            set: func.obrasIDs.filter((obraId) => obraId !== id),
+          },
+        },
+      });
+    }
+
+    // Add this obra ID to the new funcionarios
+    for (const funcionarioId of funcionarioIds) {
+      const funcionario = await prisma.funcionario.findUnique({
+        where: { id: funcionarioId },
+      });
+
+      if (funcionario) {
+        // Check if this obra ID is already in the obrasIDs array
+        if (!funcionario.obrasIDs.includes(id)) {
+          await prisma.funcionario.update({
+            where: { id: funcionarioId },
+            data: {
+              obrasIDs: {
+                push: id,
+              },
+            },
+          });
+        }
+      }
+    }
+  }
+
+  // Get the updated obra with funcionarios
+  const updatedObra = await getObraById(id);
+  return updatedObra;
 }
 
 export async function deleteObra(id: string) {
-  const obra = await prisma.obra.delete({
-    where: { id },
-    include: {
-      funcionarios: true,
+  // First, get all funcionarios that have this obra ID
+  const funcionarios = await prisma.funcionario.findMany({
+    where: {
+      obrasIDs: {
+        has: id,
+      },
     },
   });
-  return obra;
+
+  // Remove this obra ID from each funcionario's obrasIDs array
+  for (const funcionario of funcionarios) {
+    await prisma.funcionario.update({
+      where: { id: funcionario.id },
+      data: {
+        obrasIDs: {
+          set: funcionario.obrasIDs.filter((obraId) => obraId !== id),
+        },
+      },
+    });
+  }
+
+  // Now delete the obra
+  const obra = await prisma.obra.delete({
+    where: { id },
+  });
+
+  return { ...obra, funcionarios };
 }
