@@ -48,7 +48,7 @@ const funcionarioCore = {
   }),
   status: z.boolean(),
   salarios: z.array(salarioSchema).optional(),
-  obrasIDs: z.array(z.string()).optional(),
+  obrasIds: z.array(z.string()).optional(),
 };
 
 const addSalarioToFuncionarioSchema = z.object({
