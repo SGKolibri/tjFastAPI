@@ -34,7 +34,7 @@ model Funcionario {
   status             Boolean              @default(true)
   salarios           SalarioMensal[]
   tabelaFuncionarios TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
-  obras              Obra[]               @relation("FuncionarioObra") // Relacionamento N:N com Obra
+  obrasIDs           String[] // Array of obra IDs instead of direct relation
 }
 
 // Cada registro representa os dados salariais de um funcionário para um determinado mês e ano.
@@ -107,15 +107,14 @@ model Evento {
 }
 
 model Obra {
-  id           String        @id @default(cuid())
-  nome         String
-  cliente      String
-  valor        Float
-  dataInicio   DateTime
-  dataFim      DateTime
-  status       String        @default("PLANEJAMENTO")
-  funcionarios Funcionario[] @relation("FuncionarioObra")
-  itens        ItemObra[] // Relation to items through the join table
+  id         String     @id @default(cuid())
+  nome       String
+  cliente    String
+  valor      Float
+  dataInicio DateTime
+  dataFim    DateTime
+  status     String     @default("PLANEJAMENTO")
+  itens      ItemObra[] // Relation to items through the join table
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
