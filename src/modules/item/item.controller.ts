@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ItemInput, ItemObraInput, RegisterItemInput } from "./item.schema";
 import * as itemService from "./item.services";
-import prisma from "../../utils/prisma";
 
 export async function registerItemHandler(
   request: FastifyRequest<{
@@ -10,7 +9,7 @@ export async function registerItemHandler(
   reply: FastifyReply
 ) {
   try {
-    const item = await itemService.createItem(request.body, prisma);
+    const item = await itemService.createItem(request.body);
     return reply.code(201).send(item);
   } catch (e) {
     console.error(e);
@@ -23,7 +22,7 @@ export async function getItemsHandler(
   reply: FastifyReply
 ) {
   try {
-    const items = await itemService.getItems(prisma);
+    const items = await itemService.getItems();
     return reply.code(200).send(items);
   } catch (e) {
     console.error(e);
@@ -40,7 +39,7 @@ export async function getItemHandler(
   reply: FastifyReply
 ) {
   try {
-    const item = await itemService.getItemById(request.params.id, prisma);
+    const item = await itemService.getItemById(request.params.id);
 
     if (!item) {
       return reply.code(404).send({ message: "Item not found" });
@@ -63,11 +62,7 @@ export async function updateItemHandler(
   reply: FastifyReply
 ) {
   try {
-    const item = await itemService.updateItem(
-      request.params.id,
-      request.body,
-      prisma
-    );
+    const item = await itemService.updateItem(request.params.id, request.body);
 
     return reply.code(200).send(item);
   } catch (e) {
@@ -85,7 +80,7 @@ export async function deleteItemHandler(
   reply: FastifyReply
 ) {
   try {
-    await itemService.deleteItem(request.params.id, prisma);
+    await itemService.deleteItem(request.params.id);
     return reply.code(204).send();
   } catch (e) {
     console.error(e);
@@ -101,7 +96,7 @@ export async function assignItemToObraHandler(
   reply: FastifyReply
 ) {
   try {
-    const itemObra = await itemService.assignItemToObra(request.body, prisma);
+    const itemObra = await itemService.assignItemToObra(request.body);
     return reply.code(201).send(itemObra);
   } catch (e) {
     console.error(e);
@@ -121,8 +116,7 @@ export async function updateItemInObraHandler(
   try {
     const itemObra = await itemService.updateItemInObra(
       request.params.id,
-      request.body,
-      prisma
+      request.body
     );
 
     return reply.code(200).send(itemObra);
@@ -141,7 +135,7 @@ export async function removeItemFromObraHandler(
   reply: FastifyReply
 ) {
   try {
-    await itemService.removeItemFromObra(request.params.id, prisma);
+    await itemService.removeItemFromObra(request.params.id);
     return reply.code(204).send();
   } catch (e) {
     console.error(e);
@@ -158,10 +152,7 @@ export async function getItemsByObraHandler(
   reply: FastifyReply
 ) {
   try {
-    const items = await itemService.getItemsByObra(
-      request.params.obraId,
-      prisma
-    );
+    const items = await itemService.getItemsByObra(request.params.obraId);
     return reply.code(200).send(items);
   } catch (e) {
     console.error(e);
@@ -178,10 +169,7 @@ export async function getObrasByItemHandler(
   reply: FastifyReply
 ) {
   try {
-    const obras = await itemService.getObrasByItem(
-      request.params.itemId,
-      prisma
-    );
+    const obras = await itemService.getObrasByItem(request.params.itemId);
     return reply.code(200).send(obras);
   } catch (e) {
     console.error(e);

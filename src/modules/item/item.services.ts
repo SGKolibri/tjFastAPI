@@ -1,10 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { ItemInput, ItemObraInput, RegisterItemInput } from "./item.schema";
+import prisma from "../../utils/prisma";
 
-export async function createItem(
-  input: RegisterItemInput,
-  prisma: PrismaClient
-) {
+export async function createItem(input: RegisterItemInput) {
   const item = await prisma.item.create({
     data: {
       ...input,
@@ -14,7 +11,7 @@ export async function createItem(
   return item;
 }
 
-export async function getItems(prisma: PrismaClient) {
+export async function getItems() {
   return prisma.item.findMany({
     orderBy: {
       nome: "asc",
@@ -22,7 +19,7 @@ export async function getItems(prisma: PrismaClient) {
   });
 }
 
-export async function getItemById(id: string, prisma: PrismaClient) {
+export async function getItemById(id: string) {
   return prisma.item.findUnique({
     where: {
       id,
@@ -37,11 +34,7 @@ export async function getItemById(id: string, prisma: PrismaClient) {
   });
 }
 
-export async function updateItem(
-  id: string,
-  data: ItemInput,
-  prisma: PrismaClient
-) {
+export async function updateItem(id: string, data: ItemInput) {
   return prisma.item.update({
     where: {
       id,
@@ -50,7 +43,7 @@ export async function updateItem(
   });
 }
 
-export async function deleteItem(id: string, prisma: PrismaClient) {
+export async function deleteItem(id: string) {
   return prisma.item.delete({
     where: {
       id,
@@ -59,10 +52,7 @@ export async function deleteItem(id: string, prisma: PrismaClient) {
 }
 
 // Functions to handle the relationship between items and obras
-export async function assignItemToObra(
-  input: ItemObraInput,
-  prisma: PrismaClient
-) {
+export async function assignItemToObra(input: ItemObraInput) {
   const { itemId, obraId, quantidade, valorTotal, observacoes } = input;
 
   // Calculate valorTotal if not provided
@@ -94,8 +84,7 @@ export async function assignItemToObra(
 
 export async function updateItemInObra(
   id: string,
-  input: Partial<ItemObraInput>,
-  prisma: PrismaClient
+  input: Partial<ItemObraInput>
 ) {
   const { quantidade } = input;
 
@@ -123,13 +112,13 @@ export async function updateItemInObra(
   });
 }
 
-export async function removeItemFromObra(id: string, prisma: PrismaClient) {
+export async function removeItemFromObra(id: string) {
   return prisma.itemObra.delete({
     where: { id },
   });
 }
 
-export async function getItemsByObra(obraId: string, prisma: PrismaClient) {
+export async function getItemsByObra(obraId: string) {
   return prisma.itemObra.findMany({
     where: {
       obraId,
@@ -145,7 +134,7 @@ export async function getItemsByObra(obraId: string, prisma: PrismaClient) {
   });
 }
 
-export async function getObrasByItem(itemId: string, prisma: PrismaClient) {
+export async function getObrasByItem(itemId: string) {
   return prisma.itemObra.findMany({
     where: {
       itemId,
