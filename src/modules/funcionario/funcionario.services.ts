@@ -66,11 +66,14 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       cpf,
       contato,
       status,
-      obras: obrasIds
+      // Fix the obras connection to match the Prisma schema
+      ...(obrasIds && obrasIds.length > 0
         ? {
-            connect: obrasIds.map((id) => ({ id })),
+            obras: {
+              connect: obrasIds.map((id) => ({ id })),
+            },
           }
-        : undefined,
+        : {}),
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
