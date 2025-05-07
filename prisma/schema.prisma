@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -107,14 +108,14 @@ model Evento {
 }
 
 model Obra {
-  id         String     @id @default(cuid())
-  nome       String
-  cliente    String
-  valor      Float
-  dataInicio DateTime
-  dataFim    DateTime
-  status     String     @default("PLANEJAMENTO")
-  itens      ItemObra[] // Relation to items through the join table
+  id           String        @id @default(cuid())
+  nome         String
+  cliente      String
+  valor        Float
+  dataInicio   DateTime
+  dataFim      DateTime
+  status       String        @default("PLANEJAMENTO")
+  itens        ItemObra[] // Relation to items through the join table
   funcionarios Funcionario[] // Array of employees associated with the project
 
   createdAt DateTime @default(now())
