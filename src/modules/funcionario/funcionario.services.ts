@@ -15,7 +15,7 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
     contato,
     cpf,
     status,
-    obrasIDs,
+    obrasIds,
   } = input;
 
   if (!cargo || !cargo.nome) {
@@ -66,9 +66,11 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       cpf,
       contato,
       status,
-      obras: {
-        connect: obrasIDs?.map((obraId) => ({ id: obraId })),
-      },
+      obras: obrasIds
+        ? {
+            connect: obrasIds.map((id) => ({ id })),
+          }
+        : undefined,
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
@@ -235,7 +237,7 @@ export async function updateFuncionario(
     contato,
     cpf,
     status,
-    obrasIDs,
+    obrasIds,
   } = input;
 
   if (!cargo || !cargo.nome) {
@@ -270,7 +272,7 @@ export async function updateFuncionario(
         contato,
         status,
         obras: {
-          connect: obrasIDs?.map((obraId) => ({ id: obraId })),
+          connect: obrasIds?.map((obraId) => ({ id: obraId })),
         },
         salarios: salarios
           ? {
