@@ -274,9 +274,13 @@ export async function updateFuncionario(
         cpf,
         contato,
         status,
-        obras: {
-          connect: obrasIds?.map((obraId) => ({ id: obraId })),
-        },
+        ...(obrasIds && obrasIds.length > 0
+          ? {
+              obras: {
+                connect: obrasIds.map((id) => ({ id })),
+              },
+            }
+          : {}),
         salarios: salarios
           ? {
               upsert: salarios.map((salario) => ({
