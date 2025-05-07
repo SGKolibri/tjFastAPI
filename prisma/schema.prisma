@@ -34,7 +34,7 @@ model Funcionario {
   status             Boolean              @default(true)
   salarios           SalarioMensal[]
   tabelaFuncionarios TabelaFuncionarios[] @relation("FuncionarioTabelaFuncionarios") // Relacionamento N:N com TabelaFuncionarios
-  obrasIDs           String[] // Array of obra IDs instead of direct relation
+  obras              Obra[] // Array de obras associadas ao funcionário
 }
 
 // Cada registro representa os dados salariais de um funcionário para um determinado mês e ano.
@@ -115,6 +115,7 @@ model Obra {
   dataFim    DateTime
   status     String     @default("PLANEJAMENTO")
   itens      ItemObra[] // Relation to items through the join table
+  funcionarios Funcionario[] // Array of employees associated with the project
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -27,8 +27,8 @@ export async function createObra(data: RegisterObraInput) {
       await prisma.funcionario.update({
         where: { id: funcionarioId },
         data: {
-          obrasIDs: {
-            push: obra.id,
+          obras: {
+            connect: { id: obra.id },
           },
         },
       });
@@ -56,8 +56,10 @@ export async function getObraById(id: string) {
   // Get funcionarios that have this obra ID in their obrasIDs array
   const funcionarios = await prisma.funcionario.findMany({
     where: {
-      obrasIDs: {
-        has: id,
+      obras: {
+        some: {
+          id,
+        },
       },
     },
   });
@@ -73,8 +75,10 @@ export async function getObras() {
     obras.map(async (obra) => {
       const funcionarios = await prisma.funcionario.findMany({
         where: {
-          obrasIDs: {
-            has: obra.id,
+          obras: {
+            some: {
+              id: obra.id,
+            },
           },
         },
       });
@@ -111,8 +115,10 @@ export async function updateObra(id: string, data: ObraInput) {
     // First, get all funcionarios that currently have this obra in their obrasIDs
     const currentFuncionarios = await prisma.funcionario.findMany({
       where: {
-        obrasIDs: {
-          has: id,
+        obras: {
+          some: {
+            id,
+          },
         },
       },
     });
@@ -122,31 +128,27 @@ export async function updateObra(id: string, data: ObraInput) {
       await prisma.funcionario.update({
         where: { id: func.id },
         data: {
-          obrasIDs: {
-            set: func.obrasIDs.filter((obraId) => obraId !== id),
+          obras: {
+            disconnect: { id },
           },
         },
       });
     }
 
-    // Add this obra ID to the new funcionarios
+    // Add this obra to the new funcionarios
     for (const funcionarioId of funcionarioIds) {
       const funcionario = await prisma.funcionario.findUnique({
         where: { id: funcionarioId },
       });
-
       if (funcionario) {
-        // Check if this obra ID is already in the obrasIDs array
-        if (!funcionario.obrasIDs.includes(id)) {
-          await prisma.funcionario.update({
-            where: { id: funcionarioId },
-            data: {
-              obrasIDs: {
-                push: id,
-              },
+        await prisma.funcionario.update({
+          where: { id: funcionarioId },
+          data: {
+            obras: {
+              connect: { id },
             },
-          });
-        }
+          },
+        });
       }
     }
   }
@@ -160,8 +162,10 @@ export async function deleteObra(id: string) {
   // First, get all funcionarios that have this obra ID
   const funcionarios = await prisma.funcionario.findMany({
     where: {
-      obrasIDs: {
-        has: id,
+      obras: {
+        some: {
+          id,
+        },
       },
     },
   });
@@ -171,8 +175,8 @@ export async function deleteObra(id: string) {
     await prisma.funcionario.update({
       where: { id: funcionario.id },
       data: {
-        obrasIDs: {
-          set: funcionario.obrasIDs.filter((obraId) => obraId !== id),
+        obras: {
+          disconnect: { id },
         },
       },
     });

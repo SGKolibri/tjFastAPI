@@ -66,7 +66,9 @@ export async function createFuncionario(input: CreateFuncionarioInput) {
       cpf,
       contato,
       status,
-      obrasIDs: obrasIDs,
+      obras: {
+        connect: obrasIDs?.map((obraId) => ({ id: obraId })),
+      },
       salarios: salarios
         ? {
             create: salarios.map((salario) => ({
@@ -267,7 +269,9 @@ export async function updateFuncionario(
         cpf,
         contato,
         status,
-        obrasIDs: obrasIDs,
+        obras: {
+          connect: obrasIDs?.map((obraId) => ({ id: obraId })),
+        },
         salarios: salarios
           ? {
               upsert: salarios.map((salario) => ({
