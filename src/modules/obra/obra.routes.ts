@@ -8,13 +8,13 @@ import {
 } from "./obra.controller";
 import { $ref } from "./obra.schema";
 
-async function obraRoutes(server: FastifyInstance) {
+export default async function obraRoutes(server: FastifyInstance) {
   server.post(
     "/",
     {
       preHandler: [server.authenticate],
       schema: {
-        body: $ref("registerObraSchema"),
+        body: $ref("CreateObraSchema"),
         response: {
           201: $ref("obraSchema"),
         },
@@ -69,5 +69,3 @@ async function obraRoutes(server: FastifyInstance) {
     deleteObraHandler
   );
 }
-
-export default obraRoutes;

@@ -11,7 +11,7 @@ const obraSchema = z.object({
   funcionarioIds: z.array(z.string()).optional(),
 });
 
-const registerObraSchema = z.object({
+const CreateObraSchema = z.object({
   nome: z.string({
     required_error: "Nome is required",
     invalid_type_error: "Nome must be a string",
@@ -38,13 +38,13 @@ const registerObraSchema = z.object({
   funcionarioIds: z.array(z.string()).optional(),
 });
 
-export type RegisterObraInput = z.infer<typeof registerObraSchema>;
+export type RegisterObraInput = z.infer<typeof CreateObraSchema>;
 export type ObraInput = z.infer<typeof obraSchema>;
 export type ObraResponse = z.infer<typeof obraSchema>;
 
 export const { schemas: obraSchemas, $ref } = buildJsonSchemas(
   {
-    registerObraSchema,
+    CreateObraSchema,
     obraSchema,
   },
   {
