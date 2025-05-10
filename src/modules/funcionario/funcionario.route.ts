@@ -1,10 +1,7 @@
 import { FastifyInstance } from "fastify";
 import {
   getFuncionariosHandler,
-  // getFuncionariosHandler,
-  // loginFuncionarioHandler,
   registerFuncionarioHandler,
-  // isFuncionarioAuthenticatedHandler,
   getFuncionarioByIdHandler,
   updateFuncionarioHandler,
   addSalarioToFuncionarioHandler,
@@ -31,7 +28,6 @@ async function funcionarioRoutes(server: FastifyInstance) {
     registerFuncionarioHandler
   );
 
-  // registerManyFuncionariosAtOnceHandler
   server.post(
     "/many",
     {
@@ -40,7 +36,6 @@ async function funcionarioRoutes(server: FastifyInstance) {
     registerManyFuncionariosAtOnceHandler
   );
 
-  // add salario to funcionario
   server.post(
     "/:id/salario",
     {
@@ -49,7 +44,6 @@ async function funcionarioRoutes(server: FastifyInstance) {
     addSalarioToFuncionarioHandler
   );
 
-  // add salarios to funcionario
   server.post(
     "/:id/salarios",
     {
