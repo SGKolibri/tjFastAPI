@@ -94,7 +94,17 @@ var prisma_default = prisma;
 // src/modules/funcionario/funcionario.services.ts
 function createFuncionario(input) {
   return __async(this, null, function* () {
-    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    const {
+      name,
+      cargo,
+      chavePix,
+      banco,
+      salarios,
+      contato,
+      cpf,
+      status,
+      obrasIds
+    } = input;
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
@@ -123,7 +133,7 @@ function createFuncionario(input) {
       console.log("CARGO EXISTS: ", cargo.nome);
     }
     const funcionario = yield prisma_default.funcionario.create({
-      data: {
+      data: __spreadProps(__spreadValues({
         name,
         cargo: {
           connectOrCreate: {
@@ -135,7 +145,12 @@ function createFuncionario(input) {
         banco,
         cpf,
         contato,
-        status,
+        status
+      }, obrasIds && obrasIds.length > 0 ? {
+        obras: {
+          connect: obrasIds.map((id) => ({ id }))
+        }
+      } : {}), {
         salarios: salarios ? {
           create: salarios.map((salario) => {
             var _a, _b, _c, _d, _e, _f, _g, _h;
@@ -158,7 +173,7 @@ function createFuncionario(input) {
             };
           })
         } : void 0
-      }
+      })
     });
     if (salarios) {
       const salaries = salarios.map((salario) => ({
@@ -288,15 +303,28 @@ function findFuncionarioById(id) {
 }
 function updateFuncionario(id, input) {
   return __async(this, null, function* () {
-    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    const {
+      name,
+      cargo,
+      chavePix,
+      banco,
+      salarios,
+      contato,
+      cpf,
+      status,
+      obrasIds
+    } = input;
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
     console.log("FUNCIONARIO: ", input);
     try {
+      const currentFuncionario = yield prisma_default.funcionario.findUnique({
+        where: { id }
+      });
       const updatedFuncionario = yield prisma_default.funcionario.update({
         where: { id },
-        data: {
+        data: __spreadProps(__spreadValues({
           name,
           cargo: {
             upsert: {
@@ -312,7 +340,12 @@ function updateFuncionario(id, input) {
           banco,
           cpf,
           contato,
-          status,
+          status
+        }, obrasIds && obrasIds.length > 0 ? {
+          obras: {
+            connect: obrasIds.map((id2) => ({ id: id2 }))
+          }
+        } : {}), {
           salarios: salarios ? {
             upsert: salarios.map((salario) => {
               var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
@@ -368,7 +401,7 @@ function updateFuncionario(id, input) {
               };
             })
           } : void 0
-        }
+        })
       });
       if (salarios) {
         const salaries = salarios.map((salario) => ({
@@ -760,7 +793,8 @@ var funcionarioCore = {
     invalid_type_error: "CPF must be a string"
   }),
   status: import_zod.z.boolean(),
-  salarios: import_zod.z.array(salarioSchema).optional()
+  salarios: import_zod.z.array(salarioSchema).optional(),
+  obrasIds: import_zod.z.array(import_zod.z.string()).optional()
 };
 var addSalarioToFuncionarioSchema = import_zod.z.object({
   salario: salarioSchema
@@ -1014,15 +1048,12 @@ function createCargo(input) {
 }
 function createCargos(input) {
   return __async(this, null, function* () {
-    console.log("1 - Input: ", input);
     const existingCargoNames = yield prisma_default.cargo.findMany({
       select: { nome: true }
     }).then((cargos2) => cargos2.map((cargo) => cargo.nome));
-    console.log("2 - existingCargoNames: ", existingCargoNames);
     const cargosToCreate = input.filter(
       (cargo) => !existingCargoNames.includes(cargo.nome)
     );
-    console.log("3 - cargosToCreate: ", cargosToCreate);
     const cargos = yield prisma_default.cargo.createMany({
       data: cargosToCreate
     });
@@ -1353,46 +1384,762 @@ function eventoRoutes(server2) {
   });
 }
 
-// src/modules/admin/admin.schemas.ts
+// src/modules/obra/obra.services.ts
+function createObra(data) {
+  return __async(this, null, function* () {
+    const _a = __spreadValues({}, data), { funcionarioIds } = _a, obraData = __objRest(_a, ["funcionarioIds"]);
+    console.log("Funcionario IDs:", funcionarioIds);
+    if (obraData.dataInicio) {
+      obraData.dataInicio = formatDateToISO(obraData.dataInicio);
+    }
+    if (obraData.dataFim) {
+      obraData.dataFim = formatDateToISO(obraData.dataFim);
+    }
+    const obra = yield prisma_default.obra.create({
+      data: __spreadValues({}, obraData)
+    });
+    if (Array.isArray(funcionarioIds) && funcionarioIds.length > 0) {
+      for (const funcionarioId of funcionarioIds) {
+        yield prisma_default.funcionario.update({
+          where: { id: funcionarioId },
+          data: {
+            obras: {
+              connect: { id: obra.id }
+            }
+          }
+        });
+      }
+    }
+    const updatedObra = yield getObraById(obra.id);
+    return updatedObra;
+  });
+}
+function formatDateToISO(dateString) {
+  if (dateString.includes("T")) {
+    return dateString;
+  }
+  return `${dateString}T00:00:00Z`;
+}
+function getObraById(id) {
+  return __async(this, null, function* () {
+    const obra = yield prisma_default.obra.findUnique({
+      where: { id }
+    });
+    const funcionarios = yield prisma_default.funcionario.findMany({
+      where: {
+        obras: {
+          some: {
+            id
+          }
+        }
+      }
+    });
+    return obra ? __spreadProps(__spreadValues({}, obra), { funcionarios }) : null;
+  });
+}
+function getObras() {
+  return __async(this, null, function* () {
+    const obras = yield prisma_default.obra.findMany();
+    const obrasWithFuncionarios = yield Promise.all(
+      obras.map((obra) => __async(this, null, function* () {
+        const funcionarios = yield prisma_default.funcionario.findMany({
+          where: {
+            obras: {
+              some: {
+                id: obra.id
+              }
+            }
+          }
+        });
+        return __spreadProps(__spreadValues({}, obra), { funcionarios });
+      }))
+    );
+    return obrasWithFuncionarios;
+  });
+}
+function updateObra(id, data) {
+  return __async(this, null, function* () {
+    const _a = __spreadValues({}, data), { funcionarioIds } = _a, updatedData = __objRest(_a, ["funcionarioIds"]);
+    if (updatedData.dataInicio) {
+      updatedData.dataInicio = formatDateToISO(updatedData.dataInicio);
+    }
+    if (updatedData.dataFim) {
+      updatedData.dataFim = formatDateToISO(updatedData.dataFim);
+    }
+    const obra = yield prisma_default.obra.update({
+      where: { id },
+      data: __spreadValues({}, updatedData)
+    });
+    if (Array.isArray(funcionarioIds)) {
+      const currentFuncionarios = yield prisma_default.funcionario.findMany({
+        where: {
+          obras: {
+            some: {
+              id
+            }
+          }
+        }
+      });
+      for (const func of currentFuncionarios) {
+        yield prisma_default.funcionario.update({
+          where: { id: func.id },
+          data: {
+            obras: {
+              disconnect: { id }
+            }
+          }
+        });
+      }
+      for (const funcionarioId of funcionarioIds) {
+        const funcionario = yield prisma_default.funcionario.findUnique({
+          where: { id: funcionarioId }
+        });
+        if (funcionario) {
+          yield prisma_default.funcionario.update({
+            where: { id: funcionarioId },
+            data: {
+              obras: {
+                connect: { id }
+              }
+            }
+          });
+        }
+      }
+    }
+    const updatedObra = yield getObraById(id);
+    return updatedObra;
+  });
+}
+function deleteObra(id) {
+  return __async(this, null, function* () {
+    const funcionarios = yield prisma_default.funcionario.findMany({
+      where: {
+        obras: {
+          some: {
+            id
+          }
+        }
+      }
+    });
+    for (const funcionario of funcionarios) {
+      yield prisma_default.funcionario.update({
+        where: { id: funcionario.id },
+        data: {
+          obras: {
+            disconnect: { id }
+          }
+        }
+      });
+    }
+    const obra = yield prisma_default.obra.delete({
+      where: { id }
+    });
+    return __spreadProps(__spreadValues({}, obra), { funcionarios });
+  });
+}
+
+// src/modules/obra/obra.controller.ts
+function registerObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    const body = request.body;
+    try {
+      const obra = yield createObra(body);
+      return reply.status(201).send(obra);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function getObrasHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const obras = yield getObras();
+      return reply.status(200).send(obras);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function getObraByIdHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { id } = request.params;
+    try {
+      const obra = yield getObraById(id);
+      if (!obra) {
+        return reply.status(404).send({ message: "Obra not found" });
+      }
+      return reply.status(200).send(obra);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function updateObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { id } = request.params;
+    const body = request.body;
+    try {
+      const obra = yield updateObra(id, body);
+      return reply.status(200).send(obra);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+function deleteObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { id } = request.params;
+    try {
+      const obra = yield deleteObra(id);
+      return reply.status(200).send(obra);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
+
+// src/modules/obra/obra.schema.ts
 var import_zod2 = require("zod");
 var import_fastify_zod2 = require("fastify-zod");
-var creteAdminSchema = import_zod2.z.object({
-  email: import_zod2.z.string({
+var obraSchema = import_zod2.z.object({
+  nome: import_zod2.z.string(),
+  cliente: import_zod2.z.string(),
+  valor: import_zod2.z.number().optional(),
+  dataInicio: import_zod2.z.string().optional(),
+  dataFim: import_zod2.z.string().optional(),
+  status: import_zod2.z.string().optional(),
+  funcionarioIds: import_zod2.z.array(import_zod2.z.string()).optional()
+});
+var CreateObraSchema = import_zod2.z.object({
+  nome: import_zod2.z.string({
+    required_error: "Nome is required",
+    invalid_type_error: "Nome must be a string"
+  }),
+  cliente: import_zod2.z.string({
+    required_error: "Cliente is required",
+    invalid_type_error: "Cliente must be a string"
+  }),
+  valor: import_zod2.z.number(),
+  dataInicio: import_zod2.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Data de in\xEDcio deve estar no formato AAAA-MM-DD (ex: 2025-05-01)"
+  }).transform((date) => `${date}T00:00:00Z`),
+  dataFim: import_zod2.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+    message: "Data de fim deve estar no formato AAAA-MM-DD (ex: 2025-07-01)"
+  }).transform((date) => `${date}T00:00:00Z`),
+  status: import_zod2.z.string(),
+  funcionarioIds: import_zod2.z.array(import_zod2.z.string()).optional()
+});
+var { schemas: obraSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
+  {
+    CreateObraSchema,
+    obraSchema
+  },
+  {
+    $id: "obraSchema"
+  }
+);
+
+// src/modules/obra/obra.route.ts
+function obraRoutes(server2) {
+  return __async(this, null, function* () {
+    console.log("Registering obra routes...");
+    server2.post(
+      "/",
+      {
+        preHandler: [server2.authenticate],
+        schema: {
+          body: $ref2("CreateObraSchema"),
+          response: {
+            201: $ref2("obraSchema")
+          }
+        }
+      },
+      registerObraHandler
+    );
+    server2.get(
+      "/",
+      {
+        preHandler: [server2.authenticate],
+        schema: {
+          response: {
+            200: {
+              type: "array",
+              items: $ref2("obraSchema")
+            }
+          }
+        }
+      },
+      getObrasHandler
+    );
+    server2.get(
+      "/:id",
+      {
+        preHandler: [server2.authenticate]
+      },
+      getObraByIdHandler
+    );
+    server2.put(
+      "/:id",
+      {
+        preHandler: [server2.authenticate],
+        schema: {
+          body: $ref2("obraSchema"),
+          response: {
+            200: $ref2("obraSchema")
+          }
+        }
+      },
+      updateObraHandler
+    );
+    server2.delete(
+      "/:id",
+      {
+        preHandler: [server2.authenticate]
+      },
+      deleteObraHandler
+    );
+  });
+}
+
+// src/modules/item/item.services.ts
+function createItem(input) {
+  return __async(this, null, function* () {
+    const item = yield prisma_default.item.create({
+      data: __spreadValues({}, input)
+    });
+    return item;
+  });
+}
+function getItems() {
+  return __async(this, null, function* () {
+    console.log("Fetching items...");
+    return prisma_default.item.findMany({
+      orderBy: {
+        nome: "asc"
+      }
+    });
+  });
+}
+function getItemById(id) {
+  return __async(this, null, function* () {
+    return prisma_default.item.findUnique({
+      where: {
+        id
+      },
+      include: {
+        obras: {
+          include: {
+            obra: true
+          }
+        }
+      }
+    });
+  });
+}
+function updateItem(id, data) {
+  return __async(this, null, function* () {
+    return prisma_default.item.update({
+      where: {
+        id
+      },
+      data
+    });
+  });
+}
+function deleteItem(id) {
+  return __async(this, null, function* () {
+    return prisma_default.item.delete({
+      where: {
+        id
+      }
+    });
+  });
+}
+function assignItemToObra(input) {
+  return __async(this, null, function* () {
+    const { itemId, obraId, quantidade, valorTotal, observacoes } = input;
+    let finalValorTotal = valorTotal;
+    if (!valorTotal) {
+      const item = yield prisma_default.item.findUnique({
+        where: { id: itemId }
+      });
+      if (item) {
+        finalValorTotal = item.precoUnitario * quantidade;
+      }
+    }
+    return prisma_default.itemObra.create({
+      data: {
+        itemId,
+        obraId,
+        quantidade,
+        valorTotal: finalValorTotal,
+        observacoes
+      },
+      include: {
+        item: true,
+        obra: true
+      }
+    });
+  });
+}
+function updateItemInObra(id, input) {
+  return __async(this, null, function* () {
+    const { quantidade } = input;
+    let data = __spreadValues({}, input);
+    if (quantidade) {
+      const itemObra = yield prisma_default.itemObra.findUnique({
+        where: { id },
+        include: { item: true }
+      });
+      if (itemObra && itemObra.item) {
+        data.valorTotal = itemObra.item.precoUnitario * quantidade;
+      }
+    }
+    return prisma_default.itemObra.update({
+      where: { id },
+      data,
+      include: {
+        item: true,
+        obra: true
+      }
+    });
+  });
+}
+function removeItemFromObra(id) {
+  return __async(this, null, function* () {
+    return prisma_default.itemObra.delete({
+      where: { id }
+    });
+  });
+}
+function getItemsByObra(obraId) {
+  return __async(this, null, function* () {
+    return prisma_default.itemObra.findMany({
+      where: {
+        obraId
+      },
+      include: {
+        item: true
+      },
+      orderBy: {
+        item: {
+          nome: "asc"
+        }
+      }
+    });
+  });
+}
+function getObrasByItem(itemId) {
+  return __async(this, null, function* () {
+    return prisma_default.itemObra.findMany({
+      where: {
+        itemId
+      },
+      include: {
+        obra: true
+      },
+      orderBy: {
+        obra: {
+          nome: "asc"
+        }
+      }
+    });
+  });
+}
+
+// src/modules/item/item.controller.ts
+function registerItemHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const item = yield createItem(request.body);
+      return reply.code(201).send(item);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error creating item" });
+    }
+  });
+}
+function getItemsHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const items = yield getItems();
+      return reply.code(200).send(items);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error fetching items" });
+    }
+  });
+}
+function getItemHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const item = yield getItemById(request.params.id);
+      if (!item) {
+        return reply.code(404).send({ message: "Item not found" });
+      }
+      return reply.code(200).send(item);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error fetching item" });
+    }
+  });
+}
+function updateItemHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const item = yield updateItem(request.params.id, request.body);
+      return reply.code(200).send(item);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error updating item" });
+    }
+  });
+}
+function deleteItemHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      yield deleteItem(request.params.id);
+      return reply.code(204).send();
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error deleting item" });
+    }
+  });
+}
+function assignItemToObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const itemObra = yield assignItemToObra(request.body);
+      return reply.code(201).send(itemObra);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error assigning item to obra" });
+    }
+  });
+}
+function updateItemInObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const itemObra = yield updateItemInObra(
+        request.params.id,
+        request.body
+      );
+      return reply.code(200).send(itemObra);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error updating item in obra" });
+    }
+  });
+}
+function removeItemFromObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      yield removeItemFromObra(request.params.id);
+      return reply.code(204).send();
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error removing item from obra" });
+    }
+  });
+}
+function getItemsByObraHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const items = yield getItemsByObra(request.params.obraId);
+      return reply.code(200).send(items);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error fetching items for obra" });
+    }
+  });
+}
+function getObrasByItemHandler(request, reply) {
+  return __async(this, null, function* () {
+    try {
+      const obras = yield getObrasByItem(request.params.itemId);
+      return reply.code(200).send(obras);
+    } catch (e) {
+      console.error(e);
+      return reply.code(500).send({ message: "Error fetching obras for item" });
+    }
+  });
+}
+
+// src/modules/item/item.schema.ts
+var import_zod3 = require("zod");
+var import_fastify_zod3 = require("fastify-zod");
+var itemSchema = import_zod3.z.object({
+  id: import_zod3.z.string().optional(),
+  nome: import_zod3.z.string(),
+  descricao: import_zod3.z.string().optional(),
+  categoria: import_zod3.z.string(),
+  unidade: import_zod3.z.string(),
+  precoUnitario: import_zod3.z.number(),
+  fornecedor: import_zod3.z.string().optional(),
+  codigo: import_zod3.z.string().optional(),
+  createdAt: import_zod3.z.date().optional(),
+  updatedAt: import_zod3.z.date().optional()
+});
+var registerItemSchema = import_zod3.z.object({
+  nome: import_zod3.z.string({
+    required_error: "Nome is required",
+    invalid_type_error: "Nome must be a string"
+  }),
+  descricao: import_zod3.z.string().optional(),
+  categoria: import_zod3.z.string({
+    required_error: "Categoria is required",
+    invalid_type_error: "Categoria must be a string"
+  }),
+  unidade: import_zod3.z.string({
+    required_error: "Unidade is required",
+    invalid_type_error: "Unidade must be a string"
+  }),
+  precoUnitario: import_zod3.z.number({
+    required_error: "Pre\xE7o unit\xE1rio is required",
+    invalid_type_error: "Pre\xE7o unit\xE1rio must be a number"
+  }),
+  fornecedor: import_zod3.z.string().optional(),
+  codigo: import_zod3.z.string().optional()
+});
+var itemObraSchema = import_zod3.z.object({
+  obraId: import_zod3.z.string({
+    required_error: "Obra ID is required"
+  }),
+  itemId: import_zod3.z.string({
+    required_error: "Item ID is required"
+  }),
+  quantidade: import_zod3.z.number({
+    required_error: "Quantidade is required"
+  }),
+  valorTotal: import_zod3.z.number().optional(),
+  observacoes: import_zod3.z.string().optional()
+});
+var { schemas: itemSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
+  {
+    registerItemSchema,
+    itemSchema,
+    itemObraSchema
+  },
+  {
+    $id: "itemSchema"
+  }
+);
+
+// src/modules/item/item.route.ts
+function itemRoutes(server2) {
+  return __async(this, null, function* () {
+    server2.post(
+      "/",
+      {
+        schema: {
+          body: $ref3("registerItemSchema"),
+          response: {
+            201: $ref3("itemSchema")
+          }
+        }
+      },
+      registerItemHandler
+    );
+    server2.get(
+      "/",
+      {
+        schema: {
+          response: {
+            200: {
+              type: "array",
+              items: $ref3("itemSchema")
+            }
+          }
+        }
+      },
+      getItemsHandler
+    );
+    server2.get(
+      "/:id",
+      {
+        schema: {
+          response: {
+            200: $ref3("itemSchema")
+          }
+        }
+      },
+      getItemHandler
+    );
+    server2.put(
+      "/:id",
+      {
+        schema: {
+          body: $ref3("itemSchema"),
+          response: {
+            200: $ref3("itemSchema")
+          }
+        }
+      },
+      updateItemHandler
+    );
+    server2.delete("/:id", deleteItemHandler);
+    server2.post(
+      "/obra-assignment",
+      {
+        schema: {
+          body: $ref3("itemObraSchema")
+        }
+      },
+      assignItemToObraHandler
+    );
+    server2.put("/obra-assignment/:id", updateItemInObraHandler);
+    server2.delete("/obra-assignment/:id", removeItemFromObraHandler);
+    server2.get("/obra/:obraId", getItemsByObraHandler);
+    server2.get("/:itemId/obras", getObrasByItemHandler);
+  });
+}
+var item_route_default = itemRoutes;
+
+// src/modules/admin/admin.schemas.ts
+var import_zod4 = require("zod");
+var import_fastify_zod4 = require("fastify-zod");
+var creteAdminSchema = import_zod4.z.object({
+  email: import_zod4.z.string({
     required_error: "Email is required",
     invalid_type_error: "Email must be a string"
   }).email(),
-  password: import_zod2.z.string({
+  password: import_zod4.z.string({
     required_error: "Password is required",
     invalid_type_error: "Password must be at least 6 characters"
   }).min(6),
-  name: import_zod2.z.string({
+  name: import_zod4.z.string({
     required_error: "Name is required",
     invalid_type_error: "Name must be a string"
   })
 });
-var createAdminResponseSchema = import_zod2.z.object({
-  id: import_zod2.z.number(),
-  email: import_zod2.z.string(),
-  name: import_zod2.z.string()
+var createAdminResponseSchema = import_zod4.z.object({
+  id: import_zod4.z.number(),
+  email: import_zod4.z.string(),
+  name: import_zod4.z.string()
 });
-var loginAdminSchema = import_zod2.z.object({
-  email: import_zod2.z.string({
+var loginAdminSchema = import_zod4.z.object({
+  email: import_zod4.z.string({
     required_error: "Email is required",
     invalid_type_error: "Email must be a string"
   }).email(),
-  password: import_zod2.z.string({
+  password: import_zod4.z.string({
     required_error: "Password is required",
     invalid_type_error: "Password must be a string"
   })
 });
-var loginAdminResponseSchema = import_zod2.z.object({
-  accessToken: import_zod2.z.string(),
-  admin: import_zod2.z.object({
-    email: import_zod2.z.string(),
-    name: import_zod2.z.string()
+var loginAdminResponseSchema = import_zod4.z.object({
+  accessToken: import_zod4.z.string(),
+  admin: import_zod4.z.object({
+    email: import_zod4.z.string(),
+    name: import_zod4.z.string()
   })
 });
-var { schemas: adminSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
+var { schemas: adminSchemas, $ref: $ref4 } = (0, import_fastify_zod4.buildJsonSchemas)(
   {
     creteAdminSchema,
     createAdminResponseSchema,
@@ -1403,16 +2150,16 @@ var { schemas: adminSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSc
 );
 
 // src/modules/cargo/cargo.schema.ts
-var import_zod3 = require("zod");
-var import_fastify_zod3 = require("fastify-zod");
-var cargoSchema2 = import_zod3.z.object({
-  nome: import_zod3.z.string()
+var import_zod5 = require("zod");
+var import_fastify_zod5 = require("fastify-zod");
+var cargoSchema2 = import_zod5.z.object({
+  nome: import_zod5.z.string()
 });
-var cargoResponseSchema = import_zod3.z.object({
-  id: import_zod3.z.string(),
-  nome: import_zod3.z.string()
+var cargoResponseSchema = import_zod5.z.object({
+  id: import_zod5.z.string(),
+  nome: import_zod5.z.string()
 });
-var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
+var { schemas: cargoSchemas, $ref: $ref5 } = (0, import_fastify_zod5.buildJsonSchemas)(
   {
     cargoSchema: cargoSchema2,
     cargoResponseSchema
@@ -1421,20 +2168,20 @@ var { schemas: cargoSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSc
 );
 
 // src/modules/tabelaFuncionarios/tabelaFuncionarios.schema.ts
-var import_zod4 = require("zod");
-var import_fastify_zod4 = require("fastify-zod");
-var tabelaFuncionarioSchema = import_zod4.z.object({
-  funcionarios: import_zod4.z.array(createFuncionarioSchema),
-  mes: import_zod4.z.number(),
-  ano: import_zod4.z.number(),
-  anomes: import_zod4.z.string()
+var import_zod6 = require("zod");
+var import_fastify_zod6 = require("fastify-zod");
+var tabelaFuncionarioSchema = import_zod6.z.object({
+  funcionarios: import_zod6.z.array(createFuncionarioSchema),
+  mes: import_zod6.z.number(),
+  ano: import_zod6.z.number(),
+  anomes: import_zod6.z.string()
 });
-var createTabelaFuncionarioSchema = import_zod4.z.object({
-  mes: import_zod4.z.number(),
-  ano: import_zod4.z.number(),
-  anomes: import_zod4.z.string()
+var createTabelaFuncionarioSchema = import_zod6.z.object({
+  mes: import_zod6.z.number(),
+  ano: import_zod6.z.number(),
+  anomes: import_zod6.z.string()
 });
-var { schemas: tabelaFuncionarioSchemas, $ref: $ref4 } = (0, import_fastify_zod4.buildJsonSchemas)(
+var { schemas: tabelaFuncionarioSchemas, $ref: $ref6 } = (0, import_fastify_zod6.buildJsonSchemas)(
   {
     tabelaFuncionarioSchema,
     createTabelaFuncionarioSchema
@@ -1443,24 +2190,24 @@ var { schemas: tabelaFuncionarioSchemas, $ref: $ref4 } = (0, import_fastify_zod4
 );
 
 // src/modules/evento/evento.schema.ts
-var import_zod5 = require("zod");
-var import_fastify_zod5 = require("fastify-zod");
-var CreateEventoSchema = import_zod5.z.object({
-  titulo: import_zod5.z.string(),
-  descricao: import_zod5.z.string(),
-  dataInicio: import_zod5.z.string(),
-  dataFim: import_zod5.z.string(),
-  allDay: import_zod5.z.boolean()
+var import_zod7 = require("zod");
+var import_fastify_zod7 = require("fastify-zod");
+var CreateEventoSchema = import_zod7.z.object({
+  titulo: import_zod7.z.string(),
+  descricao: import_zod7.z.string(),
+  dataInicio: import_zod7.z.string(),
+  dataFim: import_zod7.z.string(),
+  allDay: import_zod7.z.boolean()
 });
-var EventoResponseSchema = import_zod5.z.object({
-  id: import_zod5.z.string(),
-  titulo: import_zod5.z.string(),
-  descricao: import_zod5.z.string(),
-  dataInicio: import_zod5.z.string(),
-  dataFim: import_zod5.z.string(),
-  allDay: import_zod5.z.boolean()
+var EventoResponseSchema = import_zod7.z.object({
+  id: import_zod7.z.string(),
+  titulo: import_zod7.z.string(),
+  descricao: import_zod7.z.string(),
+  dataInicio: import_zod7.z.string(),
+  dataFim: import_zod7.z.string(),
+  allDay: import_zod7.z.boolean()
 });
-var { schemas: eventoSchemas, $ref: $ref5 } = (0, import_fastify_zod5.buildJsonSchemas)(
+var { schemas: eventoSchemas, $ref: $ref7 } = (0, import_fastify_zod7.buildJsonSchemas)(
   {
     CreateEventoSchema,
     EventoResponseSchema
@@ -1501,6 +2248,8 @@ function main() {
       ...adminSchemas,
       ...cargoSchemas,
       ...tabelaFuncionarioSchemas,
+      ...obraSchemas,
+      ...itemSchemas,
       ...eventoSchemas
     ]) {
       server.addSchema(schema);
@@ -1514,6 +2263,10 @@ function main() {
     server.register(cargo_route_default, { prefix: "/api/cargo" });
     server.register(tabelaFuncionarios_route_default, { prefix: "/api/tabela" });
     server.register(eventoRoutes, { prefix: "/api/evento" });
+    server.register(obraRoutes, { prefix: "/api/obra" });
+    server.register(item_route_default, { prefix: "/api/item" });
+    console.log("Rebuilt at " + (/* @__PURE__ */ new Date()).toLocaleString());
+    console.log("Server started at " + (/* @__PURE__ */ new Date()).toLocaleString());
     try {
       yield server.listen({
         port: process.env.PORT ? Number(process.env.PORT) : 4567,

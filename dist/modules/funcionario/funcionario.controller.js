@@ -1,8 +1,25 @@
 "use strict";
 var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -61,7 +78,17 @@ var prisma_default = prisma;
 // src/modules/funcionario/funcionario.services.ts
 function createFuncionario(input) {
   return __async(this, null, function* () {
-    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    const {
+      name,
+      cargo,
+      chavePix,
+      banco,
+      salarios,
+      contato,
+      cpf,
+      status,
+      obrasIds
+    } = input;
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
@@ -90,7 +117,7 @@ function createFuncionario(input) {
       console.log("CARGO EXISTS: ", cargo.nome);
     }
     const funcionario = yield prisma_default.funcionario.create({
-      data: {
+      data: __spreadProps(__spreadValues({
         name,
         cargo: {
           connectOrCreate: {
@@ -102,7 +129,12 @@ function createFuncionario(input) {
         banco,
         cpf,
         contato,
-        status,
+        status
+      }, obrasIds && obrasIds.length > 0 ? {
+        obras: {
+          connect: obrasIds.map((id) => ({ id }))
+        }
+      } : {}), {
         salarios: salarios ? {
           create: salarios.map((salario) => {
             var _a, _b, _c, _d, _e, _f, _g, _h;
@@ -125,7 +157,7 @@ function createFuncionario(input) {
             };
           })
         } : void 0
-      }
+      })
     });
     if (salarios) {
       const salaries = salarios.map((salario) => ({
@@ -255,15 +287,28 @@ function findFuncionarioById(id) {
 }
 function updateFuncionario(id, input) {
   return __async(this, null, function* () {
-    const { name, cargo, chavePix, banco, salarios, contato, cpf, status } = input;
+    const {
+      name,
+      cargo,
+      chavePix,
+      banco,
+      salarios,
+      contato,
+      cpf,
+      status,
+      obrasIds
+    } = input;
     if (!cargo || !cargo.nome) {
       throw new Error("Cargo \xE9 obrigat\xF3rio");
     }
     console.log("FUNCIONARIO: ", input);
     try {
+      const currentFuncionario = yield prisma_default.funcionario.findUnique({
+        where: { id }
+      });
       const updatedFuncionario = yield prisma_default.funcionario.update({
         where: { id },
-        data: {
+        data: __spreadProps(__spreadValues({
           name,
           cargo: {
             upsert: {
@@ -279,7 +324,12 @@ function updateFuncionario(id, input) {
           banco,
           cpf,
           contato,
-          status,
+          status
+        }, obrasIds && obrasIds.length > 0 ? {
+          obras: {
+            connect: obrasIds.map((id2) => ({ id: id2 }))
+          }
+        } : {}), {
           salarios: salarios ? {
             upsert: salarios.map((salario) => {
               var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
@@ -335,7 +385,7 @@ function updateFuncionario(id, input) {
               };
             })
           } : void 0
-        }
+        })
       });
       if (salarios) {
         const salaries = salarios.map((salario) => ({

@@ -86,7 +86,8 @@ var funcionarioCore = {
     invalid_type_error: "CPF must be a string"
   }),
   status: import_zod.z.boolean(),
-  salarios: import_zod.z.array(salarioSchema).optional()
+  salarios: import_zod.z.array(salarioSchema).optional(),
+  obrasIds: import_zod.z.array(import_zod.z.string()).optional()
 };
 var addSalarioToFuncionarioSchema = import_zod.z.object({
   salario: salarioSchema
