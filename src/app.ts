@@ -17,7 +17,7 @@ import { eventoSchemas } from "./modules/evento/evento.schema";
 import { obraSchemas } from "./modules/obra/obra.schema";
 import { itemSchemas } from "./modules/item/item.schema";
 
-export const server = Fastify();  
+export const server = Fastify();
 
 declare module "fastify" {
   export interface FastifyInstance {
@@ -69,9 +69,9 @@ async function main() {
     ...adminSchemas,
     ...cargoSchemas,
     ...tabelaFuncionarioSchemas,
-    ...eventoSchemas,
     ...obraSchemas,
     ...itemSchemas,
+    ...eventoSchemas,
   ]) {
     server.addSchema(schema);
   }

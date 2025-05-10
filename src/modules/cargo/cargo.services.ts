@@ -11,7 +11,6 @@ export async function createCargo(input: CreateCargoInput) {
     },
   });
 
-  // if cargo already exists, throw an error
   if (cargoExists) {
     throw new Error("Cargo já existe no banco de dados");
   }
@@ -25,21 +24,16 @@ export async function createCargo(input: CreateCargoInput) {
 }
 
 export async function createCargos(input: CreateCargoInput[]) {
-  console.log("1 - Input: ", input);
-
-  // verify if cargos already exists
   const existingCargoNames = await prisma.cargo
     .findMany({
       select: { nome: true },
     })
     .then((cargos) => cargos.map((cargo) => cargo.nome));
-  console.log("2 - existingCargoNames: ", existingCargoNames);
 
   // filter cargos that already exists
   const cargosToCreate = input.filter(
     (cargo) => !existingCargoNames.includes(cargo.nome)
   );
-  console.log("3 - cargosToCreate: ", cargosToCreate);
 
   // create cargos
   const cargos = await prisma.cargo.createMany({
