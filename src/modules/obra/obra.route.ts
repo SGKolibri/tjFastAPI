@@ -9,6 +9,8 @@ import {
 import { $ref } from "./obra.schema";
 
 export default async function obraRoutes(server: FastifyInstance) {
+  console.log("Registering obra routes...");
+
   server.post(
     "/",
     {

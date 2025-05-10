@@ -7,7 +7,7 @@ import adminRoutes from "./modules/admin/admin.route";
 import cargoRoutes from "./modules/cargo/cargo.route";
 import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
 import eventoRoutes from "./modules/evento/evento.route";
-import obraRoutes from "./modules/obra/obra.routes";
+import obraRoutes from "./modules/obra/obra.route";
 import itemRoutes from "./modules/item/item.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
 import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
