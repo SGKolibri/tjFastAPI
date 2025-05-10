@@ -27,6 +27,14 @@ async function obraRoutes(server: FastifyInstance) {
     "/",
     {
       preHandler: [server.authenticate],
+      schema: {
+        response: {
+          200: {
+            type: "array",
+            items: $ref("obraSchema"),
+          },
+        },
+      },
     },
     getObrasHandler
   );

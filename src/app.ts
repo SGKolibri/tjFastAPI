@@ -89,6 +89,9 @@ async function main() {
   server.register(obraRoutes, { prefix: "/api/obra" });
   server.register(itemRoutes, { prefix: "/api/item" });
 
+  console.log("Rebuilt at " + new Date().toLocaleString());
+  console.log("Server started at " + new Date().toLocaleString());
+
   try {
     await server
       .listen({
