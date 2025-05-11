@@ -86,3 +86,22 @@ export async function deleteObraHandler(
     return reply.status(500).send({ message: "Internal Server Error" });
   }
 }
+
+export async function registerMultipleObrasHandler(
+  request: FastifyRequest<{ Body: RegisterObraInput[] }>,
+  reply: FastifyReply
+) {
+  const bodies = request.body;
+  const results = [];
+
+  try {
+    for (const body of bodies) {
+      const obra = await createObra(body);
+      results.push(obra);
+    }
+    return reply.status(201).send(results);
+  } catch (e) {
+    console.error(e);
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}

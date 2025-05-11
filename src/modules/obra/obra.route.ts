@@ -5,6 +5,7 @@ import {
   getObraByIdHandler,
   updateObraHandler,
   deleteObraHandler,
+  registerMultipleObrasHandler,
 } from "./obra.controller";
 import { $ref } from "./obra.schema";
 
@@ -29,14 +30,6 @@ export default async function obraRoutes(server: FastifyInstance) {
     "/",
     {
       preHandler: [server.authenticate],
-      schema: {
-        response: {
-          200: {
-            type: "array",
-            items: $ref("obraSchema"),
-          },
-        },
-      },
     },
     getObrasHandler
   );
@@ -69,5 +62,25 @@ export default async function obraRoutes(server: FastifyInstance) {
       preHandler: [server.authenticate],
     },
     deleteObraHandler
+  );
+
+  server.post(
+    "/bulk",
+    {
+      preHandler: [server.authenticate],
+      schema: {
+        body: {
+          type: "array",
+          items: $ref("CreateObraSchema"),
+        },
+        response: {
+          201: {
+            type: "array",
+            items: $ref("obraSchema"),
+          },
+        },
+      },
+    },
+    registerMultipleObrasHandler
   );
 }
