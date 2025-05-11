@@ -72,6 +72,7 @@ __export(obra_controller_exports, {
   deleteObraHandler: () => deleteObraHandler,
   getObraByIdHandler: () => getObraByIdHandler,
   getObrasHandler: () => getObrasHandler,
+  registerMultipleObrasHandler: () => registerMultipleObrasHandler,
   registerObraHandler: () => registerObraHandler,
   updateObraHandler: () => updateObraHandler
 });
@@ -300,11 +301,28 @@ function deleteObraHandler(request, reply) {
     }
   });
 }
+function registerMultipleObrasHandler(request, reply) {
+  return __async(this, null, function* () {
+    const bodies = request.body;
+    const results = [];
+    try {
+      for (const body of bodies) {
+        const obra = yield createObra(body);
+        results.push(obra);
+      }
+      return reply.status(201).send(results);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   deleteObraHandler,
   getObraByIdHandler,
   getObrasHandler,
+  registerMultipleObrasHandler,
   registerObraHandler,
   updateObraHandler
 });

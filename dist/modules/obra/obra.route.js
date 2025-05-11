@@ -296,6 +296,22 @@ function deleteObraHandler(request, reply) {
     }
   });
 }
+function registerMultipleObrasHandler(request, reply) {
+  return __async(this, null, function* () {
+    const bodies = request.body;
+    const results = [];
+    try {
+      for (const body of bodies) {
+        const obra = yield createObra(body);
+        results.push(obra);
+      }
+      return reply.status(201).send(results);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 
 // src/modules/obra/obra.schema.ts
 var import_zod = require("zod");
@@ -341,7 +357,6 @@ var { schemas: obraSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
 // src/modules/obra/obra.route.ts
 function obraRoutes(server) {
   return __async(this, null, function* () {
-    console.log("Registering obra routes...");
     server.post(
       "/",
       {
@@ -358,15 +373,7 @@ function obraRoutes(server) {
     server.get(
       "/",
       {
-        preHandler: [server.authenticate],
-        schema: {
-          response: {
-            200: {
-              type: "array",
-              items: $ref("obraSchema")
-            }
-          }
-        }
+        preHandler: [server.authenticate]
       },
       getObrasHandler
     );
@@ -396,6 +403,25 @@ function obraRoutes(server) {
         preHandler: [server.authenticate]
       },
       deleteObraHandler
+    );
+    server.post(
+      "/bulk",
+      {
+        preHandler: [server.authenticate],
+        schema: {
+          body: {
+            type: "array",
+            items: $ref("CreateObraSchema")
+          },
+          response: {
+            201: {
+              type: "array",
+              items: $ref("obraSchema")
+            }
+          }
+        }
+      },
+      registerMultipleObrasHandler
     );
   });
 }
