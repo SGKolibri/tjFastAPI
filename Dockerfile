@@ -4,7 +4,8 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json, and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm cache clean --force && \
+    npm install --production --no-optional
 
 # Install PM2 globally
 RUN npm install -g pm2
