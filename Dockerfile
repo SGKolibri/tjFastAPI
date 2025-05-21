@@ -27,7 +27,7 @@ COPY . .
 RUN mkdir -p ./public/relatorios && chmod 777 ./public/relatorios
 
 # Compile TypeScript to JavaScript
-RUN npx tsc
+RUN npm run build
 
 # Run Prisma migrations
 # RUN npx prisma migrate deploy
