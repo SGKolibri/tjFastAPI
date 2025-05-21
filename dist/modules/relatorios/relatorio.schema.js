@@ -30,7 +30,8 @@ var relatorioRequestSchema = import_zod.z.object({
   modulo: import_zod.z.enum(["funcionario", "cargo", "item", "obra"]),
   dataInicio: import_zod.z.string().optional(),
   dataFim: import_zod.z.string().optional(),
-  formato: import_zod.z.enum(["pdf", "excel", "json"]).default("pdf"),
+  formato: import_zod.z.enum(["pdf", "json"]).default("pdf"),
+  // "excel",
   filtros: import_zod.z.record(import_zod.z.any()).optional()
 });
 var relatorioResponseSchema = import_zod.z.object({

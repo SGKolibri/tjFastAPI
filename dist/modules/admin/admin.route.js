@@ -136360,7 +136360,8 @@ var relatorioRequestSchema = import_zod8.z.object({
   modulo: import_zod8.z.enum(["funcionario", "cargo", "item", "obra"]),
   dataInicio: import_zod8.z.string().optional(),
   dataFim: import_zod8.z.string().optional(),
-  formato: import_zod8.z.enum(["pdf", "excel", "json"]).default("pdf"),
+  formato: import_zod8.z.enum(["pdf", "json"]).default("pdf"),
+  // "excel",
   filtros: import_zod8.z.record(import_zod8.z.any()).optional()
 });
 var relatorioResponseSchema = import_zod8.z.object({
@@ -157166,12 +157167,11 @@ mixin(TableMixin);
 PDFDocument.LineWrapper = LineWrapper;
 
 // src/modules/relatorios/relatorio.services.ts
-var import_exceljs = __toESM(require("exceljs"));
 function gerarRelatorio(input) {
   return __async(this, null, function* () {
     const { modulo, dataInicio, dataFim, formato, filtros } = input;
     const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/:/g, "-");
-    const fileName = `relatorio_${modulo}_${timestamp}.${formato === "excel" ? "xlsx" : formato}`;
+    const fileName = `relatorio_${modulo}_${timestamp}.${formato}`;
     const filePath = path.join(__dirname, "../../../public/relatorios", fileName);
     const baseUrl = process.env.BASE_URL || "http://localhost:4567";
     const dir = path.dirname(filePath);
@@ -157181,8 +157181,6 @@ function gerarRelatorio(input) {
     const dados = yield obterDadosModulo(modulo, dataInicio, dataFim, filtros);
     if (formato === "pdf") {
       yield gerarPDF(dados, filePath, modulo);
-    } else if (formato === "excel") {
-      yield gerarExcel(dados, filePath, modulo);
     } else {
       fs2.writeFileSync(filePath, JSON.stringify(dados, null, 2));
     }
@@ -157281,34 +157279,6 @@ function adicionarConteudoFuncionarioPDF(doc, dados) {
     doc.fontSize(12).text(`E-mail: ${funcionario.email}`);
     doc.fontSize(12).text(`Telefone: ${funcionario.telefone || "N\xE3o informado"}`);
     doc.moveDown();
-  });
-}
-function gerarExcel(dados, filePath, modulo) {
-  return __async(this, null, function* () {
-    const workbook = new import_exceljs.default.Workbook();
-    const worksheet = workbook.addWorksheet(`Relat\xF3rio de ${modulo}`);
-    switch (modulo) {
-      case "funcionario":
-        worksheet.columns = [
-          { header: "ID", key: "id", width: 10 },
-          { header: "Nome", key: "nome", width: 30 },
-          { header: "Email", key: "email", width: 30 },
-          { header: "Cargo", key: "cargoNome", width: 20 },
-          { header: "Telefone", key: "telefone", width: 20 }
-        ];
-        dados.forEach((funcionario) => {
-          var _a;
-          worksheet.addRow({
-            id: funcionario.id,
-            nome: funcionario.nome,
-            email: funcionario.email,
-            cargoNome: ((_a = funcionario.cargo) == null ? void 0 : _a.nome) || "N\xE3o atribu\xEDdo",
-            telefone: funcionario.telefone || "N\xE3o informado"
-          });
-        });
-        break;
-    }
-    yield workbook.xlsx.writeFile(filePath);
   });
 }
 

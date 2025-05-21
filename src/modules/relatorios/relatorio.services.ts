@@ -3,7 +3,7 @@ import { RelatorioRequest } from "./relatorio.schema";
 import * as fs from "fs";
 import * as path from "path";
 import PDFDocument from "pdfkit";
-import ExcelJS from "exceljs";
+// import ExcelJS from "exceljs";
 
 export async function gerarRelatorio(input: RelatorioRequest) {
   const { modulo, dataInicio, dataFim, formato, filtros } = input;
