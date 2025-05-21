@@ -7,6 +7,9 @@ COPY package*.json ./
 RUN npm cache clean --force && \
     npm install --production --no-optional
 
+# Install additional dependencies for Prisma
+RUN npm install fstream unzipper bluebird
+
 # Install PM2 globally
 RUN npm install -g pm2
 
@@ -19,6 +22,11 @@ COPY .env .env
 
 # Copy all files and compile TypeScript to JavaScript
 COPY . .
+
+# Create reports directory
+RUN mkdir -p ./public/relatorios && chmod 777 ./public/relatorios
+
+# Compile TypeScript to JavaScript
 RUN npx tsc
 
 # Run Prisma migrations
