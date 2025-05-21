@@ -16,6 +16,9 @@ import { tabelaFuncionarioSchemas } from "./modules/tabelaFuncionarios/tabelaFun
 import { eventoSchemas } from "./modules/evento/evento.schema";
 import { obraSchemas } from "./modules/obra/obra.schema";
 import { itemSchemas } from "./modules/item/item.schema";
+import { relatorioSchemas } from "./modules/relatorios/relatorio.schema";
+import relatorioRoutes from "./modules/relatorios/relatorio.route";
+import path from "path";
 
 export const server = Fastify();
 
@@ -49,7 +52,7 @@ server.register(fastifyJwt, {
 });
 
 server.decorate(
-  "authenticate", // name of the decorator
+  "authenticate",
   async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       await request.jwtVerify();
@@ -64,6 +67,19 @@ server.get("/", async () => {
 });
 
 async function main() {
+  await server.register(require("@fastify/static"), {
+    root: path.join(__dirname, "../public/relatorios"),
+    prefix: "/relatorios/",
+    decorateReply: true,
+    serve: true,
+    setHeaders: (res: any, path: any) => {
+      if (path.endsWith(".pdf")) {
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline");
+      }
+    },
+  });
+
   for (const schema of [
     ...funcionarioSchemas,
     ...adminSchemas,
@@ -72,6 +88,7 @@ async function main() {
     ...obraSchemas,
     ...itemSchemas,
     ...eventoSchemas,
+    ...relatorioSchemas,
   ]) {
     server.addSchema(schema);
   }
@@ -88,6 +105,7 @@ async function main() {
   server.register(eventoRoutes, { prefix: "/api/evento" });
   server.register(obraRoutes, { prefix: "/api/obra" });
   server.register(itemRoutes, { prefix: "/api/item" });
+  server.register(relatorioRoutes, { prefix: "/api/relatorio" });
 
   console.log("Rebuilt at " + new Date().toLocaleString());
   console.log("Server started at " + new Date().toLocaleString());

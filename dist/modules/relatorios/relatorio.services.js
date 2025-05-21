@@ -22,18 +22,6 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
-var __objRest = (source, exclude) => {
-  var target = {};
-  for (var prop in source)
-    if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
-      target[prop] = source[prop];
-  if (source != null && __getOwnPropSymbols)
-    for (var prop of __getOwnPropSymbols(source)) {
-      if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
-        target[prop] = source[prop];
-    }
-  return target;
-};
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -93,39 +81,39 @@ var require_core = __commonJS({
       }
     })(exports2, function() {
       var CryptoJS2 = CryptoJS2 || function(Math2, undefined2) {
-        var crypto2;
+        var crypto;
         if (typeof window !== "undefined" && window.crypto) {
-          crypto2 = window.crypto;
+          crypto = window.crypto;
         }
         if (typeof self !== "undefined" && self.crypto) {
-          crypto2 = self.crypto;
+          crypto = self.crypto;
         }
         if (typeof globalThis !== "undefined" && globalThis.crypto) {
-          crypto2 = globalThis.crypto;
+          crypto = globalThis.crypto;
         }
-        if (!crypto2 && typeof window !== "undefined" && window.msCrypto) {
-          crypto2 = window.msCrypto;
+        if (!crypto && typeof window !== "undefined" && window.msCrypto) {
+          crypto = window.msCrypto;
         }
-        if (!crypto2 && typeof global !== "undefined" && global.crypto) {
-          crypto2 = global.crypto;
+        if (!crypto && typeof global !== "undefined" && global.crypto) {
+          crypto = global.crypto;
         }
-        if (!crypto2 && typeof require === "function") {
+        if (!crypto && typeof require === "function") {
           try {
-            crypto2 = require("crypto");
+            crypto = require("crypto");
           } catch (err) {
           }
         }
         var cryptoSecureRandomInt = function() {
-          if (crypto2) {
-            if (typeof crypto2.getRandomValues === "function") {
+          if (crypto) {
+            if (typeof crypto.getRandomValues === "function") {
               try {
-                return crypto2.getRandomValues(new Uint32Array(1))[0];
+                return crypto.getRandomValues(new Uint32Array(1))[0];
               } catch (err) {
               }
             }
-            if (typeof crypto2.randomBytes === "function") {
+            if (typeof crypto.randomBytes === "function") {
               try {
-                return crypto2.randomBytes(4).readInt32LE();
+                return crypto.randomBytes(4).readInt32LE();
               } catch (err) {
               }
             }
@@ -2759,20 +2747,20 @@ var require_ripemd160 = __commonJS({
             return clone;
           }
         });
-        function f1(x, y, z9) {
-          return x ^ y ^ z9;
+        function f1(x, y, z) {
+          return x ^ y ^ z;
         }
-        function f2(x, y, z9) {
-          return x & y | ~x & z9;
+        function f2(x, y, z) {
+          return x & y | ~x & z;
         }
-        function f3(x, y, z9) {
-          return (x | ~y) ^ z9;
+        function f3(x, y, z) {
+          return (x | ~y) ^ z;
         }
-        function f4(x, y, z9) {
-          return x & z9 | y & ~z9;
+        function f4(x, y, z) {
+          return x & z | y & ~z;
         }
-        function f5(x, y, z9) {
-          return x ^ (y | ~z9);
+        function f5(x, y, z) {
+          return x ^ (y | ~z);
         }
         function rotl(x, n) {
           return x << n | x >>> 32 - n;
@@ -134023,17 +134011,17 @@ var require_lib = __commonJS({
 var require_png_node = __commonJS({
   "node_modules/png-js/png-node.js"(exports2, module2) {
     "use strict";
-    var fs4 = require("fs");
+    var fs3 = require("fs");
     var zlib2 = require("zlib");
     module2.exports = class PNG2 {
-      static decode(path4, fn) {
-        return fs4.readFile(path4, function(err, file) {
+      static decode(path2, fn) {
+        return fs3.readFile(path2, function(err, file) {
           const png = new PNG2(file);
           return png.decode((pixels) => fn(pixels));
         });
       }
-      static load(path4) {
-        const file = fs4.readFileSync(path4);
+      static load(path2) {
+        const file = fs3.readFileSync(path2);
         return new PNG2(file);
       }
       constructor(data) {
@@ -134317,2065 +134305,17 @@ var require_png_node = __commonJS({
   }
 });
 
-// src/modules/admin/admin.route.ts
-var admin_route_exports = {};
-__export(admin_route_exports, {
-  default: () => adminRoutes
+// src/modules/relatorios/relatorio.services.ts
+var relatorio_services_exports = {};
+__export(relatorio_services_exports, {
+  gerarRelatorio: () => gerarRelatorio
 });
-module.exports = __toCommonJS(admin_route_exports);
-
-// src/app.ts
-var import_fastify = __toESM(require("fastify"));
-var import_jwt = __toESM(require("@fastify/jwt"));
-var import_cors = __toESM(require("@fastify/cors"));
+module.exports = __toCommonJS(relatorio_services_exports);
 
 // src/utils/prisma.ts
 var import_client = require("@prisma/client");
 var prisma = new import_client.PrismaClient();
 var prisma_default = prisma;
-
-// src/modules/funcionario/funcionario.services.ts
-function createFuncionario(input) {
-  return __async(this, null, function* () {
-    const {
-      name,
-      cargo,
-      chavePix,
-      banco,
-      salarios,
-      contato,
-      cpf,
-      status,
-      obrasIds
-    } = input;
-    if (!cargo || !cargo.nome) {
-      throw new Error("Cargo \xE9 obrigat\xF3rio");
-    }
-    const cpfRegistered = yield prisma_default.funcionario.findFirst({
-      where: {
-        cpf
-      }
-    });
-    if (cpfRegistered !== null) {
-      console.log("CPF REGISTERED ERROR: ", cpfRegistered);
-      throw new Error("CPF j\xE1 cadastrado");
-    }
-    const allCargos = yield prisma_default.cargo.findMany();
-    console.log("ALL CARGOS: ", allCargos);
-    const cargoExists = yield prisma_default.cargo.findUnique({
-      where: { nome: cargo.nome }
-    });
-    if (!cargoExists) {
-      console.log("CARGO DOES NOT EXIST: ", cargo.nome);
-      yield prisma_default.cargo.create({
-        data: {
-          nome: cargo.nome
-        }
-      });
-    } else {
-      console.log("CARGO EXISTS: ", cargo.nome);
-    }
-    const funcionario = yield prisma_default.funcionario.create({
-      data: __spreadProps(__spreadValues({
-        name,
-        cargo: {
-          connectOrCreate: {
-            where: { nome: cargo.nome },
-            create: { nome: cargo.nome }
-          }
-        },
-        chavePix,
-        banco,
-        cpf,
-        contato,
-        status
-      }, obrasIds && obrasIds.length > 0 ? {
-        obras: {
-          connect: obrasIds.map((id) => ({ id }))
-        }
-      } : {}), {
-        salarios: salarios ? {
-          create: salarios.map((salario) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            return {
-              mes: salario.mes,
-              ano: salario.ano,
-              salarioBase: salario.salarioBase,
-              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
-              descontos: (_b = salario.descontos) != null ? _b : 0,
-              bonus: (_c = salario.bonus) != null ? _c : 0,
-              faltas: (_d = salario.faltas) != null ? _d : 0,
-              extras: (_e = salario.extras) != null ? _e : 0,
-              beneficios: salario.beneficios ? {
-                create: {
-                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
-                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
-                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
-                }
-              } : void 0
-            };
-          })
-        } : void 0
-      })
-    });
-    if (salarios) {
-      const salaries = salarios.map((salario) => ({
-        mes: salario.mes,
-        ano: salario.ano
-      }));
-      yield Promise.all(
-        salaries.map(
-          (salary) => addFuncionarioToTabelaFuncionario(
-            funcionario.id,
-            salary.mes,
-            salary.ano
-          )
-        )
-      );
-    }
-    return funcionario;
-  });
-}
-function findFuncionarios(search = "") {
-  return __async(this, null, function* () {
-    return yield prisma_default.funcionario.findMany({
-      where: {
-        name: {
-          contains: search,
-          mode: "insensitive"
-        }
-      },
-      select: {
-        id: true,
-        name: true,
-        cargo: true,
-        chavePix: true,
-        cpf: true,
-        banco: true,
-        contato: true,
-        status: true,
-        salarios: {
-          select: {
-            id: true,
-            mes: true,
-            ano: true,
-            salarioBase: true,
-            horasExtras: true,
-            descontos: true,
-            bonus: true,
-            faltas: true,
-            extras: true,
-            beneficios: {
-              select: {
-                cafe: true,
-                almoco: true,
-                passagem: true
-              }
-            }
-          }
-        }
-      }
-    });
-  });
-}
-function updateFuncionarioStatus(id) {
-  return __async(this, null, function* () {
-    if (!id || typeof id !== "number") {
-      throw new Error("Invalid ID provided");
-    }
-    const funcionario = yield prisma_default.funcionario.findUnique({
-      where: { id }
-      // Ensure id is treated as a number
-    });
-    if (!funcionario) {
-      throw new Error("Funcion\xE1rio n\xE3o encontrado");
-    }
-    console.log("FUNCIONARIO STATUS: ", funcionario.status);
-    const status = funcionario.status ? false : true;
-    try {
-      return yield prisma_default.funcionario.update({
-        where: { id },
-        // Ensure id is treated as a number
-        data: {
-          status
-        }
-      });
-    } catch (error) {
-      console.error("Error updating funcionario status: ", error);
-      throw new Error("Failed to update funcionario status");
-    }
-  });
-}
-function findFuncionarioById(id) {
-  return __async(this, null, function* () {
-    return yield prisma_default.funcionario.findUnique({
-      where: { id },
-      // Ensure id is treated as a number
-      select: {
-        id: true,
-        name: true,
-        cargo: true,
-        chavePix: true,
-        cpf: true,
-        banco: true,
-        contato: true,
-        status: true,
-        salarios: {
-          select: {
-            id: true,
-            mes: true,
-            ano: true,
-            salarioBase: true,
-            horasExtras: true,
-            descontos: true,
-            bonus: true,
-            faltas: true,
-            extras: true,
-            beneficios: {
-              select: {
-                cafe: true,
-                almoco: true,
-                passagem: true
-              }
-            }
-          }
-        }
-      }
-    });
-  });
-}
-function updateFuncionario(id, input) {
-  return __async(this, null, function* () {
-    const {
-      name,
-      cargo,
-      chavePix,
-      banco,
-      salarios,
-      contato,
-      cpf,
-      status,
-      obrasIds
-    } = input;
-    if (!cargo || !cargo.nome) {
-      throw new Error("Cargo \xE9 obrigat\xF3rio");
-    }
-    console.log("FUNCIONARIO: ", input);
-    try {
-      const currentFuncionario = yield prisma_default.funcionario.findUnique({
-        where: { id }
-      });
-      const updatedFuncionario = yield prisma_default.funcionario.update({
-        where: { id },
-        data: __spreadProps(__spreadValues({
-          name,
-          cargo: {
-            upsert: {
-              create: {
-                nome: cargo.nome
-              },
-              update: {
-                nome: cargo.nome
-              }
-            }
-          },
-          chavePix,
-          banco,
-          cpf,
-          contato,
-          status
-        }, obrasIds && obrasIds.length > 0 ? {
-          obras: {
-            connect: obrasIds.map((id2) => ({ id: id2 }))
-          }
-        } : {}), {
-          salarios: salarios ? {
-            upsert: salarios.map((salario) => {
-              var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
-              return {
-                where: {
-                  mes_ano_funcionarioId: {
-                    mes: salario.mes,
-                    ano: salario.ano,
-                    funcionarioId: id
-                  }
-                },
-                update: {
-                  mes: salario.mes,
-                  ano: salario.ano,
-                  salarioBase: salario.salarioBase,
-                  horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
-                  descontos: (_b = salario.descontos) != null ? _b : 0,
-                  bonus: (_c = salario.bonus) != null ? _c : 0,
-                  faltas: (_d = salario.faltas) != null ? _d : 0,
-                  extras: (_e = salario.extras) != null ? _e : 0,
-                  beneficios: salario.beneficios ? {
-                    upsert: {
-                      update: {
-                        cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
-                        almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
-                        passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
-                      },
-                      create: {
-                        cafe: (_i = salario.beneficios.cafe) != null ? _i : 0,
-                        almoco: (_j = salario.beneficios.almoco) != null ? _j : 0,
-                        passagem: (_k = salario.beneficios.passagem) != null ? _k : 0
-                      }
-                    }
-                  } : void 0
-                },
-                create: {
-                  mes: salario.mes,
-                  ano: salario.ano,
-                  salarioBase: salario.salarioBase,
-                  horasExtras: (_l = salario.horasExtras) != null ? _l : 0,
-                  descontos: (_m = salario.descontos) != null ? _m : 0,
-                  bonus: (_n = salario.bonus) != null ? _n : 0,
-                  faltas: (_o = salario.faltas) != null ? _o : 0,
-                  extras: (_p = salario.extras) != null ? _p : 0,
-                  beneficios: salario.beneficios ? {
-                    create: {
-                      cafe: (_q = salario.beneficios.cafe) != null ? _q : 0,
-                      almoco: (_r = salario.beneficios.almoco) != null ? _r : 0,
-                      passagem: (_s = salario.beneficios.passagem) != null ? _s : 0
-                    }
-                  } : void 0
-                }
-              };
-            })
-          } : void 0
-        })
-      });
-      if (salarios) {
-        const salaries = salarios.map((salario) => ({
-          mes: salario.mes,
-          ano: salario.ano
-        }));
-        for (const salary of salaries) {
-          yield addUpdatedFuncionarioToTabelaFuncionario(
-            updatedFuncionario.id,
-            salary.mes,
-            salary.ano
-          );
-        }
-      }
-      return updatedFuncionario;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function addSalarioToFuncionario(funcionarioId, input) {
-  return __async(this, null, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
-    const { salario } = input;
-    try {
-      const funcionario = yield prisma_default.funcionario.update({
-        where: { id: funcionarioId },
-        data: {
-          salarios: {
-            create: {
-              mes: salario.mes,
-              ano: salario.ano,
-              salarioBase: salario.salarioBase,
-              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
-              descontos: (_b = salario.descontos) != null ? _b : 0,
-              faltas: (_c = salario.faltas) != null ? _c : 0,
-              extras: (_d = salario.extras) != null ? _d : 0,
-              bonus: (_e = salario.bonus) != null ? _e : 0,
-              beneficios: salario.beneficios ? {
-                create: {
-                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
-                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
-                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
-                }
-              } : void 0
-            }
-          }
-        },
-        include: {
-          salarios: true
-        }
-      });
-      return funcionario;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function deleteSalarioFromFuncionario(funcionarioId, salarioId) {
-  return __async(this, null, function* () {
-    return yield prisma_default.salarioMensal.delete({
-      where: {
-        id: salarioId,
-        funcionarioId
-      }
-    });
-  });
-}
-function getSalarioFromFuncionario(funcionarioId, salarioId) {
-  return __async(this, null, function* () {
-    return yield prisma_default.salarioMensal.findUnique({
-      where: {
-        id: salarioId,
-        funcionarioId
-      }
-    });
-  });
-}
-function getTotalFuncionarios() {
-  return __async(this, null, function* () {
-    return yield prisma_default.funcionario.count();
-  });
-}
-function addFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
-  return __async(this, null, function* () {
-    console.log("FUNCIONARIO ID: ", Number(funcionarioId));
-    try {
-      const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: funcionarioId }
-      });
-      if (!funcionario) {
-        throw new Error("Funcion\xE1rio n\xE3o encontrado");
-      }
-      const tabelaFuncionario = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes,
-          ano
-        }
-      });
-      if (!tabelaFuncionario) {
-        throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
-      }
-      yield prisma_default.tabelaFuncionarios.update({
-        where: {
-          id: tabelaFuncionario.id
-        },
-        data: {
-          funcionarios: {
-            connect: {
-              id: funcionario.id
-            }
-          }
-        }
-      });
-      return tabelaFuncionario;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function addUpdatedFuncionarioToTabelaFuncionario(funcionarioId, mes, ano) {
-  return __async(this, null, function* () {
-    try {
-      const funcionario = yield prisma_default.funcionario.findUnique({
-        where: { id: funcionarioId }
-      });
-      if (!funcionario) {
-        throw new Error("Funcion\xE1rio n\xE3o encontrado");
-      }
-      const tabelaFuncionario = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes,
-          ano
-        }
-      });
-      if (!tabelaFuncionario) {
-        throw new Error("Tabela de funcion\xE1rios n\xE3o encontrada");
-      }
-      yield prisma_default.tabelaFuncionarios.update({
-        where: {
-          id: tabelaFuncionario.id
-        },
-        data: {
-          funcionarios: {
-            connect: {
-              id: funcionario.id
-            }
-          }
-        }
-      });
-      return tabelaFuncionario;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function addSalariosToFuncionario(funcionarioId, salarios) {
-  return __async(this, null, function* () {
-    console.log("SALARIOS: ", salarios);
-    try {
-      yield prisma_default.$transaction((prisma2) => __async(this, null, function* () {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
-        for (const salario of salarios) {
-          yield prisma2.salarioMensal.create({
-            data: {
-              mes: salario.mes,
-              // Access `mes` from `salario`
-              ano: salario.ano,
-              // Access `ano` from `salario`
-              salarioBase: salario.salarioBase,
-              // Access `salarioBase` from `salario`
-              horasExtras: (_a = salario.horasExtras) != null ? _a : 0,
-              descontos: (_b = salario.descontos) != null ? _b : 0,
-              bonus: (_c = salario.bonus) != null ? _c : 0,
-              faltas: (_d = salario.faltas) != null ? _d : 0,
-              extras: (_e = salario.extras) != null ? _e : 0,
-              beneficios: salario.beneficios ? {
-                create: {
-                  cafe: (_f = salario.beneficios.cafe) != null ? _f : 0,
-                  almoco: (_g = salario.beneficios.almoco) != null ? _g : 0,
-                  passagem: (_h = salario.beneficios.passagem) != null ? _h : 0
-                }
-              } : void 0,
-              funcionario: {
-                connect: {
-                  id: funcionarioId
-                }
-              }
-            }
-          });
-        }
-      }));
-      console.log("Sal\xE1rios adicionados com sucesso!");
-    } catch (error) {
-      console.error("Erro ao adicionar sal\xE1rios:", error);
-      throw new Error("Falha ao adicionar sal\xE1rios");
-    }
-  });
-}
-
-// src/modules/funcionario/funcionario.controller.ts
-function registerFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const user = yield createFuncionario(body);
-      return reply.status(201).send(user);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getFuncionariosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const { search } = request.query;
-      const funcionarios = yield findFuncionarios(search);
-      return reply.status(201).send(funcionarios);
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function updateFuncionarioStatusHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    try {
-      const updatedFuncionario = yield updateFuncionarioStatus(id);
-      return reply.status(201).send(updatedFuncionario);
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getFuncionarioByIdHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    try {
-      const funcionario = yield findFuncionarioById(id);
-      if (!funcionario) {
-        return reply.status(404).send({ message: "Funcionario n\xE3o encontrado" });
-      }
-      return reply.status(201).send(funcionario);
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function registerManyFuncionariosAtOnceHandler(request, reply) {
-  return __async(this, null, function* () {
-    const funcionarios = request.body;
-    try {
-      const promises = funcionarios.map(
-        (funcionario) => createFuncionario(funcionario)
-      );
-      const funcionariosCreated = yield Promise.all(promises);
-      return reply.status(201).send(funcionariosCreated);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function updateFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    const body = request.body;
-    try {
-      const updatedFuncionario = yield updateFuncionario(id, body);
-      return reply.status(201).send(updatedFuncionario);
-    } catch (e) {
-      return reply.status(500).send({ message: "Could not update funcionario." });
-    }
-  });
-}
-function addSalarioToFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    const body = request.body;
-    console.log("ID: ", id);
-    console.log("BODY: ", body);
-    const funcionario = yield findFuncionarioById(id);
-    if (!funcionario) {
-      return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
-    }
-    try {
-      const funcionario2 = yield addSalarioToFuncionario(id, body);
-      return reply.status(201).send({ status: 201, funcionario: funcionario2 });
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function AddSalariosToFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    const salarios = request.body;
-    try {
-      const funcionario = yield findFuncionarioById(id);
-      if (!funcionario) {
-        return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
-      }
-      const addedSalarios = yield addSalariosToFuncionario(id, salarios);
-      return reply.status(201).send({ status: 201, salarios: addedSalarios });
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function deleteSalarioFromFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { funcionarioId, salarioId } = request.params;
-    const funcionario = yield findFuncionarioById(funcionarioId);
-    if (!funcionario) {
-      return reply.status(404).send({ message: "Funcion\xE1rio n\xE3o encontrado." });
-    }
-    const salario = yield getSalarioFromFuncionario(funcionarioId, salarioId);
-    if (!salario) {
-      return reply.status(404).send({ message: "Sal\xE1rio n\xE3o encontrado." });
-    }
-    try {
-      const deletedSalario = deleteSalarioFromFuncionario(
-        funcionarioId,
-        salarioId
-      );
-      return reply.status(201).send({ message: "Sal\xE1rio deletado." });
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getTotalFuncionariosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const totalFuncionarios = yield getTotalFuncionarios();
-      return reply.status(201).send({ totalFuncionarios });
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/funcionario/funcionario.schema.ts
-var import_zod = require("zod");
-var import_fastify_zod = require("fastify-zod");
-var beneficiosSchema = import_zod.z.object({
-  cafe: import_zod.z.number().optional(),
-  almoco: import_zod.z.number().optional(),
-  passagem: import_zod.z.number().optional()
-});
-var salarioSchema = import_zod.z.object({
-  mes: import_zod.z.number().min(1).max(12),
-  // Validação para mês válido
-  ano: import_zod.z.number().int().min(2e3).max(2100),
-  // Validação para ano válido
-  salarioBase: import_zod.z.number(),
-  // Salário base
-  horasExtras: import_zod.z.number().optional(),
-  descontos: import_zod.z.number().optional(),
-  faltas: import_zod.z.number().optional(),
-  extras: import_zod.z.number().optional(),
-  bonus: import_zod.z.number().optional(),
-  beneficios: beneficiosSchema.optional()
-});
-var cargoSchema = import_zod.z.object({
-  nome: import_zod.z.string()
-});
-var funcionarioCore = {
-  name: import_zod.z.string({
-    required_error: "Name is required",
-    invalid_type_error: "Name must be a string"
-  }),
-  cargo: cargoSchema.optional(),
-  chavePix: import_zod.z.string({
-    required_error: "ChavePix is required",
-    invalid_type_error: "ChavePix must be a string"
-  }),
-  banco: import_zod.z.string({
-    required_error: "Banco is required",
-    invalid_type_error: "Banco must be a string"
-  }),
-  contato: import_zod.z.string({
-    required_error: "Contato is required",
-    invalid_type_error: "Contato must be a string"
-  }),
-  cpf: import_zod.z.string({
-    required_error: "CPF is required",
-    invalid_type_error: "CPF must be a string"
-  }),
-  status: import_zod.z.boolean(),
-  salarios: import_zod.z.array(salarioSchema).optional(),
-  obrasIds: import_zod.z.array(import_zod.z.string()).optional()
-};
-var addSalarioToFuncionarioSchema = import_zod.z.object({
-  salario: salarioSchema
-});
-var createFuncionarioSchema = import_zod.z.object(__spreadValues({}, funcionarioCore));
-var createFuncionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.string()
-}, funcionarioCore));
-var funcionarioResponseSchema = import_zod.z.object(__spreadValues({
-  id: import_zod.z.string()
-}, funcionarioCore));
-var { schemas: funcionarioSchemas, $ref } = (0, import_fastify_zod.buildJsonSchemas)(
-  {
-    createFuncionarioSchema,
-    createFuncionarioResponseSchema
-  },
-  { $id: "funcionarioSchema" }
-);
-
-// src/modules/funcionario/funcionario.route.ts
-function funcionarioRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: $ref("createFuncionarioSchema"),
-          response: {
-            201: $ref("createFuncionarioResponseSchema")
-          }
-        }
-      },
-      registerFuncionarioHandler
-    );
-    server2.post(
-      "/many",
-      {
-        preHandler: [server2.authenticate]
-      },
-      registerManyFuncionariosAtOnceHandler
-    );
-    server2.post(
-      "/:id/salario",
-      {
-        preHandler: [server2.authenticate]
-      },
-      addSalarioToFuncionarioHandler
-    );
-    server2.post(
-      "/:id/salarios",
-      {
-        preHandler: [server2.authenticate]
-      },
-      AddSalariosToFuncionarioHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getFuncionariosHandler
-    );
-    server2.get(
-      "/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getFuncionarioByIdHandler
-    );
-    server2.get(
-      "/total",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getTotalFuncionariosHandler
-    );
-    server2.patch(
-      "/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      updateFuncionarioHandler
-    );
-    server2.patch(
-      "/status/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      updateFuncionarioStatusHandler
-    );
-    server2.delete(
-      "/:funcionarioId/salario/:salarioId",
-      { preHandler: [server2.authenticate] },
-      deleteSalarioFromFuncionarioHandler
-    );
-  });
-}
-var funcionario_route_default = funcionarioRoutes;
-
-// src/modules/cargo/cargo.services.ts
-function createCargo(input) {
-  return __async(this, null, function* () {
-    const { nome } = input;
-    const cargoExists = yield prisma_default.cargo.findFirst({
-      where: {
-        nome
-      }
-    });
-    if (cargoExists) {
-      throw new Error("Cargo j\xE1 existe no banco de dados");
-    }
-    const cargo = yield prisma_default.cargo.create({
-      data: {
-        nome
-      }
-    });
-    return cargo;
-  });
-}
-function createCargos(input) {
-  return __async(this, null, function* () {
-    const existingCargoNames = yield prisma_default.cargo.findMany({
-      select: { nome: true }
-    }).then((cargos2) => cargos2.map((cargo) => cargo.nome));
-    const cargosToCreate = input.filter(
-      (cargo) => !existingCargoNames.includes(cargo.nome)
-    );
-    const cargos = yield prisma_default.cargo.createMany({
-      data: cargosToCreate
-    });
-    return cargos;
-  });
-}
-function getCargos() {
-  return __async(this, null, function* () {
-    return yield prisma_default.cargo.findMany();
-  });
-}
-
-// src/modules/cargo/cargo.controller.ts
-function createCargoHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const cargo = yield createCargo(body);
-      return reply.status(201).send(cargo);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function createCargosFromJSONHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const cargos = yield createCargos(body);
-      return reply.status(201).send(cargos);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getCargosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const cargos = yield getCargos();
-      return reply.status(201).send(cargos);
-    } catch (e) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/cargo/cargo.route.ts
-function cargoRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post("/", { preHandler: [server2.authenticate] }, createCargoHandler);
-    server2.post(
-      "/json",
-      { preHandler: [server2.authenticate] },
-      createCargosFromJSONHandler
-    );
-    server2.get("/", { preHandler: [server2.authenticate] }, getCargosHandler);
-  });
-}
-var cargo_route_default = cargoRoutes;
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.services.ts
-function createTabelaFuncionario(input) {
-  return __async(this, null, function* () {
-    console.log("ANO/MES", input.anomes);
-    try {
-      let existingTabela = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes: input.mes,
-          ano: input.ano
-        },
-        include: {
-          funcionarios: {
-            include: {
-              cargo: true,
-              salarios: {
-                include: {
-                  beneficios: true
-                }
-              }
-            }
-          }
-        }
-      });
-      const funcionarios = yield prisma_default.funcionario.findMany({
-        where: {
-          NOT: {
-            tabelaFuncionarios: {
-              some: {
-                mes: input.mes,
-                ano: input.ano
-              }
-            }
-          },
-          salarios: {
-            some: {
-              mes: input.mes,
-              ano: input.ano
-            }
-          }
-        }
-      });
-      if (existingTabela) {
-        const funcionariosIds = existingTabela.funcionarios.map(
-          (funcionario) => funcionario.id
-        );
-        const funcionariosToAdd = funcionarios.filter(
-          (funcionario) => !funcionariosIds.includes(funcionario.id)
-        );
-        if (funcionariosToAdd.length > 0) {
-          yield prisma_default.tabelaFuncionarios.update({
-            where: {
-              id: existingTabela.id
-            },
-            data: {
-              funcionarios: {
-                connect: funcionariosToAdd.map((funcionario) => ({
-                  id: funcionario.id
-                }))
-              }
-            }
-          });
-        }
-        return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
-      }
-      yield prisma_default.tabelaFuncionarios.create({
-        data: {
-          ano: input.ano,
-          mes: input.mes,
-          anomes: input.anomes,
-          funcionarios: {
-            connect: funcionarios.map((funcionario) => ({
-              id: funcionario.id
-            }))
-          }
-        }
-      });
-      return getTabelaFuncionarioByMonthAndYear(input.mes, input.ano);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function getTabelaFuncionarioByMonthAndYear(month, year) {
-  return __async(this, null, function* () {
-    try {
-      const tabela = yield prisma_default.tabelaFuncionarios.findFirst({
-        where: {
-          mes: month,
-          ano: year
-        },
-        include: {
-          funcionarios: {
-            include: {
-              cargo: true,
-              salarios: {
-                include: {
-                  beneficios: true
-                }
-              }
-            }
-          }
-        }
-      });
-      return tabela;
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
-function getAllTabelasFuncionario() {
-  return __async(this, null, function* () {
-    return prisma_default.tabelaFuncionarios.findMany({
-      include: {
-        funcionarios: true
-      }
-    });
-  });
-}
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.controller.ts
-function createTabelaFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { mes, ano } = request.params;
-    const input = {
-      mes: parseInt(mes, 10),
-      ano: parseInt(ano, 10),
-      anomes: `${ano}-${mes}`
-    };
-    try {
-      const tabelaFuncionario = yield createTabelaFuncionario(input);
-      return reply.status(201).send(tabelaFuncionario);
-    } catch (error) {
-      return reply.status(500).send({ message: "Internal Server Error", error });
-    }
-  });
-}
-function getAllTabelasFuncionarioHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const tabelasFuncionario = yield getAllTabelasFuncionario();
-      return reply.send(tabelasFuncionario);
-    } catch (error) {
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.route.ts
-function tabelaFuncionarioRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.get(
-      "/:mes/:ano",
-      {
-        preHandler: [server2.authenticate]
-      },
-      createTabelaFuncionarioHandler
-    );
-    server2.get(
-      "/all",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getAllTabelasFuncionarioHandler
-    );
-  });
-}
-var tabelaFuncionarios_route_default = tabelaFuncionarioRoutes;
-
-// src/modules/evento/evento.services.ts
-function createEvento(input) {
-  return __async(this, null, function* () {
-    const { titulo, descricao, dataInicio, dataFim, allDay } = input;
-    return prisma_default.evento.create({
-      data: {
-        titulo,
-        descricao,
-        dataInicio,
-        dataFim,
-        allDay
-      }
-    });
-  });
-}
-function getEventos() {
-  return __async(this, null, function* () {
-    return prisma_default.evento.findMany({
-      orderBy: {
-        dataInicio: "asc"
-      }
-    });
-  });
-}
-function deleteEvento(id) {
-  return __async(this, null, function* () {
-    return prisma_default.evento.delete({
-      where: {
-        id
-      }
-    });
-  });
-}
-
-// src/modules/evento/evento.controller.ts
-function createEventoHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const evento = yield createEvento(body);
-      return reply.status(201).send(evento);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getEventosHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const eventos = yield getEventos();
-      return reply.status(200).send({ eventos });
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function deleteEventoHandler(request, reply) {
-  return __async(this, null, function* () {
-    console.log("Delete evento handler");
-    const { eventoId } = request.params;
-    console.log("ID do evento: ", eventoId);
-    try {
-      yield deleteEvento(eventoId);
-      return reply.status(204).send({ message: "Evento deletado com sucesso" });
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/evento/evento.route.ts
-function eventoRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      createEventoHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getEventosHandler
-    );
-    server2.delete(
-      "/:eventoId",
-      {
-        preHandler: [server2.authenticate]
-      },
-      deleteEventoHandler
-    );
-  });
-}
-
-// src/modules/obra/obra.services.ts
-function createObra(data) {
-  return __async(this, null, function* () {
-    const _a = __spreadValues({}, data), { funcionarioIds } = _a, obraData = __objRest(_a, ["funcionarioIds"]);
-    console.log("Funcionario IDs:", funcionarioIds);
-    if (obraData.dataInicio) {
-      obraData.dataInicio = formatDateToISO(obraData.dataInicio);
-    }
-    if (obraData.dataFim) {
-      obraData.dataFim = formatDateToISO(obraData.dataFim);
-    }
-    const obra = yield prisma_default.obra.create({
-      data: __spreadValues({}, obraData)
-    });
-    if (Array.isArray(funcionarioIds) && funcionarioIds.length > 0) {
-      for (const funcionarioId of funcionarioIds) {
-        yield prisma_default.funcionario.update({
-          where: { id: funcionarioId },
-          data: {
-            obras: {
-              connect: { id: obra.id }
-            }
-          }
-        });
-      }
-    }
-    const updatedObra = yield getObraById(obra.id);
-    return updatedObra;
-  });
-}
-function formatDateToISO(dateString) {
-  if (dateString.includes("T")) {
-    return dateString;
-  }
-  return `${dateString}T00:00:00Z`;
-}
-function getObraById(id) {
-  return __async(this, null, function* () {
-    const obra = yield prisma_default.obra.findUnique({
-      where: { id }
-    });
-    const funcionarios = yield prisma_default.funcionario.findMany({
-      where: {
-        obras: {
-          some: {
-            id
-          }
-        }
-      }
-    });
-    return obra ? __spreadProps(__spreadValues({}, obra), { funcionarios }) : null;
-  });
-}
-function getObras() {
-  return __async(this, null, function* () {
-    const obras = yield prisma_default.obra.findMany();
-    const obrasWithFuncionarios = yield Promise.all(
-      obras.map((obra) => __async(this, null, function* () {
-        const funcionarios = yield prisma_default.funcionario.findMany({
-          where: {
-            obras: {
-              some: {
-                id: obra.id
-              }
-            }
-          }
-        });
-        return __spreadProps(__spreadValues({}, obra), { funcionarios });
-      }))
-    );
-    return obrasWithFuncionarios;
-  });
-}
-function updateObra(id, data) {
-  return __async(this, null, function* () {
-    const _a = __spreadValues({}, data), { funcionarioIds } = _a, updatedData = __objRest(_a, ["funcionarioIds"]);
-    if (updatedData.dataInicio) {
-      updatedData.dataInicio = formatDateToISO(updatedData.dataInicio);
-    }
-    if (updatedData.dataFim) {
-      updatedData.dataFim = formatDateToISO(updatedData.dataFim);
-    }
-    const obra = yield prisma_default.obra.update({
-      where: { id },
-      data: __spreadValues({}, updatedData)
-    });
-    if (Array.isArray(funcionarioIds)) {
-      const currentFuncionarios = yield prisma_default.funcionario.findMany({
-        where: {
-          obras: {
-            some: {
-              id
-            }
-          }
-        }
-      });
-      for (const func of currentFuncionarios) {
-        yield prisma_default.funcionario.update({
-          where: { id: func.id },
-          data: {
-            obras: {
-              disconnect: { id }
-            }
-          }
-        });
-      }
-      for (const funcionarioId of funcionarioIds) {
-        const funcionario = yield prisma_default.funcionario.findUnique({
-          where: { id: funcionarioId }
-        });
-        if (funcionario) {
-          yield prisma_default.funcionario.update({
-            where: { id: funcionarioId },
-            data: {
-              obras: {
-                connect: { id }
-              }
-            }
-          });
-        }
-      }
-    }
-    const updatedObra = yield getObraById(id);
-    return updatedObra;
-  });
-}
-function deleteObra(id) {
-  return __async(this, null, function* () {
-    const funcionarios = yield prisma_default.funcionario.findMany({
-      where: {
-        obras: {
-          some: {
-            id
-          }
-        }
-      }
-    });
-    for (const funcionario of funcionarios) {
-      yield prisma_default.funcionario.update({
-        where: { id: funcionario.id },
-        data: {
-          obras: {
-            disconnect: { id }
-          }
-        }
-      });
-    }
-    const obra = yield prisma_default.obra.delete({
-      where: { id }
-    });
-    return __spreadProps(__spreadValues({}, obra), { funcionarios });
-  });
-}
-
-// src/modules/obra/obra.controller.ts
-function registerObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const obra = yield createObra(body);
-      return reply.status(201).send(obra);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getObrasHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const obras = yield getObras();
-      return reply.status(200).send(obras);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function getObraByIdHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    try {
-      const obra = yield getObraById(id);
-      if (!obra) {
-        return reply.status(404).send({ message: "Obra not found" });
-      }
-      return reply.status(200).send(obra);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function updateObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    const body = request.body;
-    try {
-      const obra = yield updateObra(id, body);
-      return reply.status(200).send(obra);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function deleteObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    const { id } = request.params;
-    try {
-      const obra = yield deleteObra(id);
-      return reply.status(200).send(obra);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-function registerMultipleObrasHandler(request, reply) {
-  return __async(this, null, function* () {
-    const bodies = request.body;
-    const results = [];
-    try {
-      for (const body of bodies) {
-        const obra = yield createObra(body);
-        results.push(obra);
-      }
-      return reply.status(201).send(results);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/obra/obra.schema.ts
-var import_zod2 = require("zod");
-var import_fastify_zod2 = require("fastify-zod");
-var obraSchema = import_zod2.z.object({
-  nome: import_zod2.z.string(),
-  cliente: import_zod2.z.string(),
-  valor: import_zod2.z.number().optional(),
-  dataInicio: import_zod2.z.string().optional(),
-  dataFim: import_zod2.z.string().optional(),
-  status: import_zod2.z.string().optional(),
-  funcionarioIds: import_zod2.z.array(import_zod2.z.string()).optional()
-});
-var CreateObraSchema = import_zod2.z.object({
-  nome: import_zod2.z.string({
-    required_error: "Nome is required",
-    invalid_type_error: "Nome must be a string"
-  }),
-  cliente: import_zod2.z.string({
-    required_error: "Cliente is required",
-    invalid_type_error: "Cliente must be a string"
-  }),
-  valor: import_zod2.z.number(),
-  dataInicio: import_zod2.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
-    message: "Data de in\xEDcio deve estar no formato AAAA-MM-DD (ex: 2025-05-01)"
-  }).transform((date) => `${date}T00:00:00Z`),
-  dataFim: import_zod2.z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
-    message: "Data de fim deve estar no formato AAAA-MM-DD (ex: 2025-07-01)"
-  }).transform((date) => `${date}T00:00:00Z`),
-  status: import_zod2.z.string(),
-  funcionarioIds: import_zod2.z.array(import_zod2.z.string()).optional()
-});
-var { schemas: obraSchemas, $ref: $ref2 } = (0, import_fastify_zod2.buildJsonSchemas)(
-  {
-    CreateObraSchema,
-    obraSchema
-  },
-  {
-    $id: "obraSchema"
-  }
-);
-
-// src/modules/obra/obra.route.ts
-function obraRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: $ref2("CreateObraSchema"),
-          response: {
-            201: $ref2("obraSchema")
-          }
-        }
-      },
-      registerObraHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getObrasHandler
-    );
-    server2.get(
-      "/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getObraByIdHandler
-    );
-    server2.put(
-      "/:id",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: $ref2("obraSchema"),
-          response: {
-            200: $ref2("obraSchema")
-          }
-        }
-      },
-      updateObraHandler
-    );
-    server2.delete(
-      "/:id",
-      {
-        preHandler: [server2.authenticate]
-      },
-      deleteObraHandler
-    );
-    server2.post(
-      "/bulk",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: {
-            type: "array",
-            items: $ref2("CreateObraSchema")
-          },
-          response: {
-            201: {
-              type: "array",
-              items: $ref2("obraSchema")
-            }
-          }
-        }
-      },
-      registerMultipleObrasHandler
-    );
-  });
-}
-
-// src/modules/item/item.services.ts
-function createItem(input) {
-  return __async(this, null, function* () {
-    const item = yield prisma_default.item.create({
-      data: __spreadValues({}, input)
-    });
-    return item;
-  });
-}
-function getItems() {
-  return __async(this, null, function* () {
-    console.log("Fetching items...");
-    return prisma_default.item.findMany({
-      orderBy: {
-        nome: "asc"
-      }
-    });
-  });
-}
-function getItemById(id) {
-  return __async(this, null, function* () {
-    return prisma_default.item.findUnique({
-      where: {
-        id
-      },
-      include: {
-        obras: {
-          include: {
-            obra: true
-          }
-        }
-      }
-    });
-  });
-}
-function updateItem(id, data) {
-  return __async(this, null, function* () {
-    return prisma_default.item.update({
-      where: {
-        id
-      },
-      data
-    });
-  });
-}
-function deleteItem(id) {
-  return __async(this, null, function* () {
-    return prisma_default.item.delete({
-      where: {
-        id
-      }
-    });
-  });
-}
-function assignItemToObra(input) {
-  return __async(this, null, function* () {
-    const { itemId, obraId, quantidade, valorTotal, observacoes } = input;
-    let finalValorTotal = valorTotal;
-    if (!valorTotal) {
-      const item = yield prisma_default.item.findUnique({
-        where: { id: itemId }
-      });
-      if (item) {
-        finalValorTotal = item.precoUnitario * quantidade;
-      }
-    }
-    return prisma_default.itemObra.create({
-      data: {
-        itemId,
-        obraId,
-        quantidade,
-        valorTotal: finalValorTotal,
-        observacoes
-      },
-      include: {
-        item: true,
-        obra: true
-      }
-    });
-  });
-}
-function updateItemInObra(id, input) {
-  return __async(this, null, function* () {
-    const { quantidade } = input;
-    let data = __spreadValues({}, input);
-    if (quantidade) {
-      const itemObra = yield prisma_default.itemObra.findUnique({
-        where: { id },
-        include: { item: true }
-      });
-      if (itemObra && itemObra.item) {
-        data.valorTotal = itemObra.item.precoUnitario * quantidade;
-      }
-    }
-    return prisma_default.itemObra.update({
-      where: { id },
-      data,
-      include: {
-        item: true,
-        obra: true
-      }
-    });
-  });
-}
-function removeItemFromObra(id) {
-  return __async(this, null, function* () {
-    return prisma_default.itemObra.delete({
-      where: { id }
-    });
-  });
-}
-function getItemsByObra(obraId) {
-  return __async(this, null, function* () {
-    return prisma_default.itemObra.findMany({
-      where: {
-        obraId
-      },
-      include: {
-        item: true
-      },
-      orderBy: {
-        item: {
-          nome: "asc"
-        }
-      }
-    });
-  });
-}
-function getObrasByItem(itemId) {
-  return __async(this, null, function* () {
-    return prisma_default.itemObra.findMany({
-      where: {
-        itemId
-      },
-      include: {
-        obra: true
-      },
-      orderBy: {
-        obra: {
-          nome: "asc"
-        }
-      }
-    });
-  });
-}
-
-// src/modules/item/item.controller.ts
-function registerItemHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const item = yield createItem(request.body);
-      return reply.code(201).send(item);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error creating item" });
-    }
-  });
-}
-function getItemsHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const items = yield getItems();
-      return reply.code(200).send(items);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error fetching items" });
-    }
-  });
-}
-function getItemHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const item = yield getItemById(request.params.id);
-      if (!item) {
-        return reply.code(404).send({ message: "Item not found" });
-      }
-      return reply.code(200).send(item);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error fetching item" });
-    }
-  });
-}
-function updateItemHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const item = yield updateItem(request.params.id, request.body);
-      return reply.code(200).send(item);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error updating item" });
-    }
-  });
-}
-function deleteItemHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      yield deleteItem(request.params.id);
-      return reply.code(204).send();
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error deleting item" });
-    }
-  });
-}
-function assignItemToObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const itemObra = yield assignItemToObra(request.body);
-      return reply.code(201).send(itemObra);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error assigning item to obra" });
-    }
-  });
-}
-function updateItemInObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const itemObra = yield updateItemInObra(
-        request.params.id,
-        request.body
-      );
-      return reply.code(200).send(itemObra);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error updating item in obra" });
-    }
-  });
-}
-function removeItemFromObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      yield removeItemFromObra(request.params.id);
-      return reply.code(204).send();
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error removing item from obra" });
-    }
-  });
-}
-function getItemsByObraHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const items = yield getItemsByObra(request.params.obraId);
-      return reply.code(200).send(items);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error fetching items for obra" });
-    }
-  });
-}
-function getObrasByItemHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      const obras = yield getObrasByItem(request.params.itemId);
-      return reply.code(200).send(obras);
-    } catch (e) {
-      console.error(e);
-      return reply.code(500).send({ message: "Error fetching obras for item" });
-    }
-  });
-}
-
-// src/modules/item/item.schema.ts
-var import_zod3 = require("zod");
-var import_fastify_zod3 = require("fastify-zod");
-var itemSchema = import_zod3.z.object({
-  id: import_zod3.z.string().optional(),
-  nome: import_zod3.z.string(),
-  descricao: import_zod3.z.string().optional(),
-  categoria: import_zod3.z.string(),
-  unidade: import_zod3.z.string(),
-  precoUnitario: import_zod3.z.number(),
-  fornecedor: import_zod3.z.string().optional(),
-  codigo: import_zod3.z.string().optional(),
-  createdAt: import_zod3.z.date().optional(),
-  updatedAt: import_zod3.z.date().optional()
-});
-var registerItemSchema = import_zod3.z.object({
-  nome: import_zod3.z.string({
-    required_error: "Nome is required",
-    invalid_type_error: "Nome must be a string"
-  }),
-  descricao: import_zod3.z.string().optional(),
-  categoria: import_zod3.z.string({
-    required_error: "Categoria is required",
-    invalid_type_error: "Categoria must be a string"
-  }),
-  unidade: import_zod3.z.string({
-    required_error: "Unidade is required",
-    invalid_type_error: "Unidade must be a string"
-  }),
-  precoUnitario: import_zod3.z.number({
-    required_error: "Pre\xE7o unit\xE1rio is required",
-    invalid_type_error: "Pre\xE7o unit\xE1rio must be a number"
-  }),
-  fornecedor: import_zod3.z.string().optional(),
-  codigo: import_zod3.z.string().optional()
-});
-var itemObraSchema = import_zod3.z.object({
-  obraId: import_zod3.z.string({
-    required_error: "Obra ID is required"
-  }),
-  itemId: import_zod3.z.string({
-    required_error: "Item ID is required"
-  }),
-  quantidade: import_zod3.z.number({
-    required_error: "Quantidade is required"
-  }),
-  valorTotal: import_zod3.z.number().optional(),
-  observacoes: import_zod3.z.string().optional()
-});
-var { schemas: itemSchemas, $ref: $ref3 } = (0, import_fastify_zod3.buildJsonSchemas)(
-  {
-    registerItemSchema,
-    itemSchema,
-    itemObraSchema
-  },
-  {
-    $id: "itemSchema"
-  }
-);
-
-// src/modules/item/item.route.ts
-function itemRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        schema: {
-          body: $ref3("registerItemSchema"),
-          response: {
-            201: $ref3("itemSchema")
-          }
-        }
-      },
-      registerItemHandler
-    );
-    server2.get(
-      "/",
-      {
-        schema: {
-          response: {
-            200: {
-              type: "array",
-              items: $ref3("itemSchema")
-            }
-          }
-        }
-      },
-      getItemsHandler
-    );
-    server2.get(
-      "/:id",
-      {
-        schema: {
-          response: {
-            200: $ref3("itemSchema")
-          }
-        }
-      },
-      getItemHandler
-    );
-    server2.put(
-      "/:id",
-      {
-        schema: {
-          body: $ref3("itemSchema"),
-          response: {
-            200: $ref3("itemSchema")
-          }
-        }
-      },
-      updateItemHandler
-    );
-    server2.delete("/:id", deleteItemHandler);
-    server2.post(
-      "/obra-assignment",
-      {
-        schema: {
-          body: $ref3("itemObraSchema")
-        }
-      },
-      assignItemToObraHandler
-    );
-    server2.put("/obra-assignment/:id", updateItemInObraHandler);
-    server2.delete("/obra-assignment/:id", removeItemFromObraHandler);
-    server2.get("/obra/:obraId", getItemsByObraHandler);
-    server2.get("/:itemId/obras", getObrasByItemHandler);
-  });
-}
-var item_route_default = itemRoutes;
-
-// src/modules/admin/admin.schemas.ts
-var import_zod4 = require("zod");
-var import_fastify_zod4 = require("fastify-zod");
-var creteAdminSchema = import_zod4.z.object({
-  email: import_zod4.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod4.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be at least 6 characters"
-  }).min(6),
-  name: import_zod4.z.string({
-    required_error: "Name is required",
-    invalid_type_error: "Name must be a string"
-  })
-});
-var createAdminResponseSchema = import_zod4.z.object({
-  id: import_zod4.z.number(),
-  email: import_zod4.z.string(),
-  name: import_zod4.z.string()
-});
-var loginAdminSchema = import_zod4.z.object({
-  email: import_zod4.z.string({
-    required_error: "Email is required",
-    invalid_type_error: "Email must be a string"
-  }).email(),
-  password: import_zod4.z.string({
-    required_error: "Password is required",
-    invalid_type_error: "Password must be a string"
-  })
-});
-var loginAdminResponseSchema = import_zod4.z.object({
-  accessToken: import_zod4.z.string(),
-  admin: import_zod4.z.object({
-    email: import_zod4.z.string(),
-    name: import_zod4.z.string()
-  })
-});
-var { schemas: adminSchemas, $ref: $ref4 } = (0, import_fastify_zod4.buildJsonSchemas)(
-  {
-    creteAdminSchema,
-    createAdminResponseSchema,
-    loginAdminSchema,
-    loginAdminResponseSchema
-  },
-  { $id: "AdminSchema" }
-);
-
-// src/modules/cargo/cargo.schema.ts
-var import_zod5 = require("zod");
-var import_fastify_zod5 = require("fastify-zod");
-var cargoSchema2 = import_zod5.z.object({
-  nome: import_zod5.z.string()
-});
-var cargoResponseSchema = import_zod5.z.object({
-  id: import_zod5.z.string(),
-  nome: import_zod5.z.string()
-});
-var { schemas: cargoSchemas, $ref: $ref5 } = (0, import_fastify_zod5.buildJsonSchemas)(
-  {
-    cargoSchema: cargoSchema2,
-    cargoResponseSchema
-  },
-  { $id: "cargoSchema" }
-);
-
-// src/modules/tabelaFuncionarios/tabelaFuncionarios.schema.ts
-var import_zod6 = require("zod");
-var import_fastify_zod6 = require("fastify-zod");
-var tabelaFuncionarioSchema = import_zod6.z.object({
-  funcionarios: import_zod6.z.array(createFuncionarioSchema),
-  mes: import_zod6.z.number(),
-  ano: import_zod6.z.number(),
-  anomes: import_zod6.z.string()
-});
-var createTabelaFuncionarioSchema = import_zod6.z.object({
-  mes: import_zod6.z.number(),
-  ano: import_zod6.z.number(),
-  anomes: import_zod6.z.string()
-});
-var { schemas: tabelaFuncionarioSchemas, $ref: $ref6 } = (0, import_fastify_zod6.buildJsonSchemas)(
-  {
-    tabelaFuncionarioSchema,
-    createTabelaFuncionarioSchema
-  },
-  { $id: "tabelaFuncionariosSchema" }
-);
-
-// src/modules/evento/evento.schema.ts
-var import_zod7 = require("zod");
-var import_fastify_zod7 = require("fastify-zod");
-var CreateEventoSchema = import_zod7.z.object({
-  titulo: import_zod7.z.string(),
-  descricao: import_zod7.z.string(),
-  dataInicio: import_zod7.z.string(),
-  dataFim: import_zod7.z.string(),
-  allDay: import_zod7.z.boolean()
-});
-var EventoResponseSchema = import_zod7.z.object({
-  id: import_zod7.z.string(),
-  titulo: import_zod7.z.string(),
-  descricao: import_zod7.z.string(),
-  dataInicio: import_zod7.z.string(),
-  dataFim: import_zod7.z.string(),
-  allDay: import_zod7.z.boolean()
-});
-var { schemas: eventoSchemas, $ref: $ref7 } = (0, import_fastify_zod7.buildJsonSchemas)(
-  {
-    CreateEventoSchema,
-    EventoResponseSchema
-  },
-  { $id: "eventoSchema" }
-);
-
-// src/modules/relatorios/relatorio.schema.ts
-var import_zod8 = require("zod");
-var import_fastify_zod8 = require("fastify-zod");
-var relatorioRequestSchema = import_zod8.z.object({
-  modulo: import_zod8.z.enum(["funcionario", "cargo", "item", "obra"]),
-  dataInicio: import_zod8.z.string().optional(),
-  dataFim: import_zod8.z.string().optional(),
-  formato: import_zod8.z.enum(["pdf", "excel", "json"]).default("pdf"),
-  filtros: import_zod8.z.record(import_zod8.z.any()).optional()
-});
-var relatorioResponseSchema = import_zod8.z.object({
-  url: import_zod8.z.string(),
-  geradoEm: import_zod8.z.string(),
-  modulo: import_zod8.z.string(),
-  formato: import_zod8.z.string()
-});
-var { schemas: relatorioSchemas, $ref: $ref8 } = (0, import_fastify_zod8.buildJsonSchemas)(
-  {
-    relatorioRequestSchema,
-    relatorioResponseSchema
-  },
-  { $id: "relatorioSchema" }
-);
 
 // src/modules/relatorios/relatorio.services.ts
 var fs2 = __toESM(require("fs"));
@@ -146971,16 +144911,16 @@ var $f43aec954cdfdf21$export$2e2bcd8739ae039 = class _$f43aec954cdfdf21$export$2
   * @return {Path}
   */
   mapPoints(fn) {
-    let path4 = new _$f43aec954cdfdf21$export$2e2bcd8739ae039();
+    let path2 = new _$f43aec954cdfdf21$export$2e2bcd8739ae039();
     for (let c of this.commands) {
       let args = [];
       for (let i = 0; i < c.args.length; i += 2) {
         let [x, y] = fn(c.args[i], c.args[i + 1]);
         args.push(x, y);
       }
-      path4[c.command](...args);
+      path2[c.command](...args);
     }
-    return path4;
+    return path2;
   }
   /**
   * Transforms the path by the given matrix.
@@ -147673,7 +145613,7 @@ var $69aac16029968692$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
   // Converts contours to a Path object that can be rendered
   _getPath() {
     let contours = this._getContours();
-    let path4 = new (0, $f43aec954cdfdf21$export$2e2bcd8739ae039)();
+    let path2 = new (0, $f43aec954cdfdf21$export$2e2bcd8739ae039)();
     for (let i = 0; i < contours.length; i++) {
       let contour = contours[i];
       let firstPt = contour[0];
@@ -147689,26 +145629,26 @@ var $69aac16029968692$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
           firstPt = new $69aac16029968692$export$baf26146a414f24a(false, false, (firstPt.x + lastPt.x) / 2, (firstPt.y + lastPt.y) / 2);
         var curvePt = firstPt;
       }
-      path4.moveTo(firstPt.x, firstPt.y);
+      path2.moveTo(firstPt.x, firstPt.y);
       for (let j = start; j < contour.length; j++) {
         let pt = contour[j];
         let prevPt = j === 0 ? firstPt : contour[j - 1];
-        if (prevPt.onCurve && pt.onCurve) path4.lineTo(pt.x, pt.y);
+        if (prevPt.onCurve && pt.onCurve) path2.lineTo(pt.x, pt.y);
         else if (prevPt.onCurve && !pt.onCurve) var curvePt = pt;
         else if (!prevPt.onCurve && !pt.onCurve) {
           let midX = (prevPt.x + pt.x) / 2;
           let midY = (prevPt.y + pt.y) / 2;
-          path4.quadraticCurveTo(prevPt.x, prevPt.y, midX, midY);
+          path2.quadraticCurveTo(prevPt.x, prevPt.y, midX, midY);
           var curvePt = pt;
         } else if (!prevPt.onCurve && pt.onCurve) {
-          path4.quadraticCurveTo(curvePt.x, curvePt.y, pt.x, pt.y);
+          path2.quadraticCurveTo(curvePt.x, curvePt.y, pt.x, pt.y);
           var curvePt = null;
         } else throw new Error("Unknown TTF path state");
       }
-      if (curvePt) path4.quadraticCurveTo(curvePt.x, curvePt.y, firstPt.x, firstPt.y);
-      path4.closePath();
+      if (curvePt) path2.quadraticCurveTo(curvePt.x, curvePt.y, firstPt.x, firstPt.y);
+      path2.closePath();
     }
-    return path4;
+    return path2;
   }
   constructor(...args) {
     super(...args);
@@ -147731,7 +145671,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
     let str = cff.topDict.CharStrings[this.id];
     let end = str.offset + str.length;
     stream2.pos = str.offset;
-    let path4 = new (0, $f43aec954cdfdf21$export$2e2bcd8739ae039)();
+    let path2 = new (0, $f43aec954cdfdf21$export$2e2bcd8739ae039)();
     let stack = [];
     let trans = [];
     let width = null;
@@ -147759,8 +145699,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
       return stack.length = 0;
     }
     function moveTo(x2, y2) {
-      if (open) path4.closePath();
-      path4.moveTo(x2, y2);
+      if (open) path2.closePath();
+      path2.moveTo(x2, y2);
       open = true;
     }
     let parse2 = function() {
@@ -147787,7 +145727,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
               while (stack.length >= 2) {
                 x += stack.shift();
                 y += stack.shift();
-                path4.lineTo(x, y);
+                path2.lineTo(x, y);
               }
               break;
             case 6:
@@ -147796,7 +145736,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
               while (stack.length >= 1) {
                 if (phase) x += stack.shift();
                 else y += stack.shift();
-                path4.lineTo(x, y);
+                path2.lineTo(x, y);
                 phase = !phase;
               }
               break;
@@ -147808,7 +145748,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                 c2y = c1y + stack.shift();
                 x = c2x + stack.shift();
                 y = c2y + stack.shift();
-                path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+                path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
               }
               break;
             case 10:
@@ -147832,7 +145772,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
               if (cff.version >= 2) break;
               if (stack.length > 0) checkWidth();
               if (open) {
-                path4.closePath();
+                path2.closePath();
                 open = false;
               }
               break;
@@ -147880,17 +145820,17 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                 c2y = c1y + stack.shift();
                 x = c2x + stack.shift();
                 y = c2y + stack.shift();
-                path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+                path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
               }
               x += stack.shift();
               y += stack.shift();
-              path4.lineTo(x, y);
+              path2.lineTo(x, y);
               break;
             case 25:
               while (stack.length >= 8) {
                 x += stack.shift();
                 y += stack.shift();
-                path4.lineTo(x, y);
+                path2.lineTo(x, y);
               }
               c1x = x + stack.shift();
               c1y = y + stack.shift();
@@ -147898,7 +145838,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
               c2y = c1y + stack.shift();
               x = c2x + stack.shift();
               y = c2y + stack.shift();
-              path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+              path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
               break;
             case 26:
               if (stack.length % 2) x += stack.shift();
@@ -147909,7 +145849,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                 c2y = c1y + stack.shift();
                 x = c2x;
                 y = c2y + stack.shift();
-                path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+                path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
               }
               break;
             case 27:
@@ -147921,7 +145861,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                 c2y = c1y + stack.shift();
                 x = c2x + stack.shift();
                 y = c2y;
-                path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+                path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
               }
               break;
             case 28:
@@ -147960,7 +145900,7 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                   x = c2x + stack.shift();
                   y = c2y + (stack.length === 1 ? stack.shift() : 0);
                 }
-                path4.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
+                path2.bezierCurveTo(c1x, c1y, c2x, c2y, x, y);
                 phase = !phase;
               }
               break;
@@ -148086,8 +146026,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                   c6y = c5y;
                   x = c6x;
                   y = c6y;
-                  path4.bezierCurveTo(c1x, c1y, c2x, c2y, c3x, c3y);
-                  path4.bezierCurveTo(c4x, c4y, c5x, c5y, c6x, c6y);
+                  path2.bezierCurveTo(c1x, c1y, c2x, c2y, c3x, c3y);
+                  path2.bezierCurveTo(c4x, c4y, c5x, c5y, c6x, c6y);
                   break;
                 case 35:
                   pts = [];
@@ -148096,8 +146036,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                     y += stack.shift();
                     pts.push(x, y);
                   }
-                  path4.bezierCurveTo(...pts.slice(0, 6));
-                  path4.bezierCurveTo(...pts.slice(6));
+                  path2.bezierCurveTo(...pts.slice(0, 6));
+                  path2.bezierCurveTo(...pts.slice(6));
                   stack.shift();
                   break;
                 case 36:
@@ -148115,8 +146055,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                   c6y = c5y;
                   x = c6x;
                   y = c6y;
-                  path4.bezierCurveTo(c1x, c1y, c2x, c2y, c3x, c3y);
-                  path4.bezierCurveTo(c4x, c4y, c5x, c5y, c6x, c6y);
+                  path2.bezierCurveTo(c1x, c1y, c2x, c2y, c3x, c3y);
+                  path2.bezierCurveTo(c4x, c4y, c5x, c5y, c6x, c6y);
                   break;
                 case 37:
                   let startx = x;
@@ -148135,8 +146075,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
                     y += stack.shift();
                   }
                   pts.push(x, y);
-                  path4.bezierCurveTo(...pts.slice(0, 6));
-                  path4.bezierCurveTo(...pts.slice(6));
+                  path2.bezierCurveTo(...pts.slice(0, 6));
+                  path2.bezierCurveTo(...pts.slice(6));
                   break;
                 default:
                   throw new Error(`Unknown op: 12 ${op}`);
@@ -148156,8 +146096,8 @@ var $62cc5109c6101893$export$2e2bcd8739ae039 = class extends (0, $f92906be28e617
       }
     };
     parse2();
-    if (open) path4.closePath();
-    return path4;
+    if (open) path2.closePath();
+    return path2;
   }
   constructor(...args) {
     super(...args);
@@ -148617,7 +146557,7 @@ var $807e58506be70005$var$Glyf = new Struct({
   yPoints: new ArrayT($807e58506be70005$var$Point, 0)
 });
 var $807e58506be70005$export$2e2bcd8739ae039 = class {
-  encodeSimple(path4, instructions = []) {
+  encodeSimple(path2, instructions = []) {
     let endPtsOfContours = [];
     let xPoints = [];
     let yPoints = [];
@@ -148625,14 +146565,14 @@ var $807e58506be70005$export$2e2bcd8739ae039 = class {
     let same = 0;
     let lastX = 0, lastY = 0, lastFlag = 0;
     let pointCount = 0;
-    for (let i = 0; i < path4.commands.length; i++) {
-      let c = path4.commands[i];
+    for (let i = 0; i < path2.commands.length; i++) {
+      let c = path2.commands[i];
       for (let j = 0; j < c.args.length; j += 2) {
         let x = c.args[j];
         let y = c.args[j + 1];
         let flag = 0;
         if (c.command === "quadraticCurveTo" && j === 2) {
-          let next = path4.commands[i + 1];
+          let next = path2.commands[i + 1];
           if (next && next.command === "quadraticCurveTo") {
             let midX = (lastX + next.args[0]) / 2;
             let midY = (lastY + next.args[1]) / 2;
@@ -148659,8 +146599,8 @@ var $807e58506be70005$export$2e2bcd8739ae039 = class {
       }
       if (c.command === "closePath") endPtsOfContours.push(pointCount - 1);
     }
-    if (path4.commands.length > 1 && path4.commands[path4.commands.length - 1].command !== "closePath") endPtsOfContours.push(pointCount - 1);
-    let bbox = path4.bbox;
+    if (path2.commands.length > 1 && path2.commands[path2.commands.length - 1].command !== "closePath") endPtsOfContours.push(pointCount - 1);
+    let bbox = path2.bbox;
     let glyf = {
       numberOfContours: endPtsOfContours.length,
       xMin: bbox.minX,
@@ -148767,7 +146707,7 @@ var $001d739428a71d5a$export$2e2bcd8739ae039 = class extends (0, $5cc7476da92df3
     for (let gid of this.glyphs) {
       this.charstrings.push(this.cff.getCharString(gid));
       let glyph = this.font.getGlyph(gid);
-      let path4 = glyph.path;
+      let path2 = glyph.path;
       for (let subr in glyph._usedGsubrs) gsubrs[subr] = true;
     }
     this.gsubrs = this.subsetSubrs(this.cff.globalSubrIndex, gsubrs);
@@ -148805,7 +146745,7 @@ var $001d739428a71d5a$export$2e2bcd8739ae039 = class extends (0, $5cc7476da92df3
       used_fds[fd] = true;
       topDict.FDSelect.fds.push(fd_select[fd]);
       let glyph = this.font.getGlyph(gid);
-      let path4 = glyph.path;
+      let path2 = glyph.path;
       for (let subr in glyph._usedSubrs) used_subrs[fd_select[fd]][subr] = true;
     }
     for (let i = 0; i < topDict.FDArray.length; i++) {
@@ -148822,7 +146762,7 @@ var $001d739428a71d5a$export$2e2bcd8739ae039 = class extends (0, $5cc7476da92df3
     let used_subrs = {};
     for (let gid of this.glyphs) {
       let glyph = this.font.getGlyph(gid);
-      let path4 = glyph.path;
+      let path2 = glyph.path;
       for (let subr in glyph._usedSubrs) used_subrs[subr] = true;
     }
     let privateDict = Object.assign({}, this.cff.topDict.Private);
@@ -152601,14 +150541,14 @@ var parameters = {
   Z: 0,
   z: 0
 };
-var parse = function(path4) {
+var parse = function(path2) {
   let cmd;
   const ret = [];
   let args = [];
   let curArg = "";
   let foundDecimal = false;
   let params = 0;
-  for (let c of path4) {
+  for (let c of path2) {
     if (parameters[c] != null) {
       params = parameters[c];
       if (cmd) {
@@ -152906,8 +150846,8 @@ var segmentToBezier = function(cx2, cy2, th0, th1, rx, ry, sin_th, cos_th) {
   return [a00 * x1 + a01 * y1, a10 * x1 + a11 * y1, a00 * x2 + a01 * y2, a10 * x2 + a11 * y2, a00 * x3 + a01 * y3, a10 * x3 + a11 * y3];
 };
 var SVGPath = class {
-  static apply(doc, path4) {
-    const commands = parse(path4);
+  static apply(doc, path2) {
+    const commands = parse(path2);
     apply(commands, doc);
   }
 };
@@ -153075,8 +151015,8 @@ var VectorMixin = {
     }
     return this.closePath();
   },
-  path(path4) {
-    SVGPath.apply(this, path4);
+  path(path2) {
+    SVGPath.apply(this, path2);
     return this;
   },
   _windingRule(rule) {
@@ -157311,288 +155251,10 @@ function gerarExcel(dados, filePath, modulo) {
     yield workbook.xlsx.writeFile(filePath);
   });
 }
-
-// src/modules/relatorios/relatorio.controller.ts
-function gerarRelatorioHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const resultado = yield gerarRelatorio(body);
-      const baseUrl = process.env.BASE_URL || request.protocol + "://" + request.hostname;
-      resultado.viewUrl = resultado.url;
-      if (body.formato === "pdf") {
-        resultado.viewUrl = `${resultado.url}?inline=true`;
-      }
-      return reply.status(200).send(resultado);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Erro ao gerar relat\xF3rio", error: e });
-    }
-  });
-}
-
-// src/modules/relatorios/relatorio.route.ts
-var import_path = __toESM(require("path"));
-var import_fs3 = __toESM(require("fs"));
-function relatorioRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate],
-        schema: {
-          body: $ref8("relatorioRequestSchema"),
-          response: {
-            200: $ref8("relatorioResponseSchema")
-          }
-        }
-      },
-      gerarRelatorioHandler
-    );
-    server2.get(
-      "/view/:filename",
-      {
-        preHandler: [server2.authenticate]
-      },
-      (request, reply) => __async(this, null, function* () {
-        const { filename } = request.params;
-        const filePath = import_path.default.join(
-          __dirname,
-          "../../../public/relatorios",
-          filename
-        );
-        try {
-          yield import_fs3.default.promises.access(filePath, import_fs3.default.constants.F_OK);
-          reply.header(
-            "Content-Type",
-            filename.endsWith(".pdf") ? "application/pdf" : "application/octet-stream"
-          );
-          reply.header(
-            "Content-Disposition",
-            'inline; filename="' + filename + '"'
-          );
-          return reply.sendFile(filename);
-        } catch (error) {
-          return reply.status(404).send({ error: "Relat\xF3rio n\xE3o encontrado" });
-        }
-      })
-    );
-  });
-}
-
-// src/app.ts
-var import_path2 = __toESM(require("path"));
-var server = (0, import_fastify.default)();
-server.register(import_cors.default, {
-  origin: "*"
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  gerarRelatorio
 });
-var jwtSecret = process.env.JWT_SECRET;
-if (!jwtSecret) {
-  throw new Error("JWT_SECRET is not defined");
-}
-server.register(import_jwt.default, {
-  secret: jwtSecret
-});
-server.decorate(
-  "authenticate",
-  (request, reply) => __async(void 0, null, function* () {
-    try {
-      yield request.jwtVerify();
-    } catch (e) {
-      return reply.send(e);
-    }
-  })
-);
-server.get("/", () => __async(void 0, null, function* () {
-  return { healthcheck: "OK" };
-}));
-function main() {
-  return __async(this, null, function* () {
-    yield server.register(require("@fastify/static"), {
-      root: import_path2.default.join(__dirname, "../public/relatorios"),
-      prefix: "/relatorios/",
-      decorateReply: true,
-      serve: true,
-      setHeaders: (res, path4) => {
-        if (path4.endsWith(".pdf")) {
-          res.setHeader("Content-Type", "application/pdf");
-          res.setHeader("Content-Disposition", "inline");
-        }
-      }
-    });
-    for (const schema of [
-      ...funcionarioSchemas,
-      ...adminSchemas,
-      ...cargoSchemas,
-      ...tabelaFuncionarioSchemas,
-      ...obraSchemas,
-      ...itemSchemas,
-      ...eventoSchemas,
-      ...relatorioSchemas
-    ]) {
-      server.addSchema(schema);
-    }
-    yield server.register(require("@fastify/swagger"));
-    yield server.register(require("@fastify/swagger-ui"), {
-      routePrefix: "/docs"
-    });
-    server.register(funcionario_route_default, { prefix: "/api/func" });
-    server.register(adminRoutes, { prefix: "/api/admin" });
-    server.register(cargo_route_default, { prefix: "/api/cargo" });
-    server.register(tabelaFuncionarios_route_default, { prefix: "/api/tabela" });
-    server.register(eventoRoutes, { prefix: "/api/evento" });
-    server.register(obraRoutes, { prefix: "/api/obra" });
-    server.register(item_route_default, { prefix: "/api/item" });
-    server.register(relatorioRoutes, { prefix: "/api/relatorio" });
-    console.log("Rebuilt at " + (/* @__PURE__ */ new Date()).toLocaleString());
-    console.log("Server started at " + (/* @__PURE__ */ new Date()).toLocaleString());
-    try {
-      yield server.listen({
-        port: process.env.PORT ? Number(process.env.PORT) : 4567,
-        host: "0.0.0.0"
-      }).then(() => {
-        console.log(
-          `Server listening on ${process.env.PORT ? Number(process.env.PORT) : 4567}.`
-        );
-      });
-    } catch (err) {
-      console.error(err);
-      process.exit(1);
-    }
-  });
-}
-main();
-
-// src/utils/hash.ts
-var import_crypto = __toESM(require("crypto"));
-function hashPassword(password) {
-  const salt = import_crypto.default.randomBytes(16).toString("hex");
-  const hash = import_crypto.default.pbkdf2Sync(password, salt, 1e3, 64, "sha512").toString("hex");
-  return { salt, hash };
-}
-function verifyPassword({
-  candidatePassword,
-  salt,
-  hash
-}) {
-  const candidateHash = import_crypto.default.pbkdf2Sync(candidatePassword, salt, 1e3, 64, "sha512").toString("hex");
-  return candidateHash === hash;
-}
-
-// src/modules/admin/admin.services.ts
-function createAdmin(input) {
-  return __async(this, null, function* () {
-    const _a = input, { password } = _a, rest = __objRest(_a, ["password"]);
-    const { hash, salt } = hashPassword(password);
-    const admin = yield prisma_default.admin.create({
-      data: __spreadProps(__spreadValues({}, rest), { salt, password: hash })
-    });
-    return admin;
-  });
-}
-function findAdmins() {
-  return __async(this, null, function* () {
-    return prisma_default.admin.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true
-      }
-    });
-  });
-}
-function findAdminByEmail(email) {
-  return __async(this, null, function* () {
-    return prisma_default.admin.findUnique({
-      where: { email }
-    });
-  });
-}
-
-// src/modules/admin/admin.controller.ts
-function registerAdminHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    try {
-      const admin = yield createAdmin(body);
-      return reply.status(201).send(admin);
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Erro ao registrar admin" });
-    }
-  });
-}
-function loginAdminHandler(request, reply) {
-  return __async(this, null, function* () {
-    const body = request.body;
-    const admin = yield findAdminByEmail(body.email);
-    if (!admin)
-      return reply.code(401).send({ message: "Invalid email or password" });
-    const correctPassword = verifyPassword({
-      candidatePassword: body.password,
-      salt: admin.salt,
-      hash: admin.password
-    });
-    console.log("Admin ID:", typeof admin.id, admin.id);
-    if (correctPassword) {
-      const payload = {
-        id: admin.id,
-        // Explicitly include only the fields you need
-        email: admin.email
-      };
-      const accessToken = server.jwt.sign(payload, { expiresIn: "1h" });
-      return reply.send({
-        accessToken,
-        admin: { id: admin.id, email: admin.email, name: admin.name }
-      });
-    }
-    return reply.code(401).send({ message: "Invalid email or password" });
-  });
-}
-function getAdminsHandler(request, reply) {
-  return __async(this, null, function* () {
-    const admins = yield findAdmins();
-    return reply.send(admins);
-  });
-}
-function isAdminAuthenticatedHandler(request, reply) {
-  return __async(this, null, function* () {
-    try {
-      return reply.status(200).send({ message: "Authenticated" });
-    } catch (e) {
-      console.error(e);
-      return reply.status(500).send({ message: "Internal Server Error" });
-    }
-  });
-}
-
-// src/modules/admin/admin.route.ts
-function adminRoutes(server2) {
-  return __async(this, null, function* () {
-    server2.post(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      registerAdminHandler
-    );
-    server2.get(
-      "/",
-      {
-        preHandler: [server2.authenticate]
-      },
-      getAdminsHandler
-    );
-    server2.post("/login", loginAdminHandler);
-    server2.get(
-      "/is-authenticated",
-      {
-        preHandler: [server2.authenticate]
-      },
-      isAdminAuthenticatedHandler
-    );
-  });
-}
 /*! Bundled license information:
 
 crypto-js/ripemd160.js:
