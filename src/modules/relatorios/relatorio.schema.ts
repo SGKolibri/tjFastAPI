@@ -5,7 +5,7 @@ const relatorioRequestSchema = z.object({
   modulo: z.enum(["funcionario", "cargo", "item", "obra"]),
   dataInicio: z.string().optional(),
   dataFim: z.string().optional(),
-  formato: z.enum(["pdf", "excel", "json"]).default("pdf"),
+  formato: z.enum(["pdf", "json"]).default("pdf"), // "excel",
   filtros: z.record(z.any()).optional(),
 });
 

@@ -8,9 +8,7 @@ import ExcelJS from "exceljs";
 export async function gerarRelatorio(input: RelatorioRequest) {
   const { modulo, dataInicio, dataFim, formato, filtros } = input;
   const timestamp = new Date().toISOString().replace(/:/g, "-");
-  const fileName = `relatorio_${modulo}_${timestamp}.${
-    formato === "excel" ? "xlsx" : formato
-  }`;
+  const fileName = `relatorio_${modulo}_${timestamp}.${formato}`;
   const filePath = path.join(__dirname, "../../../public/relatorios", fileName);
 
   const baseUrl = process.env.BASE_URL || "http://localhost:4567";
@@ -27,8 +25,6 @@ export async function gerarRelatorio(input: RelatorioRequest) {
   // Gerar o relatório no formato especificado
   if (formato === "pdf") {
     await gerarPDF(dados, filePath, modulo);
-  } else if (formato === "excel") {
-    await gerarExcel(dados, filePath, modulo);
   } else {
     // JSON
     fs.writeFileSync(filePath, JSON.stringify(dados, null, 2));
@@ -179,38 +175,38 @@ function adicionarConteudoFuncionarioPDF(
 // function adicionarConteudoItemPDF(...) { ... }
 // function adicionarConteudoObraPDF(...) { ... }
 
-async function gerarExcel(dados: any, filePath: string, modulo: string) {
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(`Relatório de ${modulo}`);
+// async function gerarExcel(dados: any, filePath: string, modulo: string) {
+//   const workbook = new ExcelJS.Workbook();
+//   const worksheet = workbook.addWorksheet(`Relatório de ${modulo}`);
 
-  // Definir cabeçalhos específicos para cada módulo
-  switch (modulo) {
-    case "funcionario":
-      worksheet.columns = [
-        { header: "ID", key: "id", width: 10 },
-        { header: "Nome", key: "nome", width: 30 },
-        { header: "Email", key: "email", width: 30 },
-        { header: "Cargo", key: "cargoNome", width: 20 },
-        { header: "Telefone", key: "telefone", width: 20 },
-      ];
+//   // Definir cabeçalhos específicos para cada módulo
+//   switch (modulo) {
+//     case "funcionario":
+//       worksheet.columns = [
+//         { header: "ID", key: "id", width: 10 },
+//         { header: "Nome", key: "nome", width: 30 },
+//         { header: "Email", key: "email", width: 30 },
+//         { header: "Cargo", key: "cargoNome", width: 20 },
+//         { header: "Telefone", key: "telefone", width: 20 },
+//       ];
 
-      // Adicionar dados
-      dados.forEach((funcionario: any) => {
-        worksheet.addRow({
-          id: funcionario.id,
-          nome: funcionario.nome,
-          email: funcionario.email,
-          cargoNome: funcionario.cargo?.nome || "Não atribuído",
-          telefone: funcionario.telefone || "Não informado",
-        });
-      });
-      break;
+//       // Adicionar dados
+//       dados.forEach((funcionario: any) => {
+//         worksheet.addRow({
+//           id: funcionario.id,
+//           nome: funcionario.nome,
+//           email: funcionario.email,
+//           cargoNome: funcionario.cargo?.nome || "Não atribuído",
+//           telefone: funcionario.telefone || "Não informado",
+//         });
+//       });
+//       break;
 
-    // Implementar casos para outros módulos
-    // case "cargo": ...
-    // case "item": ...
-    // case "obra": ...
-  }
+//     // Implementar casos para outros módulos
+//     // case "cargo": ...
+//     // case "item": ...
+//     // case "obra": ...
+//   }
 
-  await workbook.xlsx.writeFile(filePath);
-}
+//   await workbook.xlsx.writeFile(filePath);
+// }
