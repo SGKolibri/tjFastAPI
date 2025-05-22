@@ -120,7 +120,11 @@ async function obterDadosModulo(
 }
 
 async function gerarPDF(dados: any, filePath: string, modulo: string) {
-  const doc = new PDFDocument();
+  const doc = new PDFDocument({
+    autoFirstPage: true,
+    size: "A4",
+    font: "Times-Roman",
+  });
   const stream = fs.createWriteStream(filePath);
 
   doc.pipe(stream);
