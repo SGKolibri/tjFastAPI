@@ -30,3 +30,19 @@ export async function deleteEvento(id: string) {
     },
   });
 }
+
+export async function updateEvento(
+  id: string,
+  input: Partial<CreateEventoInput>
+) {
+  return prisma.evento.update({
+    where: { id },
+    data: input,
+  });
+}
+
+export async function getEventoById(id: string) {
+  return prisma.evento.findUnique({
+    where: { id },
+  });
+}

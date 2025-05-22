@@ -3,7 +3,16 @@ import { RelatorioRequest } from "./relatorio.schema";
 import * as fs from "fs";
 import * as path from "path";
 import PDFDocument from "pdfkit";
+import { promisify } from "util";
 // import ExcelJS from "exceljs";
+
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
+const unlink = promisify(fs.unlink);
+
+const RELATORIOS_DIR = path.join(__dirname, "../../../public/relatorios");
+const DIAS_PARA_MANTER = 7;
+const MAX_FILES = 50;
 
 export async function gerarRelatorio(input: RelatorioRequest) {
   const { modulo, dataInicio, dataFim, formato, filtros } = input;
@@ -169,12 +178,10 @@ function adicionarConteudoFuncionarioPDF(
     doc.moveDown();
   });
 }
-
 // Implementar funções similares para outros módulos
 // function adicionarConteudoCargoPDF(...) { ... }
 // function adicionarConteudoItemPDF(...) { ... }
 // function adicionarConteudoObraPDF(...) { ... }
-
 // async function gerarExcel(dados: any, filePath: string, modulo: string) {
 //   const workbook = new ExcelJS.Workbook();
 //   const worksheet = workbook.addWorksheet(`Relatório de ${modulo}`);
@@ -210,3 +217,143 @@ function adicionarConteudoFuncionarioPDF(
 
 //   await workbook.xlsx.writeFile(filePath);
 // }
+
+/**
+ * Remove relatórios mais antigos que o número de dias especificado
+ * e mantém apenas um número limitado de arquivos
+ */
+export async function limparRelatoriosAntigos(): Promise<{
+  removidos: number;
+  porData: number;
+  porQuantidade: number;
+}> {
+  try {
+    console.log("Iniciando limpeza de relatórios antigos...");
+
+    // Certifique-se de que o diretório existe
+    if (!fs.existsSync(RELATORIOS_DIR)) {
+      fs.mkdirSync(RELATORIOS_DIR, { recursive: true });
+      console.log("Diretório de relatórios criado.");
+      return { removidos: 0, porData: 0, porQuantidade: 0 };
+    }
+
+    const arquivos = await readdir(RELATORIOS_DIR);
+
+    console.log("arquivos: ", arquivos);
+    console.log("directory: ", RELATORIOS_DIR);
+
+    if (arquivos.length === 0) {
+      console.log("Nenhum relatório para limpar.");
+      return { removidos: 0, porData: 0, porQuantidade: 0 };
+    }
+
+    // Data limite - tudo antes disso será removido
+    const dataLimite = new Date();
+    dataLimite.setDate(dataLimite.getDate() - DIAS_PARA_MANTER);
+
+    console.log(
+      `Removendo relatórios anteriores a ${dataLimite.toLocaleString()}`
+    );
+
+    let removidosPorData = 0;
+
+    // Para cada arquivo, verifica a data de criação
+    for (const arquivo of arquivos) {
+      if (!arquivo.endsWith(".pdf")) continue; // Só limpa PDFs
+
+      const caminhoCompleto = path.join(RELATORIOS_DIR, arquivo);
+
+      try {
+        const stats = await stat(caminhoCompleto);
+
+        // Se o arquivo é mais antigo que a data limite, remove
+        if (stats.ctime < dataLimite) {
+          await unlink(caminhoCompleto);
+          console.log(`Removido por data: ${arquivo}`);
+          removidosPorData++;
+        }
+      } catch (err) {
+        console.error(`Erro ao processar arquivo ${arquivo}:`, err);
+      }
+    }
+
+    console.log(
+      `Limpeza por data concluída. ${removidosPorData} arquivo(s) removido(s).`
+    );
+
+    // Agora limpa por quantidade, se necessário
+    let removidosPorQuantidade = 0;
+    const arquivosRestantes = (await readdir(RELATORIOS_DIR)).filter((f) =>
+      f.endsWith(".pdf")
+    );
+
+    if (arquivosRestantes.length > MAX_FILES) {
+      removidosPorQuantidade = await limparPorQuantidade();
+    }
+
+    const totalRemovidos = removidosPorData + removidosPorQuantidade;
+    console.log(
+      `Limpeza total concluída. ${totalRemovidos} arquivo(s) removido(s) no total.`
+    );
+
+    return {
+      removidos: totalRemovidos,
+      porData: removidosPorData,
+      porQuantidade: removidosPorQuantidade,
+    };
+  } catch (err) {
+    console.error("Erro durante a limpeza de relatórios:", err);
+    throw err;
+  }
+}
+
+/**
+ * Remove arquivos mais antigos se o número total exceder MAX_FILES
+ * @returns Número de arquivos removidos
+ */
+async function limparPorQuantidade(): Promise<number> {
+  try {
+    const arquivos = (await readdir(RELATORIOS_DIR)).filter((f) =>
+      f.endsWith(".pdf")
+    );
+
+    // Se não excede o limite, não faz nada
+    if (arquivos.length <= MAX_FILES) return 0;
+
+    console.log(
+      `Número de PDFs (${arquivos.length}) excede o limite (${MAX_FILES}). Removendo os mais antigos...`
+    );
+
+    // Obtém informações de cada arquivo para ordenação
+    const arquivosInfo = await Promise.all(
+      arquivos.map(async (arquivo) => {
+        const caminhoCompleto = path.join(RELATORIOS_DIR, arquivo);
+        const stats = await stat(caminhoCompleto);
+        return {
+          nome: arquivo,
+          caminho: caminhoCompleto,
+          data: stats.ctime,
+        };
+      })
+    );
+
+    // Ordena do mais antigo para o mais recente
+    arquivosInfo.sort((a, b) => a.data.getTime() - b.data.getTime());
+
+    // Remove arquivos até atingir o limite
+    const aRemover = arquivosInfo.length - MAX_FILES;
+
+    for (let i = 0; i < aRemover; i++) {
+      await unlink(arquivosInfo[i].caminho);
+      console.log(`Removido por limite: ${arquivosInfo[i].nome}`);
+    }
+
+    console.log(
+      `Limpeza por quantidade concluída. ${aRemover} arquivo(s) removido(s).`
+    );
+    return aRemover;
+  } catch (err) {
+    console.error("Erro durante a limpeza por quantidade:", err);
+    throw err;
+  }
+}

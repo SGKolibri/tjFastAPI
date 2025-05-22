@@ -29,4 +29,14 @@ export default async function eventoRoutes(server: FastifyInstance) {
     },
     deleteEventoHandler
   );
+
+  server.put(
+    "/:eventoId",
+    {
+      preHandler: [server.authenticate],
+    },
+    async (request, reply) => {
+      return reply.status(501).send({ message: "Not Implemented" });
+    }
+  );
 }

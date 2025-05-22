@@ -1,7 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { server } from "../../app";
 import { CreateEventoInput } from "./evento.schema";
-import { createEvento, deleteEvento, getEventos } from "./evento.services";
+import {
+  createEvento,
+  deleteEvento,
+  getEventos,
+  updateEvento,
+} from "./evento.services";
 
 export async function createEventoHandler(
   request: FastifyRequest<{ Body: CreateEventoInput }>,
@@ -43,6 +48,25 @@ export async function deleteEventoHandler(
   try {
     await deleteEvento(eventoId);
     return reply.status(204).send({ message: "Evento deletado com sucesso" });
+  } catch (e) {
+    console.error(e);
+    return reply.status(500).send({ message: "Internal Server Error" });
+  }
+}
+
+export async function updateEventoHandler(
+  request: FastifyRequest<{
+    Params: { eventoId: string };
+    Body: CreateEventoInput;
+  }>,
+  reply: FastifyReply
+) {
+  const { eventoId } = request.params;
+  const body = request.body;
+
+  try {
+    const evento = await updateEvento(eventoId, body);
+    return reply.status(200).send(evento);
   } catch (e) {
     console.error(e);
     return reply.status(500).send({ message: "Internal Server Error" });

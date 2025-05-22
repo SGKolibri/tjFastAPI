@@ -19,6 +19,7 @@ import { itemSchemas } from "./modules/item/item.schema";
 import { relatorioSchemas } from "./modules/relatorios/relatorio.schema";
 import relatorioRoutes from "./modules/relatorios/relatorio.route";
 import path from "path";
+import { limparRelatoriosAntigos } from "./modules/relatorios/relatorio.services";
 
 export const server = Fastify();
 
@@ -109,6 +110,21 @@ async function main() {
 
   console.log("Rebuilt at " + new Date().toLocaleString());
   console.log("Server started at " + new Date().toLocaleString());
+
+  try {
+    await limparRelatoriosAntigos();
+  } catch (error) {
+    console.error("Erro na limpeza inicial de relatórios:", error);
+  }
+
+  // Configura limpeza periódica (a cada 24 horas = 86400000ms)
+  setInterval(async () => {
+    try {
+      await limparRelatoriosAntigos();
+    } catch (error) {
+      console.error("Erro na limpeza periódica de relatórios:", error);
+    }
+  }, 900000); // 24 horas, 86400000 = 24 * 60 * 60 * 1000
 
   try {
     await server
