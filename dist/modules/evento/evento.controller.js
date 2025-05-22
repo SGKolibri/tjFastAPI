@@ -42,7 +42,8 @@ var evento_controller_exports = {};
 __export(evento_controller_exports, {
   createEventoHandler: () => createEventoHandler,
   deleteEventoHandler: () => deleteEventoHandler,
-  getEventosHandler: () => getEventosHandler
+  getEventosHandler: () => getEventosHandler,
+  updateEventoHandler: () => updateEventoHandler
 });
 module.exports = __toCommonJS(evento_controller_exports);
 
@@ -81,6 +82,14 @@ function deleteEvento(id) {
       where: {
         id
       }
+    });
+  });
+}
+function updateEvento(id, input) {
+  return __async(this, null, function* () {
+    return prisma_default.evento.update({
+      where: { id },
+      data: input
     });
   });
 }
@@ -123,9 +132,23 @@ function deleteEventoHandler(request, reply) {
     }
   });
 }
+function updateEventoHandler(request, reply) {
+  return __async(this, null, function* () {
+    const { eventoId } = request.params;
+    const body = request.body;
+    try {
+      const evento = yield updateEvento(eventoId, body);
+      return reply.status(200).send(evento);
+    } catch (e) {
+      console.error(e);
+      return reply.status(500).send({ message: "Internal Server Error" });
+    }
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   createEventoHandler,
   deleteEventoHandler,
-  getEventosHandler
+  getEventosHandler,
+  updateEventoHandler
 });

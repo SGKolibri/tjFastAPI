@@ -155106,6 +155106,11 @@ mixin(TableMixin);
 PDFDocument.LineWrapper = LineWrapper;
 
 // src/modules/relatorios/relatorio.services.ts
+var import_util = require("util");
+var readdir2 = (0, import_util.promisify)(fs2.readdir);
+var stat2 = (0, import_util.promisify)(fs2.stat);
+var unlink2 = (0, import_util.promisify)(fs2.unlink);
+var RELATORIOS_DIR = path.join(__dirname, "../../../public/relatorios");
 function gerarRelatorio(input) {
   return __async(this, null, function* () {
     const { modulo, dataInicio, dataFim, formato, filtros } = input;

@@ -146,5 +146,14 @@ function eventoRoutes(server) {
       },
       deleteEventoHandler
     );
+    server.put(
+      "/:eventoId",
+      {
+        preHandler: [server.authenticate]
+      },
+      (request, reply) => __async(this, null, function* () {
+        return reply.status(501).send({ message: "Not Implemented" });
+      })
+    );
   });
 }

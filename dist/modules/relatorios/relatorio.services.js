@@ -134308,7 +134308,8 @@ var require_png_node = __commonJS({
 // src/modules/relatorios/relatorio.services.ts
 var relatorio_services_exports = {};
 __export(relatorio_services_exports, {
-  gerarRelatorio: () => gerarRelatorio
+  gerarRelatorio: () => gerarRelatorio,
+  limparRelatoriosAntigos: () => limparRelatoriosAntigos
 });
 module.exports = __toCommonJS(relatorio_services_exports);
 
@@ -155106,6 +155107,13 @@ mixin(TableMixin);
 PDFDocument.LineWrapper = LineWrapper;
 
 // src/modules/relatorios/relatorio.services.ts
+var import_util = require("util");
+var readdir2 = (0, import_util.promisify)(fs2.readdir);
+var stat2 = (0, import_util.promisify)(fs2.stat);
+var unlink2 = (0, import_util.promisify)(fs2.unlink);
+var RELATORIOS_DIR = path.join(__dirname, "../../../public/relatorios");
+var DIAS_PARA_MANTER = 7;
+var MAX_FILES = 50;
 function gerarRelatorio(input) {
   return __async(this, null, function* () {
     const { modulo, dataInicio, dataFim, formato, filtros } = input;
@@ -155220,9 +155228,108 @@ function adicionarConteudoFuncionarioPDF(doc, dados) {
     doc.moveDown();
   });
 }
+function limparRelatoriosAntigos() {
+  return __async(this, null, function* () {
+    try {
+      console.log("Iniciando limpeza de relat\xF3rios antigos...");
+      if (!fs2.existsSync(RELATORIOS_DIR)) {
+        fs2.mkdirSync(RELATORIOS_DIR, { recursive: true });
+        console.log("Diret\xF3rio de relat\xF3rios criado.");
+        return { removidos: 0, porData: 0, porQuantidade: 0 };
+      }
+      const arquivos = yield readdir2(RELATORIOS_DIR);
+      console.log("arquivos: ", arquivos);
+      console.log("directory: ", RELATORIOS_DIR);
+      if (arquivos.length === 0) {
+        console.log("Nenhum relat\xF3rio para limpar.");
+        return { removidos: 0, porData: 0, porQuantidade: 0 };
+      }
+      const dataLimite = /* @__PURE__ */ new Date();
+      dataLimite.setDate(dataLimite.getDate() - DIAS_PARA_MANTER);
+      console.log(
+        `Removendo relat\xF3rios anteriores a ${dataLimite.toLocaleString()}`
+      );
+      let removidosPorData = 0;
+      for (const arquivo of arquivos) {
+        if (!arquivo.endsWith(".pdf")) continue;
+        const caminhoCompleto = path.join(RELATORIOS_DIR, arquivo);
+        try {
+          const stats = yield stat2(caminhoCompleto);
+          if (stats.ctime < dataLimite) {
+            yield unlink2(caminhoCompleto);
+            console.log(`Removido por data: ${arquivo}`);
+            removidosPorData++;
+          }
+        } catch (err) {
+          console.error(`Erro ao processar arquivo ${arquivo}:`, err);
+        }
+      }
+      console.log(
+        `Limpeza por data conclu\xEDda. ${removidosPorData} arquivo(s) removido(s).`
+      );
+      let removidosPorQuantidade = 0;
+      const arquivosRestantes = (yield readdir2(RELATORIOS_DIR)).filter(
+        (f) => f.endsWith(".pdf")
+      );
+      if (arquivosRestantes.length > MAX_FILES) {
+        removidosPorQuantidade = yield limparPorQuantidade();
+      }
+      const totalRemovidos = removidosPorData + removidosPorQuantidade;
+      console.log(
+        `Limpeza total conclu\xEDda. ${totalRemovidos} arquivo(s) removido(s) no total.`
+      );
+      return {
+        removidos: totalRemovidos,
+        porData: removidosPorData,
+        porQuantidade: removidosPorQuantidade
+      };
+    } catch (err) {
+      console.error("Erro durante a limpeza de relat\xF3rios:", err);
+      throw err;
+    }
+  });
+}
+function limparPorQuantidade() {
+  return __async(this, null, function* () {
+    try {
+      const arquivos = (yield readdir2(RELATORIOS_DIR)).filter(
+        (f) => f.endsWith(".pdf")
+      );
+      if (arquivos.length <= MAX_FILES) return 0;
+      console.log(
+        `N\xFAmero de PDFs (${arquivos.length}) excede o limite (${MAX_FILES}). Removendo os mais antigos...`
+      );
+      const arquivosInfo = yield Promise.all(
+        arquivos.map((arquivo) => __async(this, null, function* () {
+          const caminhoCompleto = path.join(RELATORIOS_DIR, arquivo);
+          const stats = yield stat2(caminhoCompleto);
+          return {
+            nome: arquivo,
+            caminho: caminhoCompleto,
+            data: stats.ctime
+          };
+        }))
+      );
+      arquivosInfo.sort((a, b) => a.data.getTime() - b.data.getTime());
+      const aRemover = arquivosInfo.length - MAX_FILES;
+      for (let i = 0; i < aRemover; i++) {
+        yield unlink2(arquivosInfo[i].caminho);
+        console.log(`Removido por limite: ${arquivosInfo[i].nome}`);
+      }
+      console.log(
+        `Limpeza por quantidade conclu\xEDda. ${aRemover} arquivo(s) removido(s).`
+      );
+      return aRemover;
+    } catch (err) {
+      console.error("Erro durante a limpeza por quantidade:", err);
+      throw err;
+    }
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  gerarRelatorio
+  gerarRelatorio,
+  limparRelatoriosAntigos
 });
 /*! Bundled license information:
 

@@ -42,7 +42,9 @@ var evento_services_exports = {};
 __export(evento_services_exports, {
   createEvento: () => createEvento,
   deleteEvento: () => deleteEvento,
-  getEventos: () => getEventos
+  getEventoById: () => getEventoById,
+  getEventos: () => getEventos,
+  updateEvento: () => updateEvento
 });
 module.exports = __toCommonJS(evento_services_exports);
 
@@ -84,9 +86,26 @@ function deleteEvento(id) {
     });
   });
 }
+function updateEvento(id, input) {
+  return __async(this, null, function* () {
+    return prisma_default.evento.update({
+      where: { id },
+      data: input
+    });
+  });
+}
+function getEventoById(id) {
+  return __async(this, null, function* () {
+    return prisma_default.evento.findUnique({
+      where: { id }
+    });
+  });
+}
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   createEvento,
   deleteEvento,
-  getEventos
+  getEventoById,
+  getEventos,
+  updateEvento
 });
