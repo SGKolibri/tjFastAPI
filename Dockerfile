@@ -20,11 +20,11 @@ RUN npx prisma generate
 # Copy the .env file for Prisma to access
 COPY .env .env
 
-# Copy all files and compile TypeScript to JavaScript
+# Copy all files EXCEPT node_modules
 COPY . .
 
-# Create reports directory
-# RUN mkdir -p ./public/relatorios && chmod 777 ./public/relatorios
+# Certifique-se de que a pasta public/relatorios existe e tem permissões adequadas
+RUN mkdir -p ./public/relatorios && chmod -R 777 ./public
 
 # Compile TypeScript to JavaScript
 RUN npm run build
