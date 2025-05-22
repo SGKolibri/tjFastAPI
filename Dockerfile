@@ -24,7 +24,7 @@ COPY .env .env
 COPY . .
 
 # Create reports directory
-RUN mkdir -p ./public/relatorios && chmod 777 ./public/relatorios
+# RUN mkdir -p ./public/relatorios && chmod 777 ./public/relatorios
 
 # Compile TypeScript to JavaScript
 RUN npm run build
