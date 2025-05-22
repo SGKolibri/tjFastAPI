@@ -123,7 +123,14 @@ async function gerarPDF(dados: any, filePath: string, modulo: string) {
   const doc = new PDFDocument({
     autoFirstPage: true,
     size: "A4",
-    font: "Times-Roman",
+    font: path.join(
+      process.cwd(),
+      "node_modules",
+      "pdfkit",
+      "js",
+      "data",
+      "Helvetica.afm"
+    ),
   });
   const stream = fs.createWriteStream(filePath);
 
