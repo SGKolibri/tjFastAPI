@@ -6,7 +6,7 @@ const CreateEventoSchema = z.object({
   descricao: z.string(),
   dataInicio: z.string(),
   dataFim: z.string(),
-  allDay: z.boolean(),
+  allDay: z.boolean(), // true or false
 });
 
 const EventoResponseSchema = z.object({
