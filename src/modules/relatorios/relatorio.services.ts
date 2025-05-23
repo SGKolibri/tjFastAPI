@@ -120,53 +120,76 @@ async function obterDadosModulo(
 }
 
 async function gerarPDF(dados: any, filePath: string, modulo: string) {
-  const doc = new PDFDocument({
-    autoFirstPage: true,
-    size: "A4",
-    font: path.join(
-      process.cwd(),
-      "node_modules",
-      "pdfkit",
-      "js",
-      "data",
-      "Helvetica.afm"
-    ),
-  });
-  const stream = fs.createWriteStream(filePath);
+  try {
+    console.log(
+      `Iniciando geração de PDF para ${modulo} com ${dados.length} registros`
+    );
 
-  doc.pipe(stream);
+    if (dados.length > 500) {
+      console.warn(
+        `Limitando relatório a 500 registros de ${dados.length} totais`
+      );
+      dados = dados.slice(0, 500);
+    }
 
-  // Adicionar cabeçalho
-  doc
-    .fontSize(25)
-    .text(`Relatório de ${modulo.toUpperCase()}`, { align: "center" });
-  doc.moveDown();
-  doc
-    .fontSize(12)
-    .text(`Gerado em: ${new Date().toLocaleString()}`, { align: "center" });
-  doc.moveDown(2);
+    const doc = new PDFDocument({
+      autoFirstPage: true,
+      size: "A4",
+    });
 
-  // Adicionar conteúdo específico para cada módulo
-  switch (modulo) {
-    case "funcionario":
-      adicionarConteudoFuncionarioPDF(doc, dados);
-      break;
-    // case "cargo":
-    //   adicionarConteudoCargoPDF(doc, dados);
-    //   break;
-    // case "item":
-    //   adicionarConteudoItemPDF(doc, dados);
-    //   break;
-    // case "obra":
-    //   adicionarConteudoObraPDF(doc, dados);
-    //   break;
+    const stream = fs.createWriteStream(filePath);
+    doc.pipe(stream);
+
+    // Adicionar cabeçalho
+    doc
+      .fontSize(25)
+      .text(`Relatório de ${modulo.toUpperCase()}`, { align: "center" });
+    doc.moveDown();
+    doc
+      .fontSize(12)
+      .text(`Gerado em: ${new Date().toLocaleString()}`, { align: "center" });
+    doc.moveDown(2);
+
+    switch (modulo) {
+      case "funcionario":
+        adicionarConteudoFuncionarioPDF(doc, dados);
+        break;
+      // case "cargo":
+    }
+
+    doc.end();
+
+    return new Promise<void>((resolve, reject) => {
+      let resolved = false;
+
+      stream.on("finish", () => {
+        console.log(`PDF gerado com sucesso: ${filePath}`);
+        if (!resolved) {
+          resolved = true;
+          resolve();
+        }
+      });
+
+      stream.on("error", (err) => {
+        console.error(`Erro na geração do stream PDF: ${err}`);
+        if (!resolved) {
+          resolved = true;
+          reject(err);
+        }
+      });
+
+      setTimeout(() => {
+        if (!resolved) {
+          console.warn("Timeout na geração do PDF após 30s");
+          resolved = true;
+          resolve();
+        }
+      }, 30000);
+    });
+  } catch (error) {
+    console.error("Erro ao gerar PDF:", error);
+    throw error;
   }
-
-  doc.end();
-
-  return new Promise<void>((resolve) => {
-    stream.on("finish", () => resolve());
-  });
 }
 
 // Funções auxiliares para cada módulo - implementar de acordo com seus dados

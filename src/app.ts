@@ -124,7 +124,7 @@ async function main() {
     } catch (error) {
       console.error("Erro na limpeza periódica de relatórios:", error);
     }
-  }, 900000); // 24 horas, 86400000 = 24 * 60 * 60 * 1000
+  }, 86400000); // 24 horas, 86400000 = 24 * 60 * 60 * 1000
 
   try {
     await server

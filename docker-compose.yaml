@@ -13,9 +13,11 @@ services:
     ports:
       - "10000:4567"
     volumes:
-      - .:/app
+      - ./public:/app/public
+        # - .:/app
     environment:
       NODE_ENV: production
+      DEBUG: "pdfkit*"
     depends_on:
       - db
     command: >
