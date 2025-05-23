@@ -21,7 +21,10 @@ services:
     depends_on:
       - db
     command: >
-      sh -c "npx prisma migrate deploy && pm2-runtime dist/app.js"
+      sh -c "mkdir -p /app/dist/data && 
+             cp -f /app/node_modules/pdfkit/js/data/*.afm /app/dist/data/ || true && 
+             npx prisma migrate deploy && 
+             pm2-runtime dist/app.js"
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
   db:

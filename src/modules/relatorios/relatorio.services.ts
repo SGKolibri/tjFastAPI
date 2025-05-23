@@ -132,13 +132,7 @@ async function gerarPDF(dados: any, filePath: string, modulo: string) {
       dados = dados.slice(0, 500);
     }
 
-    const doc = new PDFDocument({
-      autoFirstPage: true,
-      size: "A4",
-      // node_modules path
-      font: path.join( __dirname, "../../../node_modules/pdfkit/js/data/", "fonts", "Helvetica.afm"),
-    });
-
+    const doc = new PDFDocument();
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
 
