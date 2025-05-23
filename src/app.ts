@@ -69,7 +69,7 @@ server.get("/", async () => {
 
 async function main() {
   await server.register(require("@fastify/static"), {
-    root: path.join(__dirname, "../public/relatorios"),
+    root: path.join(process.cwd(), "public/relatorios"),
     prefix: "/relatorios/",
     decorateReply: true,
     serve: true,

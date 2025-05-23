@@ -10,7 +10,7 @@ const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 const unlink = promisify(fs.unlink);
 
-const RELATORIOS_DIR = path.join(__dirname, "../../../public/relatorios");
+const RELATORIOS_DIR = path.join(process.cwd(), "public/relatorios");
 const DIAS_PARA_MANTER = 7;
 const MAX_FILES = 50;
 
@@ -18,7 +18,7 @@ export async function gerarRelatorio(input: RelatorioRequest) {
   const { modulo, dataInicio, dataFim, formato, filtros } = input;
   const timestamp = new Date().toISOString().replace(/:/g, "-");
   const fileName = `relatorio_${modulo}_${timestamp}.${formato}`;
-  const filePath = path.join(__dirname, "../../../public/relatorios", fileName);
+  const filePath = path.join(process.cwd(), "public/relatorios", fileName);
 
   const baseUrl = process.env.BASE_URL || "http://localhost:4567";
 
