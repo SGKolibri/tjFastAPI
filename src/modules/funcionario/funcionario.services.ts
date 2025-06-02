@@ -577,18 +577,54 @@ export async function createFuncionariosFromJSON(
 
 export async function addSalariosToFuncionario(
   funcionarioId: string,
-  salarios: AddSalariosToFuncionarioInput // Array of salário objects
+  salarios: AddSalariosToFuncionarioInput
 ) {
   console.log("SALARIOS: ", salarios);
   try {
     // Use Prisma's transaction to ensure atomicity
-    await prisma.$transaction(async (prisma) => {
+    const resultados = await prisma.$transaction(async (prisma) => {
+      const results = [];
+
       for (const salario of salarios) {
-        await prisma.salarioMensal.create({
-          data: {
-            mes: salario.mes, // Access `mes` from `salario`
-            ano: salario.ano, // Access `ano` from `salario`
-            salarioBase: salario.salarioBase, // Access `salarioBase` from `salario`
+        // Use upsert para atualizar se existir ou criar se não existir
+        const resultado = await prisma.salarioMensal.upsert({
+          where: {
+            mes_ano_funcionarioId: {
+              mes: salario.mes,
+              ano: salario.ano,
+              funcionarioId: funcionarioId,
+            },
+          },
+          update: {
+            // Atualiza os dados se já existir
+            salarioBase: salario.salarioBase,
+            horasExtras: salario.horasExtras ?? 0,
+            descontos: salario.descontos ?? 0,
+            bonus: salario.bonus ?? 0,
+            faltas: salario.faltas ?? 0,
+            extras: salario.extras ?? 0,
+            beneficios: salario.beneficios
+              ? {
+                  upsert: {
+                    update: {
+                      cafe: salario.beneficios.cafe ?? 0,
+                      almoco: salario.beneficios.almoco ?? 0,
+                      passagem: salario.beneficios.passagem ?? 0,
+                    },
+                    create: {
+                      cafe: salario.beneficios.cafe ?? 0,
+                      almoco: salario.beneficios.almoco ?? 0,
+                      passagem: salario.beneficios.passagem ?? 0,
+                    },
+                  },
+                }
+              : undefined,
+          },
+          create: {
+            // Cria novo se não existir
+            mes: salario.mes,
+            ano: salario.ano,
+            salarioBase: salario.salarioBase,
             horasExtras: salario.horasExtras ?? 0,
             descontos: salario.descontos ?? 0,
             bonus: salario.bonus ?? 0,
@@ -609,11 +645,19 @@ export async function addSalariosToFuncionario(
               },
             },
           },
+          include: {
+            beneficios: true,
+          },
         });
+
+        results.push(resultado);
       }
+
+      return results;
     });
 
-    console.log("Salários adicionados com sucesso!");
+    console.log("Salários adicionados/atualizados com sucesso!");
+    return resultados;
   } catch (error) {
     console.error("Erro ao adicionar salários:", error);
     throw new Error("Falha ao adicionar salários");
