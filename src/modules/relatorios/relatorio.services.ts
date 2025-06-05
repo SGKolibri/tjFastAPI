@@ -4,6 +4,9 @@ import * as fs from "fs";
 import * as path from "path";
 import PDFDocument from "pdfkit";
 import { promisify } from "util";
+import { ProfessionalPDFGenerator } from "../../utils/pdfUtils";
+import { generateFuncionarioReport } from "./generator/funcionarioReportGenerator";
+import { generateCargoReport } from "./generator/cargoReportGenerator";
 // import ExcelJS from "exceljs";
 
 const readdir = promisify(fs.readdir);
@@ -60,6 +63,11 @@ async function obterDadosModulo(
       return prisma.funcionario.findMany({
         include: {
           cargo: true,
+          salarios: {
+            include: {
+              beneficios: true,
+            },
+          },
         },
       });
     case "cargo":
@@ -125,6 +133,8 @@ async function gerarPDF(dados: any, filePath: string, modulo: string) {
       `Iniciando geração de PDF para ${modulo} com ${dados.length} registros`
     );
 
+    console.log("DADOS RECEBIDOS:", dados);
+
     if (dados.length > 500) {
       console.warn(
         `Limitando relatório a 500 registros de ${dados.length} totais`
@@ -132,28 +142,28 @@ async function gerarPDF(dados: any, filePath: string, modulo: string) {
       dados = dados.slice(0, 500);
     }
 
-    const doc = new PDFDocument();
-    const stream = fs.createWriteStream(filePath);
-    doc.pipe(stream);
+    const config = {
+      title: `Relatório de ${modulo.charAt(0).toUpperCase() + modulo.slice(1)}`,
+    };
 
-    // Adicionar cabeçalho
-    doc
-      .fontSize(25)
-      .text(`Relatório de ${modulo.toUpperCase()}`, { align: "center" });
-    doc.moveDown();
-    doc
-      .fontSize(12)
-      .text(`Gerado em: ${new Date().toLocaleString()}`, { align: "center" });
-    doc.moveDown(2);
+    const generator = new ProfessionalPDFGenerator(config);
+    const stream = fs.createWriteStream(filePath);
+    generator.pipe(stream);
 
     switch (modulo) {
       case "funcionario":
-        adicionarConteudoFuncionarioPDF(doc, dados);
+        generateFuncionarioReport(dados, generator);
         break;
-      // case "cargo":
+      case "cargo":
+        generateCargoReport(dados, generator);
+        break;
+      case "default":
+        console.warn(`Módulo ${modulo} não implementado para PDF`);
+        generator.addSection("Módulo não implementado");
+        break;
     }
 
-    doc.end();
+    generator.end();
 
     return new Promise<void>((resolve, reject) => {
       let resolved = false;
@@ -176,11 +186,11 @@ async function gerarPDF(dados: any, filePath: string, modulo: string) {
 
       setTimeout(() => {
         if (!resolved) {
-          console.warn("Timeout na geração do PDF após 30s");
+          console.warn("Timeout na geração do PDF após 20s");
           resolved = true;
           resolve();
         }
-      }, 30000);
+      }, 20000);
     });
   } catch (error) {
     console.error("Erro ao gerar PDF:", error);

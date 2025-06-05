@@ -11,6 +11,8 @@ export async function gerarRelatorioHandler(
   try {
     const resultado = await gerarRelatorio(body);
 
+    console.log("Body do relatório:", body);
+
     const baseUrl =
       process.env.BASE_URL || request.protocol + "://" + request.hostname;
 
