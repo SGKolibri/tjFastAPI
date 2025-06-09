@@ -115,7 +115,7 @@ model Obra {
   dataInicio   DateTime
   dataFim      DateTime
   status       String        @default("PLANEJAMENTO")
-  itens        ItemObra[] // Relation to items through the join table
+  itens        MaterialObra[] // Relation to items through the join table
   funcionarios Funcionario[] // Array of employees associated with the project
 
   createdAt DateTime @default(now())
@@ -131,27 +131,35 @@ enum ObraStatus {
 }
 
 // Model for construction items/materials
-model Item {
+model Material {
   id            String     @id @default(cuid())
   nome          String
   descricao     String?
   categoria     String
-  unidade       String // e.g., kg, m², unidade, etc.
+  unidade       String
   precoUnitario Float
   fornecedor    String?
-  codigo        String? // Optional item code/SKU
-  obras         ItemObra[] // Relation to obras through the join table
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  codigo        String?
+  
+  // Additional fields for material management
+  quantidade    Float?     // Quantity in stock
+  status        String?    // Status: Pendente, Comprado, Em trânsito, etc.
+  localizacao   String?    // Storage location
+  dataCompra    DateTime?  // Purchase date
+  dataEntrega   DateTime?  // Delivery date
+  numeroNota    String?    // Invoice number
+  
+  obras         MaterialObra[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 // Join table to track items used in each construction project
 // with additional information like quantity
-model ItemObra {
+model MaterialObra {
   id          String  @id @default(cuid())
-  item        Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  itemId      String
+  material        Material    @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  materialId      String
   obra        Obra    @relation(fields: [obraId], references: [id], onDelete: Cascade)
   obraId      String
   quantidade  Float // Quantity of the item used in this specific project
@@ -161,5 +169,5 @@ model ItemObra {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([itemId, obraId]) // Each item appears only once per obra
+  @@unique([materialId, obraId]) // Each item appears only once per obra
 }

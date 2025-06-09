@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
 
-const itemSchema = z.object({
+const MaterialSchema = z.object({
   id: z.string().optional(),
   nome: z.string(),
   descricao: z.string().optional(),
@@ -14,7 +14,7 @@ const itemSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
-const registerItemSchema = z.object({
+const RegisterMaterialSchema = z.object({
   nome: z.string({
     required_error: "Nome is required",
     invalid_type_error: "Nome must be a string",
@@ -36,13 +36,13 @@ const registerItemSchema = z.object({
   codigo: z.string().optional(),
 });
 
-// Schema for assigning items to an obra
-const itemObraSchema = z.object({
+// Schema for assigning material to an obra
+const MaterialObraSchema = z.object({
   obraId: z.string({
     required_error: "Obra ID is required",
   }),
-  itemId: z.string({
-    required_error: "Item ID is required",
+  materialId: z.string({
+    required_error: "material ID is required",
   }),
   quantidade: z.number({
     required_error: "Quantidade is required",
@@ -51,18 +51,18 @@ const itemObraSchema = z.object({
   observacoes: z.string().optional(),
 });
 
-export type RegisterItemInput = z.infer<typeof registerItemSchema>;
-export type ItemInput = z.infer<typeof itemSchema>;
-export type ItemResponse = z.infer<typeof itemSchema>;
-export type ItemObraInput = z.infer<typeof itemObraSchema>;
+export type RegisterMaterialInput = z.infer<typeof RegisterMaterialSchema>;
+export type MaterialInput = z.infer<typeof MaterialSchema>;
+export type MaterialResponse = z.infer<typeof MaterialSchema>;
+export type MaterialObraInput = z.infer<typeof MaterialObraSchema>;
 
-export const { schemas: itemSchemas, $ref } = buildJsonSchemas(
+export const { schemas: materialchemas, $ref } = buildJsonSchemas(
   {
-    registerItemSchema,
-    itemSchema,
-    itemObraSchema,
+    RegisterMaterialSchema,
+    MaterialSchema,
+    MaterialObraSchema,
   },
   {
-    $id: "itemSchema",
+    $id: "materialchema",
   }
 );

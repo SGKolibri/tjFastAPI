@@ -78,7 +78,7 @@ async function obterDadosModulo(
         },
       });
     case "item":
-      return prisma.item.findMany({
+      return prisma.material.findMany({
         where: {
           ...(filtros || {}),
           ...(dataInicio && dataFim
@@ -116,7 +116,7 @@ async function obterDadosModulo(
         include: {
           itens: {
             include: {
-              item: true,
+              material: true,
             },
           },
           funcionarios: true,

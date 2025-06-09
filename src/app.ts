@@ -8,14 +8,14 @@ import cargoRoutes from "./modules/cargo/cargo.route";
 import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
 import eventoRoutes from "./modules/evento/evento.route";
 import obraRoutes from "./modules/obra/obra.route";
-import itemRoutes from "./modules/item/item.route";
+import itemRoutes from "./modules/material/material.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
 import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import { cargoSchemas } from "./modules/cargo/cargo.schema";
 import { tabelaFuncionarioSchemas } from "./modules/tabelaFuncionarios/tabelaFuncionarios.schema";
 import { eventoSchemas } from "./modules/evento/evento.schema";
 import { obraSchemas } from "./modules/obra/obra.schema";
-import { itemSchemas } from "./modules/item/item.schema";
+import { materialchemas } from "./modules/material/material.schema";
 import { relatorioSchemas } from "./modules/relatorios/relatorio.schema";
 import relatorioRoutes from "./modules/relatorios/relatorio.route";
 import path from "path";
@@ -87,7 +87,7 @@ async function main() {
     ...cargoSchemas,
     ...tabelaFuncionarioSchemas,
     ...obraSchemas,
-    ...itemSchemas,
+    ...materialchemas,
     ...eventoSchemas,
     ...relatorioSchemas,
   ]) {
