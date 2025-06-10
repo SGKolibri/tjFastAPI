@@ -9,7 +9,53 @@
     "banco": "AAAAAA",
     "contato": "(62) 99999-9999",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 40,
+        "descontos": 30,
+        "bonus": 50,
+        "faltas": 2,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 50,
+        "descontos": 50,
+        "bonus": 75,
+        "faltas": 3,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 45,
+        "descontos": 40,
+        "bonus": 60,
+        "faltas": 1,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 120,
+          "almoco": 220,
+          "passagem": 220
+        }
+      }
+    ]
   },
   {
     "name": "Aldenos Gonçalves Soares dos Santos",
@@ -21,7 +67,68 @@
     "banco": "AAAAAA",
     "contato": "(62) 99999-9999",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 1,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 45,
+        "faltas": 2,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1450,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 50,
+        "faltas": 0,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1450,
+        "horasExtras": 45,
+        "descontos": 30,
+        "bonus": 55,
+        "faltas": 1,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      }
+    ]
   },
   {
     "name": "Alexandre Gonçalves",
@@ -33,7 +140,83 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 45,
+        "descontos": 35,
+        "bonus": 60,
+        "faltas": 2,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 50,
+        "descontos": 40,
+        "bonus": 65,
+        "faltas": 1,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 70,
+        "faltas": 0,
+        "extras": 80,
+        "beneficios": {
+          "cafe": 105,
+          "almoco": 210,
+          "passagem": 210
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 60,
+        "descontos": 50,
+        "bonus": 75,
+        "faltas": 1,
+        "extras": 85,
+        "beneficios": {
+          "cafe": 110,
+          "almoco": 220,
+          "passagem": 220
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 65,
+        "descontos": 55,
+        "bonus": 80,
+        "faltas": 2,
+        "extras": 90,
+        "beneficios": {
+          "cafe": 115,
+          "almoco": 230,
+          "passagem": 230
+        }
+      }
+    ]
   },
   {
     "name": "Alvaro Reis Santos",
@@ -45,7 +228,98 @@
     "banco": "PAN",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 2200,
+        "horasExtras": 60,
+        "descontos": 50,
+        "bonus": 100,
+        "faltas": 0,
+        "extras": 120,
+        "beneficios": {
+          "cafe": 150,
+          "almoco": 300,
+          "passagem": 300
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 2200,
+        "horasExtras": 65,
+        "descontos": 55,
+        "bonus": 110,
+        "faltas": 1,
+        "extras": 130,
+        "beneficios": {
+          "cafe": 150,
+          "almoco": 300,
+          "passagem": 300
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 2300,
+        "horasExtras": 70,
+        "descontos": 60,
+        "bonus": 120,
+        "faltas": 0,
+        "extras": 140,
+        "beneficios": {
+          "cafe": 160,
+          "almoco": 320,
+          "passagem": 320
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 2300,
+        "horasExtras": 75,
+        "descontos": 65,
+        "bonus": 130,
+        "faltas": 1,
+        "extras": 150,
+        "beneficios": {
+          "cafe": 165,
+          "almoco": 330,
+          "passagem": 330
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 2400,
+        "horasExtras": 80,
+        "descontos": 70,
+        "bonus": 140,
+        "faltas": 0,
+        "extras": 160,
+        "beneficios": {
+          "cafe": 170,
+          "almoco": 340,
+          "passagem": 340
+        }
+      },
+      {
+        "mes": 6,
+        "ano": 2025,
+        "salarioBase": 2400,
+        "horasExtras": 85,
+        "descontos": 75,
+        "bonus": 150,
+        "faltas": 2,
+        "extras": 170,
+        "beneficios": {
+          "cafe": 175,
+          "almoco": 350,
+          "passagem": 350
+        }
+      }
+    ]
   },
   {
     "name": "André Benedito",
@@ -57,7 +331,53 @@
     "banco": "ITAU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1650,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 50,
+        "faltas": 1,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 60,
+        "faltas": 2,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 45,
+        "descontos": 40,
+        "bonus": 65,
+        "faltas": 0,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      }
+    ]
   },
   {
     "name": "Bruno Fernando Damasceno Oliveira",
@@ -69,7 +389,38 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1350,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 35,
+        "faltas": 1,
+        "extras": 45,
+        "beneficios": {
+          "cafe": 75,
+          "almoco": 150,
+          "passagem": 150
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      }
+    ]
   },
   {
     "name": "Daniel Lopes",
@@ -81,7 +432,68 @@
     "banco": "NU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 20,
+        "descontos": 15,
+        "bonus": 80,
+        "faltas": 0,
+        "extras": 40,
+        "beneficios": {
+          "cafe": 120,
+          "almoco": 240,
+          "passagem": 240
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1850,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 90,
+        "faltas": 1,
+        "extras": 45,
+        "beneficios": {
+          "cafe": 125,
+          "almoco": 250,
+          "passagem": 250
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1850,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 100,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 130,
+          "almoco": 260,
+          "passagem": 260
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1900,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 110,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 135,
+          "almoco": 270,
+          "passagem": 270
+        }
+      }
+    ]
   },
   {
     "name": "Denil Wesley",
@@ -93,7 +505,53 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 45,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1650,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 50,
+        "faltas": 2,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 55,
+        "faltas": 0,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      }
+    ]
   },
   {
     "name": "Fabiano Ferreira",
@@ -105,7 +563,83 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1500,
+        "horasExtras": 35,
+        "descontos": 25,
+        "bonus": 45,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1550,
+        "horasExtras": 40,
+        "descontos": 30,
+        "bonus": 50,
+        "faltas": 2,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1550,
+        "horasExtras": 45,
+        "descontos": 35,
+        "bonus": 55,
+        "faltas": 0,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 50,
+        "descontos": 40,
+        "bonus": 60,
+        "faltas": 1,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 65,
+        "faltas": 0,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 105,
+          "almoco": 210,
+          "passagem": 210
+        }
+      }
+    ]
   },
   {
     "name": "Geovane Alves da Silva",
@@ -117,7 +651,68 @@
     "banco": "BRASIL",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 40,
+        "descontos": 30,
+        "bonus": 60,
+        "faltas": 1,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 45,
+        "descontos": 35,
+        "bonus": 65,
+        "faltas": 2,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 105,
+          "almoco": 210,
+          "passagem": 210
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1800,
+        "horasExtras": 50,
+        "descontos": 40,
+        "bonus": 70,
+        "faltas": 0,
+        "extras": 80,
+        "beneficios": {
+          "cafe": 110,
+          "almoco": 220,
+          "passagem": 220
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1850,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 75,
+        "faltas": 1,
+        "extras": 85,
+        "beneficios": {
+          "cafe": 115,
+          "almoco": 230,
+          "passagem": 230
+        }
+      }
+    ]
   },
   {
     "name": "Gleydson Luciano Peixoto",
@@ -129,7 +724,113 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 2100,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 95,
+        "faltas": 1,
+        "extras": 115,
+        "beneficios": {
+          "cafe": 140,
+          "almoco": 280,
+          "passagem": 280
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 2150,
+        "horasExtras": 60,
+        "descontos": 50,
+        "bonus": 100,
+        "faltas": 0,
+        "extras": 120,
+        "beneficios": {
+          "cafe": 145,
+          "almoco": 290,
+          "passagem": 290
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 2200,
+        "horasExtras": 65,
+        "descontos": 55,
+        "bonus": 105,
+        "faltas": 2,
+        "extras": 125,
+        "beneficios": {
+          "cafe": 150,
+          "almoco": 300,
+          "passagem": 300
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 2200,
+        "horasExtras": 70,
+        "descontos": 60,
+        "bonus": 110,
+        "faltas": 1,
+        "extras": 130,
+        "beneficios": {
+          "cafe": 155,
+          "almoco": 310,
+          "passagem": 310
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 2250,
+        "horasExtras": 75,
+        "descontos": 65,
+        "bonus": 115,
+        "faltas": 0,
+        "extras": 135,
+        "beneficios": {
+          "cafe": 160,
+          "almoco": 320,
+          "passagem": 320
+        }
+      },
+      {
+        "mes": 6,
+        "ano": 2025,
+        "salarioBase": 2300,
+        "horasExtras": 80,
+        "descontos": 70,
+        "bonus": 120,
+        "faltas": 1,
+        "extras": 140,
+        "beneficios": {
+          "cafe": 165,
+          "almoco": 330,
+          "passagem": 330
+        }
+      },
+      {
+        "mes": 7,
+        "ano": 2025,
+        "salarioBase": 2300,
+        "horasExtras": 85,
+        "descontos": 75,
+        "bonus": 125,
+        "faltas": 2,
+        "extras": 145,
+        "beneficios": {
+          "cafe": 170,
+          "almoco": 340,
+          "passagem": 340
+        }
+      }
+    ]
   },
   {
     "name": "Leandro Araújo Ferreira",
@@ -141,7 +842,53 @@
     "banco": "ITAU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 35,
+        "descontos": 25,
+        "bonus": 55,
+        "faltas": 1,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 40,
+        "descontos": 30,
+        "bonus": 60,
+        "faltas": 0,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 45,
+        "descontos": 35,
+        "bonus": 65,
+        "faltas": 2,
+        "extras": 75,
+        "beneficios": {
+          "cafe": 105,
+          "almoco": 210,
+          "passagem": 210
+        }
+      }
+    ]
   },
   {
     "name": "Leandro da Silva Araújo",
@@ -153,7 +900,53 @@
     "banco": "BRADESCO",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1300,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 35,
+        "faltas": 1,
+        "extras": 45,
+        "beneficios": {
+          "cafe": 75,
+          "almoco": 150,
+          "passagem": 150
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1350,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 45,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      }
+    ]
   },
   {
     "name": "Leonardo Lopes",
@@ -165,7 +958,83 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 2000,
+        "horasExtras": 50,
+        "descontos": 40,
+        "bonus": 90,
+        "faltas": 0,
+        "extras": 110,
+        "beneficios": {
+          "cafe": 135,
+          "almoco": 270,
+          "passagem": 270
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 2050,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 95,
+        "faltas": 1,
+        "extras": 115,
+        "beneficios": {
+          "cafe": 140,
+          "almoco": 280,
+          "passagem": 280
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 2100,
+        "horasExtras": 60,
+        "descontos": 50,
+        "bonus": 100,
+        "faltas": 0,
+        "extras": 120,
+        "beneficios": {
+          "cafe": 145,
+          "almoco": 290,
+          "passagem": 290
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 2150,
+        "horasExtras": 65,
+        "descontos": 55,
+        "bonus": 105,
+        "faltas": 2,
+        "extras": 125,
+        "beneficios": {
+          "cafe": 150,
+          "almoco": 300,
+          "passagem": 300
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 2200,
+        "horasExtras": 70,
+        "descontos": 60,
+        "bonus": 110,
+        "faltas": 1,
+        "extras": 130,
+        "beneficios": {
+          "cafe": 155,
+          "almoco": 310,
+          "passagem": 310
+        }
+      }
+    ]
   },
   {
     "name": "Marcos Vinícius",
@@ -177,7 +1046,53 @@
     "banco": "BRADESCO",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1450,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 1,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1500,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 45,
+        "faltas": 0,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1550,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 50,
+        "faltas": 2,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      }
+    ]
   },
   {
     "name": "Paulo Silva",
@@ -189,7 +1104,38 @@
     "banco": "NU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1650,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 50,
+        "faltas": 1,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 55,
+        "faltas": 0,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      }
+    ]
   },
   {
     "name": "Roberto Souza",
@@ -201,7 +1147,68 @@
     "banco": "ITAU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 2250,
+        "horasExtras": 65,
+        "descontos": 55,
+        "bonus": 110,
+        "faltas": 1,
+        "extras": 130,
+        "beneficios": {
+          "cafe": 155,
+          "almoco": 310,
+          "passagem": 310
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 2300,
+        "horasExtras": 70,
+        "descontos": 60,
+        "bonus": 115,
+        "faltas": 0,
+        "extras": 135,
+        "beneficios": {
+          "cafe": 160,
+          "almoco": 320,
+          "passagem": 320
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 2350,
+        "horasExtras": 75,
+        "descontos": 65,
+        "bonus": 120,
+        "faltas": 2,
+        "extras": 140,
+        "beneficios": {
+          "cafe": 165,
+          "almoco": 330,
+          "passagem": 330
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 2400,
+        "horasExtras": 80,
+        "descontos": 70,
+        "bonus": 125,
+        "faltas": 1,
+        "extras": 145,
+        "beneficios": {
+          "cafe": 170,
+          "almoco": 340,
+          "passagem": 340
+        }
+      }
+    ]
   },
   {
     "name": "Sérgio Santos",
@@ -213,7 +1220,38 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 45,
+        "faltas": 0,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1650,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 50,
+        "faltas": 1,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      }
+    ]
   },
   {
     "name": "Thiago Pereira",
@@ -225,7 +1263,68 @@
     "banco": "BRADESCO",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1250,
+        "horasExtras": 20,
+        "descontos": 15,
+        "bonus": 30,
+        "faltas": 0,
+        "extras": 40,
+        "beneficios": {
+          "cafe": 70,
+          "almoco": 140,
+          "passagem": 140
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1300,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 35,
+        "faltas": 1,
+        "extras": 45,
+        "beneficios": {
+          "cafe": 75,
+          "almoco": 150,
+          "passagem": 150
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1350,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 45,
+        "faltas": 2,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      }
+    ]
   },
   {
     "name": "Victor Almeida",
@@ -237,7 +1336,53 @@
     "banco": "NU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1950,
+        "horasExtras": 45,
+        "descontos": 35,
+        "bonus": 85,
+        "faltas": 1,
+        "extras": 105,
+        "beneficios": {
+          "cafe": 130,
+          "almoco": 260,
+          "passagem": 260
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 2000,
+        "horasExtras": 50,
+        "descontos": 40,
+        "bonus": 90,
+        "faltas": 0,
+        "extras": 110,
+        "beneficios": {
+          "cafe": 135,
+          "almoco": 270,
+          "passagem": 270
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 2050,
+        "horasExtras": 55,
+        "descontos": 45,
+        "bonus": 95,
+        "faltas": 2,
+        "extras": 115,
+        "beneficios": {
+          "cafe": 140,
+          "almoco": 280,
+          "passagem": 280
+        }
+      }
+    ]
   },
   {
     "name": "Vitor Silva",
@@ -249,7 +1394,83 @@
     "banco": "ITAU",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 1,
+        "ano": 2025,
+        "salarioBase": 1400,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 35,
+        "faltas": 1,
+        "extras": 45,
+        "beneficios": {
+          "cafe": 75,
+          "almoco": 150,
+          "passagem": 150
+        }
+      },
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1450,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 40,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 80,
+          "almoco": 160,
+          "passagem": 160
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1500,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 45,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1550,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 50,
+        "faltas": 2,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 45,
+        "descontos": 40,
+        "bonus": 55,
+        "faltas": 0,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      }
+    ]
   },
   {
     "name": "Wesley Fernandes",
@@ -261,6 +1482,82 @@
     "banco": "CAIXA",
     "contato": "",
     "status": true,
-    "salarios": []
+    "salarios": [
+      {
+        "mes": 2,
+        "ano": 2025,
+        "salarioBase": 1550,
+        "horasExtras": 25,
+        "descontos": 20,
+        "bonus": 40,
+        "faltas": 0,
+        "extras": 50,
+        "beneficios": {
+          "cafe": 85,
+          "almoco": 170,
+          "passagem": 170
+        }
+      },
+      {
+        "mes": 3,
+        "ano": 2025,
+        "salarioBase": 1600,
+        "horasExtras": 30,
+        "descontos": 25,
+        "bonus": 45,
+        "faltas": 1,
+        "extras": 55,
+        "beneficios": {
+          "cafe": 90,
+          "almoco": 180,
+          "passagem": 180
+        }
+      },
+      {
+        "mes": 4,
+        "ano": 2025,
+        "salarioBase": 1650,
+        "horasExtras": 35,
+        "descontos": 30,
+        "bonus": 50,
+        "faltas": 0,
+        "extras": 60,
+        "beneficios": {
+          "cafe": 95,
+          "almoco": 190,
+          "passagem": 190
+        }
+      },
+      {
+        "mes": 5,
+        "ano": 2025,
+        "salarioBase": 1700,
+        "horasExtras": 40,
+        "descontos": 35,
+        "bonus": 55,
+        "faltas": 2,
+        "extras": 65,
+        "beneficios": {
+          "cafe": 100,
+          "almoco": 200,
+          "passagem": 200
+        }
+      },
+      {
+        "mes": 6,
+        "ano": 2025,
+        "salarioBase": 1750,
+        "horasExtras": 45,
+        "descontos": 40,
+        "bonus": 60,
+        "faltas": 1,
+        "extras": 70,
+        "beneficios": {
+          "cafe": 105,
+          "almoco": 210,
+          "passagem": 210
+        }
+      }
+    ]
   }
 ]
