@@ -8,7 +8,7 @@ import cargoRoutes from "./modules/cargo/cargo.route";
 import tabelaFuncionarioRoutes from "./modules/tabelaFuncionarios/tabelaFuncionarios.route";
 import eventoRoutes from "./modules/evento/evento.route";
 import obraRoutes from "./modules/obra/obra.route";
-import itemRoutes from "./modules/material/material.route";
+import materialRoutes from "./modules/material/material.route";
 import { adminSchemas } from "./modules/admin/admin.schemas";
 import { funcionarioSchemas } from "./modules/funcionario/funcionario.schema";
 import { cargoSchemas } from "./modules/cargo/cargo.schema";
@@ -105,7 +105,7 @@ async function main() {
   server.register(tabelaFuncionarioRoutes, { prefix: "/api/tabela" });
   server.register(eventoRoutes, { prefix: "/api/evento" });
   server.register(obraRoutes, { prefix: "/api/obra" });
-  server.register(itemRoutes, { prefix: "/api/item" });
+  server.register(materialRoutes, { prefix: "/api/material" });
   server.register(relatorioRoutes, { prefix: "/api/relatorio" });
 
   console.log("Rebuilt at " + new Date().toLocaleString());

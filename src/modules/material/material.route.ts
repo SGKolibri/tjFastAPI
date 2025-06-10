@@ -14,8 +14,7 @@ import {
 } from "./material.controller";
 import { deleteMaterial, removeMaterialFromObra } from "./material.services";
 
-async function itemRoutes(server: FastifyInstance) {
-  // Item routes
+async function materialRoutes(server: FastifyInstance) {
   server.post(
     "/",
     {
@@ -36,7 +35,7 @@ async function itemRoutes(server: FastifyInstance) {
         response: {
           200: {
             type: "array",
-            items: $ref("MaterialSchema"),
+            materials: $ref("MaterialSchema"),
           },
         },
       },
@@ -71,7 +70,7 @@ async function itemRoutes(server: FastifyInstance) {
 
   server.delete("/:id", deleteMaterialHandler);
 
-  // Item-Obra relationship routes
+  // Material-Obra relationship routes
   server.post(
     "/obra-assignment",
     {
@@ -88,7 +87,7 @@ async function itemRoutes(server: FastifyInstance) {
 
   server.get("/obra/:obraId", getMaterialsByObraHandler);
 
-  server.get("/:itemId/obras", getObrasByMaterialHandler);
+  server.get("/:materialId/obras", getObrasByMaterialHandler);
 }
 
-export default itemRoutes;
+export default materialRoutes;
