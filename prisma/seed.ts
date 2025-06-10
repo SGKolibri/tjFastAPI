@@ -56,6 +56,16 @@ const registerCargos = async () => {
   createCargos(cargosJSON);
 };
 
+const createFuncionarios = async () => {
+  const existingFuncionarios = await prisma.funcionario.count();
+  if (existingFuncionarios > 0) {
+    console.log(`Skipping funcionarios seeding, funcionarios already exist.`);
+    return;
+  }
+
+  await createFuncionariosFromJSON(funcionariosData);
+};
+
 const registerEventos = async () => {
   console.log("Seeding eventos...");
 
@@ -151,10 +161,6 @@ const registerMaterials = async () => {
   );
 
   console.log(`Created ${materialsCreated.length} materials`);
-};
-
-const createFuncionarios = async () => {
-  await createFuncionariosFromJSON(funcionariosData);
 };
 
 seed().then(() => {
