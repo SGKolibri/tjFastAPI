@@ -1,0 +1,42 @@
+[
+  {
+    "nome": "Residencial Solar Vista",
+    "cliente": "João Silva Santos",
+    "valor": 450000.0,
+    "dataInicio": "2024-01-15T08:00:00.000Z",
+    "dataFim": "2024-06-30T18:00:00.000Z",
+    "status": "EM_ANDAMENTO"
+  },
+  {
+    "nome": "Condomínio Águas Claras",
+    "cliente": "Construtora Horizon Ltda",
+    "valor": 1200000.0,
+    "dataInicio": "2024-02-01T08:00:00.000Z",
+    "dataFim": "2024-12-15T18:00:00.000Z",
+    "status": "EM_ANDAMENTO"
+  },
+  {
+    "nome": "Reforma Comercial Center Plaza",
+    "cliente": "Shopping Center Plaza S.A.",
+    "valor": 280000.0,
+    "dataInicio": "2024-03-10T08:00:00.000Z",
+    "dataFim": "2024-07-20T18:00:00.000Z",
+    "status": "PLANEJAMENTO"
+  },
+  {
+    "nome": "Casa de Campo Villa Verde",
+    "cliente": "Maria Fernanda Costa",
+    "valor": 320000.0,
+    "dataInicio": "2023-10-05T08:00:00.000Z",
+    "dataFim": "2024-02-28T18:00:00.000Z",
+    "status": "CONCLUIDA"
+  },
+  {
+    "nome": "Escritório Corporativo Tech Hub",
+    "cliente": "TechnoSolutions Corp",
+    "valor": 650000.0,
+    "dataInicio": "2024-04-01T08:00:00.000Z",
+    "dataFim": "2024-10-30T18:00:00.000Z",
+    "status": "PLANEJAMENTO"
+  }
+]

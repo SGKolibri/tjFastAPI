@@ -1,0 +1,37 @@
+[
+  {
+    "titulo": "Reunião de Planejamento - Residencial Solar Vista",
+    "descricao": "Reunião para definir cronograma e distribuição de equipes para a obra do Residencial Solar Vista",
+    "dataInicio": "2024-06-10T09:00:00.000Z",
+    "dataFim": "2024-06-10T11:00:00.000Z",
+    "allDay": false
+  },
+  {
+    "titulo": "Inspeção de Qualidade - Condomínio Águas Claras",
+    "descricao": "Inspeção técnica de qualidade das estruturas já executadas no Condomínio Águas Claras",
+    "dataInicio": "2024-06-12T14:00:00.000Z",
+    "dataFim": "2024-06-12T17:00:00.000Z",
+    "allDay": false
+  },
+  {
+    "titulo": "Treinamento de Segurança do Trabalho",
+    "descricao": "Treinamento obrigatório de segurança do trabalho para todos os funcionários das obras ativas",
+    "dataInicio": "2024-06-15T08:00:00.000Z",
+    "dataFim": "2024-06-15T17:00:00.000Z",
+    "allDay": true
+  },
+  {
+    "titulo": "Apresentação do Projeto - Tech Hub",
+    "descricao": "Apresentação do projeto do Escritório Corporativo Tech Hub para o cliente e aprovação final",
+    "dataInicio": "2024-06-18T10:00:00.000Z",
+    "dataFim": "2024-06-18T12:00:00.000Z",
+    "allDay": false
+  },
+  {
+    "titulo": "Entrega de Materiais - Lote Especial",
+    "descricao": "Recebimento e conferência de materiais especiais para as obras em andamento",
+    "dataInicio": "2024-06-20T07:00:00.000Z",
+    "dataFim": "2024-06-20T12:00:00.000Z",
+    "allDay": false
+  }
+]
