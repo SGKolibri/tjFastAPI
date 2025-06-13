@@ -6,9 +6,49 @@ import {
 } from "./material.schema";
 
 export async function createMaterial(input: RegisterMaterialInput) {
+  console.log("Creating Material...");
+  console.log("Input Data:", input);
+
+  const { projetos, ...materialData } = input;
+
   const Material = await prisma.material.create({
     data: {
-      ...input,
+      nome: materialData.nome,
+      descricao: materialData.descricao,
+      categoria: materialData.categoria,
+      unidade: materialData.unidade,
+      precoUnitario: materialData.precoUnitario,
+      fornecedor: materialData.fornecedor,
+      codigo: materialData.codigo,
+      quantidade: materialData.quantidade,
+      status: materialData.status,
+      localizacao: materialData.localizacao,
+      numeroNota: materialData.numeroNota,
+      // Properly handle date fields
+      dataCompra: materialData.dataCompra
+        ? new Date(materialData.dataCompra)
+        : null,
+      dataEntrega: materialData.dataEntrega
+        ? new Date(materialData.dataEntrega)
+        : null,
+      // Handle relationships
+      obras: projetos?.length
+        ? {
+            create: projetos.map((obraId) => ({
+              obraId,
+              quantidade: materialData.quantidade || 0,
+              valorTotal:
+                (materialData.quantidade || 0) * materialData.precoUnitario,
+            })),
+          }
+        : undefined,
+    },
+    include: {
+      obras: {
+        include: {
+          obra: true,
+        },
+      },
     },
   });
 

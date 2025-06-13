@@ -15,25 +15,20 @@ const MaterialSchema = z.object({
 });
 
 const RegisterMaterialSchema = z.object({
-  nome: z.string({
-    required_error: "Nome is required",
-    invalid_type_error: "Nome must be a string",
-  }),
+  nome: z.string(),
   descricao: z.string().optional(),
-  categoria: z.string({
-    required_error: "Categoria is required",
-    invalid_type_error: "Categoria must be a string",
-  }),
-  unidade: z.string({
-    required_error: "Unidade is required",
-    invalid_type_error: "Unidade must be a string",
-  }),
-  precoUnitario: z.number({
-    required_error: "Preço unitário is required",
-    invalid_type_error: "Preço unitário must be a number",
-  }),
+  categoria: z.string(),
+  unidade: z.string(),
+  precoUnitario: z.number(),
   fornecedor: z.string().optional(),
   codigo: z.string().optional(),
+  quantidade: z.number().optional(),
+  status: z.string().optional(),
+  localizacao: z.string().optional(),
+  dataCompra: z.string().optional(), // Accepts ISO date string
+  dataEntrega: z.string().optional(), // Accepts ISO date string
+  numeroNota: z.string().optional(),
+  projetos: z.array(z.string()).optional(), // Array of obra IDs
 });
 
 // Schema for assigning material to an obra
